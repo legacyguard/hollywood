@@ -5,6 +5,7 @@
  */
 
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   AlertCircle,
@@ -75,6 +76,7 @@ export function EmailImportWizard({
   onClose,
   className,
 }: EmailImportWizardProps) {
+  const { t } = useTranslation('ui/email-import-wizard');
   const [state, setState] = useState<WizardState>({
     step: 'auth',
     isAuthenticated: gmailService.isAuthenticated(),
@@ -104,7 +106,7 @@ export function EmailImportWizard({
     } catch (_error) {
       setState(prev => ({
         ...prev,
-        error: 'Failed to authenticate with Gmail. Please try again.',
+        error: t('errors.authFailed'),
       }));
     } finally {
       setIsLoading(false);
@@ -192,7 +194,7 @@ export function EmailImportWizard({
     } catch (error) {
       setState(prev => ({
         ...prev,
-        error: `Failed to import documents: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: t('errors.importFailed', { message: error instanceof Error ? error.message : 'Unknown error' }),
         step: 'config',
       }));
     } finally {
@@ -245,7 +247,7 @@ export function EmailImportWizard({
       } catch (error) {
         setState(prev => ({
           ...prev,
-          error: `Failed to resolve duplicates: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          error: t('errors.resolveFailed', { message: error instanceof Error ? error.message : 'Unknown error' }),
         }));
       }
     },
@@ -325,7 +327,7 @@ export function EmailImportWizard({
     } catch (error) {
       setState(prev => ({
         ...prev,
-        error: `Failed to complete import: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: t('errors.completeFailed', { message: error instanceof Error ? error.message : 'Unknown error' }),
         step: 'review',
       }));
     } finally {
@@ -431,24 +433,23 @@ export function EmailImportWizard({
         <CardHeader className='text-center'>
           <CardTitle className='flex items-center justify-center gap-3 text-2xl'>
             <Mail className='h-7 w-7 text-blue-600' />
-            Import Documents from Gmail
+            {t('header.title')}
           </CardTitle>
           <p className='text-muted-foreground'>
-            Automatically find and import important documents from your email
-            attachments
+            {t('header.subtitle')}
           </p>
 
           <div className='mt-4'>
             <Progress value={getStepProgress()} className='h-2' />
             <div className='flex justify-between text-xs text-muted-foreground mt-2'>
-              <span>Connect</span>
-              <span>Configure</span>
-              <span>Scan</span>
-              <span>Process</span>
-              {state.duplicates.length > 0 && <span>Duplicates</span>}
-              <span>Review</span>
-              <span>Import</span>
-              <span>Complete</span>
+              <span>{t('steps.connect')}</span>
+              <span>{t('steps.configure')}</span>
+              <span>{t('steps.scan')}</span>
+              <span>{t('steps.process')}</span>
+              {state.duplicates.length > 0 && <span>{t('steps.duplicates')}</span>}
+              <span>{t('steps.review')}</span>
+              <span>{t('steps.import')}</span>
+              <span>{t('steps.complete')}</span>
             </div>
           </div>
         </CardHeader>
@@ -483,6 +484,7 @@ function AuthenticationStep({
   isLoading,
   error,
 }: AuthenticationStepProps) {
+  const { t } = useTranslation('ui/email-import-wizard');
   return (
     <div className='text-center space-y-6'>
       <div className='w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto'>
@@ -491,18 +493,17 @@ function AuthenticationStep({
 
       <div>
         <h3 className='text-xl font-semibold mb-2'>
-          Connect Your Gmail Account
+          {t('auth.title')}
         </h3>
         <p className='text-muted-foreground max-w-md mx-auto'>
-          We'll securely scan your Gmail for document attachments. Your email
-          content remains private - we only look at attachments.
+          {t('auth.subtitle')}
         </p>
       </div>
 
       {error && (
         <Alert variant='destructive'>
           <AlertCircle className='h-4 w-4' />
-          <AlertTitle>Authentication Error</AlertTitle>
+          <AlertTitle>{t('auth.errorTitle')}</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -516,12 +517,12 @@ function AuthenticationStep({
           {isLoading ? (
             <>
               <Loader2 className='h-4 w-4 mr-2 animate-spin' />
-              Connecting...
+              {t('auth.button.connecting')}
             </>
           ) : (
             <>
               <Mail className='h-4 w-4 mr-2' />
-              Connect Gmail Account
+              {t('auth.button.connect')}
             </>
           )}
         </Button>
@@ -529,11 +530,11 @@ function AuthenticationStep({
         <div className='flex items-center justify-center space-x-4 text-xs text-muted-foreground'>
           <div className='flex items-center'>
             <Shield className='h-3 w-3 mr-1' />
-            Secure OAuth2
+            {t('auth.secure')}
           </div>
           <div className='flex items-center'>
             <FileText className='h-3 w-3 mr-1' />
-            Read-Only Access
+            {t('auth.readonly')}
           </div>
         </div>
       </div>
@@ -548,6 +549,7 @@ interface ConfigurationStepProps {
 }
 
 function ConfigurationStep({ onSubmit, isLoading }: ConfigurationStepProps) {
+  const { t } = useTranslation('ui/email-import-wizard');
   const [config, setConfig] = useState<EmailImportConfig>({
     dateRange: {
       from: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // 1 year ago
@@ -569,10 +571,10 @@ function ConfigurationStep({ onSubmit, isLoading }: ConfigurationStepProps) {
           <Settings className='h-10 w-10 text-green-600' />
         </div>
         <h3 className='text-xl font-semibold mb-2'>
-          Configure Import Settings
+          {t('config.title')}
         </h3>
         <p className='text-muted-foreground'>
-          Customize what documents to import from your Gmail
+          {t('config.subtitle')}
         </p>
       </div>
 
@@ -581,14 +583,14 @@ function ConfigurationStep({ onSubmit, isLoading }: ConfigurationStepProps) {
           <CardHeader>
             <CardTitle className='text-sm font-medium flex items-center gap-2'>
               <Calendar className='h-4 w-4' />
-              Date Range
+              {t('config.dateRange')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className='space-y-3'>
               <div>
                 <label className='block text-xs font-medium text-muted-foreground mb-1'>
-                  From
+                  {t('config.from')}
                 </label>
                 <input
                   type='date'
@@ -607,7 +609,7 @@ function ConfigurationStep({ onSubmit, isLoading }: ConfigurationStepProps) {
               </div>
               <div>
                 <label className='block text-xs font-medium text-muted-foreground mb-1'>
-                  To
+                  {t('config.to')}
                 </label>
                 <input
                   type='date'
@@ -632,7 +634,7 @@ function ConfigurationStep({ onSubmit, isLoading }: ConfigurationStepProps) {
           <CardHeader>
             <CardTitle className='text-sm font-medium flex items-center gap-2'>
               <FileText className='h-4 w-4' />
-              File Types
+              {t('config.fileTypes')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -669,7 +671,7 @@ function ConfigurationStep({ onSubmit, isLoading }: ConfigurationStepProps) {
 
       <div className='flex justify-between items-center'>
         <div className='text-sm text-muted-foreground'>
-          This will scan up to {config.maxDocuments} emails with attachments
+          {t('config.scanNote', { max: config.maxDocuments })}
         </div>
 
         <Button
@@ -680,12 +682,12 @@ function ConfigurationStep({ onSubmit, isLoading }: ConfigurationStepProps) {
           {isLoading ? (
             <>
               <Loader2 className='h-4 w-4 mr-2 animate-spin' />
-              Starting Scan...
+              {t('config.start.scanning')}
             </>
           ) : (
             <>
               <Search className='h-4 w-4 mr-2' />
-              Start Scanning
+              {t('config.start.start')}
             </>
           )}
         </Button>
@@ -700,6 +702,7 @@ interface ScanningStepProps {
 }
 
 function ScanningStep({ session }: ScanningStepProps) {
+  const { t } = useTranslation('ui/email-import-wizard');
   return (
     <div className='text-center space-y-6'>
       <div className='w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto'>
@@ -707,9 +710,9 @@ function ScanningStep({ session }: ScanningStepProps) {
       </div>
 
       <div>
-        <h3 className='text-xl font-semibold mb-2'>Scanning Your Gmail</h3>
+        <h3 className='text-xl font-semibold mb-2'>{t('scanning.title')}</h3>
         <p className='text-muted-foreground'>
-          Looking for emails with document attachments...
+          {t('scanning.subtitle')}
         </p>
       </div>
 
@@ -717,8 +720,8 @@ function ScanningStep({ session }: ScanningStepProps) {
         <Progress value={undefined} className='h-3' />
         <p className='text-sm text-muted-foreground mt-2'>
           {session
-            ? `Found ${session.totalEmails} emails to check`
-            : 'Searching...'}
+            ? t('scanning.found', { count: session.totalEmails })
+            : t('scanning.searching')}
         </p>
       </div>
     </div>
@@ -731,6 +734,7 @@ interface ProcessingStepProps {
 }
 
 function ProcessingStep({ session }: ProcessingStepProps) {
+  const { t } = useTranslation('ui/email-import-wizard');
   const progress = session
     ? (session.processedEmails / session.totalEmails) * 100
     : 0;
@@ -742,9 +746,9 @@ function ProcessingStep({ session }: ProcessingStepProps) {
       </div>
 
       <div>
-        <h3 className='text-xl font-semibold mb-2'>Processing Documents</h3>
+        <h3 className='text-xl font-semibold mb-2'>{t('processing.title')}</h3>
         <p className='text-muted-foreground'>
-          Extracting and categorizing your documents...
+          {t('processing.subtitle')}
         </p>
       </div>
 
@@ -752,15 +756,15 @@ function ProcessingStep({ session }: ProcessingStepProps) {
         <Progress value={progress} className='h-3' />
         <p className='text-sm text-muted-foreground mt-2'>
           {session
-            ? `${session.processedEmails} of ${session.totalEmails} emails processed`
-            : 'Processing...'}
+            ? t('processing.progress', { processed: session.processedEmails, total: session.totalEmails })
+            : t('processing.processing')}
         </p>
       </div>
 
       {session && session.foundDocuments.length > 0 && (
         <div className='text-center'>
           <Badge variant='secondary' className='text-sm'>
-            {session.foundDocuments.length} documents found
+            {t('processing.docsFound', { count: session.foundDocuments.length })}
           </Badge>
         </div>
       )}
@@ -784,15 +788,16 @@ function ReviewStep({
   onToggleSelection,
   onProceed,
 }: ReviewStepProps) {
+  const { t } = useTranslation('ui/email-import-wizard');
   return (
     <div className='space-y-6'>
       <div className='text-center'>
         <div className='w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4'>
           <CheckCircle className='h-10 w-10 text-purple-600' />
         </div>
-        <h3 className='text-xl font-semibold mb-2'>Review Found Documents</h3>
+        <h3 className='text-xl font-semibold mb-2'>{t('review.title')}</h3>
         <p className='text-muted-foreground'>
-          Select which documents to import into your vault
+          {t('review.subtitle')}
         </p>
       </div>
 
@@ -800,16 +805,14 @@ function ReviewStep({
         <div className='text-center py-8'>
           <FileText className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
           <p className='text-muted-foreground'>
-            No documents found in the selected time range. Try expanding your
-            date range or checking different file types.
+            {t('review.none')}
           </p>
         </div>
       ) : (
         <>
           <div className='flex items-center justify-between'>
             <p className='text-sm text-muted-foreground'>
-              Found {documents.length} documents, {selectedDocuments.size}{' '}
-              selected
+              {t('review.summary', { total: documents.length, selected: selectedDocuments.size })}
             </p>
             <div className='flex gap-2'>
               <Button
@@ -819,7 +822,7 @@ function ReviewStep({
                   documents.forEach(doc => onToggleSelection(doc.id))
                 }
               >
-                Select All
+                {t('review.selectAll')}
               </Button>
               <Button
                 variant='outline'
@@ -828,7 +831,7 @@ function ReviewStep({
                   selectedDocuments.forEach(id => onToggleSelection(id))
                 }
               >
-                Clear All
+                {t('review.clearAll')}
               </Button>
             </div>
           </div>
@@ -884,16 +887,16 @@ function ReviewStep({
                         </div>
 
                         <div className='text-xs text-muted-foreground space-y-1'>
-                          <div>From: {document.metadata.fromEmail}</div>
-                          <div>Subject: {document.metadata.subject}</div>
+                          <div>{t('review.meta.from')} {document.metadata.fromEmail}</div>
+                          <div>{t('review.meta.subject')} {document.metadata.subject}</div>
                           <div>
-                            Date:{' '}
+                            {t('review.meta.date')} {' '}
                             {new Date(
                               document.metadata.date
                             ).toLocaleDateString()}
                           </div>
                           <div>
-                            Size: {(document.size / 1024).toFixed(1)} KB
+                            {t('review.meta.size', { kb: (document.size / 1024).toFixed(1) })}
                           </div>
                         </div>
 
@@ -909,11 +912,7 @@ function ReviewStep({
 
                       <div className='text-right'>
                         <div className='text-xs text-muted-foreground'>
-                          Confidence:{' '}
-                          {categorization
-                            ? Math.round(categorization?.confidence * 100)
-                            : 0}
-                          %
+                          {t('review.confidence', { value: categorization ? Math.round(categorization.confidence * 100) : 0 })}
                         </div>
                       </div>
                     </div>
@@ -927,8 +926,7 @@ function ReviewStep({
 
           <div className='flex justify-between items-center'>
             <div className='text-sm text-muted-foreground'>
-              {selectedDocuments.size} documents selected • Estimated time
-              saved: {selectedDocuments.size * 5} minutes
+              {t('review.footer.selected', { count: selectedDocuments.size, minutes: selectedDocuments.size * 5 })}
             </div>
 
             <Button
@@ -937,7 +935,7 @@ function ReviewStep({
               className='px-6'
             >
               <Upload className='h-4 w-4 mr-2' />
-              Import {selectedDocuments.size} Documents
+              {t('review.footer.import', { count: selectedDocuments.size })}
             </Button>
           </div>
         </>
@@ -948,6 +946,7 @@ function ReviewStep({
 
 // Importing Step Component
 function ImportingStep() {
+  const { t } = useTranslation('ui/email-import-wizard');
   return (
     <div className='text-center space-y-6'>
       <div className='w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
@@ -955,16 +954,16 @@ function ImportingStep() {
       </div>
 
       <div>
-        <h3 className='text-xl font-semibold mb-2'>Importing Documents</h3>
+        <h3 className='text-xl font-semibold mb-2'>{t('importing.title')}</h3>
         <p className='text-muted-foreground'>
-          Securely importing your documents into the vault...
+          {t('importing.subtitle')}
         </p>
       </div>
 
       <div className='max-w-sm mx-auto'>
         <Progress value={undefined} className='h-3' />
         <p className='text-sm text-muted-foreground mt-2'>
-          Encrypting and storing documents...
+          {t('importing.encrypting')}
         </p>
       </div>
     </div>
@@ -977,6 +976,7 @@ interface CompleteStepProps {
 }
 
 function CompleteStep({ onClose }: CompleteStepProps) {
+  const { t } = useTranslation('ui/email-import-wizard');
   return (
     <div className='text-center space-y-6'>
       <div className='w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
@@ -984,31 +984,31 @@ function CompleteStep({ onClose }: CompleteStepProps) {
       </div>
 
       <div>
-        <h3 className='text-xl font-semibold mb-2'>Import Complete!</h3>
+        <h3 className='text-xl font-semibold mb-2'>{t('complete.title')}</h3>
         <p className='text-muted-foreground'>
-          Your documents have been successfully imported and secured.
+          {t('complete.subtitle')}
         </p>
       </div>
 
       <div className='grid grid-cols-3 gap-4 max-w-md mx-auto'>
         <div className='text-center'>
           <div className='text-2xl font-bold text-green-600'>5</div>
-          <div className='text-xs text-muted-foreground'>Documents Added</div>
+          <div className='text-xs text-muted-foreground'>{t('complete.docsAdded')}</div>
         </div>
         <div className='text-center'>
           <div className='text-2xl font-bold text-blue-600'>25min</div>
-          <div className='text-xs text-muted-foreground'>Time Saved</div>
+          <div className='text-xs text-muted-foreground'>{t('complete.timeSaved')}</div>
         </div>
         <div className='text-center'>
           <div className='text-2xl font-bold text-purple-600'>+10%</div>
           <div className='text-xs text-muted-foreground'>
-            Protection Increase
+            {t('complete.protection')}
           </div>
         </div>
       </div>
 
       <Button onClick={onClose} className='px-8'>
-        View My Documents
+        {t('complete.view')}
       </Button>
     </div>
   );

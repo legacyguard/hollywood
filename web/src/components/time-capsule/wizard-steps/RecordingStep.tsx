@@ -21,8 +21,8 @@ interface RecordingStepProps {
   messageTitle: string;
   onMessagePreviewChange: (preview: string) => void;
   onMessageTitleChange: (title: string) => void;
-  onRecordingChange: (recording?: TimeCapsuleRecordingData) => void;
-  recording?: TimeCapsuleRecordingData;
+  onRecordingChange: (recording: TimeCapsuleRecordingData | null) => void;
+  recording: TimeCapsuleRecordingData | null;
 }
 
 type RecordingState = 'completed' | 'idle' | 'paused' | 'recording';
@@ -224,7 +224,7 @@ export function RecordingStep({
 
   // Delete recording and start over
   const deleteRecording = useCallback(() => {
-    onRecordingChange(undefined);
+    onRecordingChange(null);
     setRecordingState('idle');
     setDuration(0);
 

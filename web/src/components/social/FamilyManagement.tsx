@@ -128,7 +128,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
         );
         setFamilies(familyGroups);
         if (familyGroups.length > 0 && !selectedFamily) {
-          setSelectedFamily(familyGroups[0]);
+          setSelectedFamily(familyGroups[0] || null);
         }
       }
     } catch (error) {
@@ -671,6 +671,7 @@ function InviteMemberDialog({
   onOpenChange: (open: boolean) => void;
   open: boolean;
 }) {
+  const { t } = useTranslation('ui/family-management');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<FamilyRole>('collaborator');
   const [relationship, setRelationship] = useState('');
@@ -804,6 +805,7 @@ function CreateFamilyDialog({
   open?: boolean;
   trigger?: React.ReactNode;
 }) {
+  const { t } = useTranslation('ui/family-management');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [isCreating, setIsCreating] = useState(false);
@@ -890,7 +892,7 @@ function CreateFamilyDialog({
 
   if (trigger) {
     return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open || false} onOpenChange={onOpenChange || (() => {})}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
         <DialogContent>{dialogContent}</DialogContent>
       </Dialog>
@@ -898,7 +900,7 @@ function CreateFamilyDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open || false} onOpenChange={onOpenChange || (() => {})}>
       <DialogContent>{dialogContent}</DialogContent>
     </Dialog>
   );

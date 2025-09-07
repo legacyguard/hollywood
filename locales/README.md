@@ -27,18 +27,20 @@ Náš systém internacionalizácie je postavený na:
 - **Jurisdikčná podpora** - Rôzne texty pre rôzne krajiny
 
 ### Podporované jazyky
+
 - 🇬🇧 **en** - Angličtina (predvolený jazyk)
 - 🇸🇰 **sk** - Slovenčina
 - 🇨🇿 **cs** - Čeština
 - 🇩🇪 **de** - Nemčina
 
 ### Jurisdikcie
+
 - 🇸🇰 **SK** - Slovenská republika
 - 🇨🇿 **CZ** - Česká republika
 
 ## Štruktúra priečinkov
 
-```
+```text
 locales/
 ├── ui/                     # UI texty (tlačidlá, menu, formuláre)
 │   ├── en.json            # Angličtina
@@ -151,12 +153,14 @@ t('itemCount', { count: 5 });  // Máš 5 položiek
 ### Obsahové Namespaces
 
 #### Wills Namespace
+
 - **Názov**: `wills_{jazyk}_{jurisdikcia}`
 - **Účel**: Texty pre závety a právne dokumenty
 - **Načítanie**: Na požiadanie
 - **Súbory**: `/locales/content/wills/{jazyk}_{jurisdikcia}.json`
 
 #### Family Shield Namespace
+
 - **Názov**: `family-shield_{jazyk}_{jurisdikcia}`
 - **Účel**: Texty pre Rodinný Štít
 - **Načítanie**: Na požiadanie
@@ -231,6 +235,7 @@ const namespace = getContentNamespace('wills', 'sk', 'SK'); // "wills_sk_SK"
 ### ✅ Odporúčané
 
 1. **Používaj semantické názvy kľúčov**
+
    ```json
    {
      "form.validation.required": "Toto pole je povinné",
@@ -239,6 +244,7 @@ const namespace = getContentNamespace('wills', 'sk', 'SK'); // "wills_sk_SK"
    ```
 
 2. **Hierarchická štruktúra**
+
    ```json
    {
      "auth": {
@@ -249,6 +255,7 @@ const namespace = getContentNamespace('wills', 'sk', 'SK'); // "wills_sk_SK"
    ```
 
 3. **Používaj interpoláciu pre dynamický obsah**
+
    ```json
    {
      "greeting": "Vitaj, {{userName}}!",
@@ -258,6 +265,7 @@ const namespace = getContentNamespace('wills', 'sk', 'SK'); // "wills_sk_SK"
    ```
 
 4. **Načítavaj obsah lazy**
+
    ```tsx
    // Načítaj len keď potrebuješ
    useEffect(() => {
@@ -270,6 +278,7 @@ const namespace = getContentNamespace('wills', 'sk', 'SK'); // "wills_sk_SK"
 ### ❌ Neodporúčané
 
 1. **Nepoužívaj všeobecné kľúče**
+
    ```json
    // Zlé
    { "message": "Správa" }
@@ -279,6 +288,7 @@ const namespace = getContentNamespace('wills', 'sk', 'SK'); // "wills_sk_SK"
    ```
 
 2. **Nehárdkóduj texty v komponentoch**
+
    ```tsx
    // Zlé
    <button>Uložiť</button>
@@ -288,6 +298,7 @@ const namespace = getContentNamespace('wills', 'sk', 'SK'); // "wills_sk_SK"
    ```
 
 3. **Nemiešaj jazyky v jednom súbore**
+
    ```json
    // Zlé
    {
@@ -346,16 +357,19 @@ NamespaceLoader.reset();
 ## Riešenie problémov
 
 ### Chýbajúce preklady
+
 1. Skontroluj, či je správne načítaný namespace
 2. Overeď existenciu kľúča v súbore
 3. Skontroluj názov súboru a cestu
 
 ### Výkonnostné problémy
+
 1. Používaj lazy loading pre obsahové namespaces
 2. Nenačítavaj všetky jurisdikcie naraz
 3. Cache namespaces pre opakované použitie
 
 ### Jurisdikčné problémy
+
 1. Uisti sa, že máš správnu kombináciu jazyk_jurisdikcia
 2. Skontroluj, či existuje súbor pre danú kombináciu
 3. Používaj fallback na angličtinu ak je potrebné
@@ -363,7 +377,7 @@ NamespaceLoader.reset();
 ## Budúce rozšírenia
 
 - Pridanie ďalších jazykov (poľština, maďarčina)
-- Rozšírenie jurisdikcií (Rakúsko, Nemecko) 
+- Rozšírenie jurisdikcií (Rakúsko, Nemecko)
 - Automatické generovanie typov z JSON súborov
 - CLI nástroje pre správu prekladov
 

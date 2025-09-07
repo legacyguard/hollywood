@@ -5,6 +5,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -152,6 +153,7 @@ export function ConsultationBookingSystem({
   onCancel,
   className,
 }: ConsultationBookingSystemProps) {
+  const { t } = useTranslation('ui/consultation-booking');
   const [currentStep, setCurrentStep] = useState<BookingStep>('type');
   const [booking, setBooking] = useState<Partial<ConsultationBooking>>({
     reviewerId: reviewer.id,
@@ -174,10 +176,10 @@ export function ConsultationBookingSystem({
     key: BookingStep;
     title: string;
   }[] = [
-    { key: 'type', title: 'Consultation Type', icon: MessageSquare },
-    { key: 'schedule', title: 'Date & Time', icon: Calendar },
-    { key: 'details', title: 'Your Information', icon: User },
-    { key: 'review', title: 'Review & Pay', icon: CheckCircle },
+    { key: 'type', title: t('steps.type'), icon: MessageSquare },
+    { key: 'schedule', title: t('steps.schedule'), icon: Calendar },
+    { key: 'details', title: t('steps.details'), icon: User },
+    { key: 'review', title: t('steps.review'), icon: CheckCircle },
   ];
 
   const currentStepIndex = steps.findIndex(step => step.key === currentStep);
@@ -285,11 +287,10 @@ export function ConsultationBookingSystem({
           >
             <div className='text-center mb-8'>
               <h3 className='text-xl font-semibold mb-2'>
-                Choose Consultation Type
+                {t('type.title')}
               </h3>
               <p className='text-muted-foreground'>
-                Select the format that works best for your legal consultation
-                needs
+                {t('type.subtitle')}
               </p>
             </div>
 
@@ -342,7 +343,7 @@ export function ConsultationBookingSystem({
                           <div className='flex items-center justify-between mb-2'>
                             <h4 className='font-semibold'>{type.name}</h4>
                             <Badge variant='outline'>
-                              ${Math.round(150 * type.priceMultiplier)}/hour
+                              {t('type.priceLabel', { amount: Math.round(150 * type.priceMultiplier) })}
                             </Badge>
                           </div>
 
@@ -353,7 +354,7 @@ export function ConsultationBookingSystem({
                           <div className='space-y-2'>
                             <div className='flex items-center gap-4'>
                               <span className='text-sm text-muted-foreground'>
-                                Available durations:
+                                {t('type.availableDurations')}
                               </span>
                               <div className='flex gap-2'>
                                 {type.duration.map(duration => (
@@ -362,7 +363,7 @@ export function ConsultationBookingSystem({
                                     variant='secondary'
                                     className='text-xs'
                                   >
-                                    {duration} min
+                                    {t('type.min', { value: duration })}
                                   </Badge>
                                 ))}
                               </div>
@@ -370,7 +371,7 @@ export function ConsultationBookingSystem({
 
                             <div>
                               <span className='text-sm text-muted-foreground'>
-                                Includes:
+                                {t('type.includes')}
                               </span>
                               <ul className='flex flex-wrap gap-x-4 gap-y-1 mt-1'>
                                 {type.features.map(feature => (
@@ -474,16 +475,15 @@ export function ConsultationBookingSystem({
             className='space-y-6'
           >
             <div className='text-center mb-8'>
-              <h3 className='text-xl font-semibold mb-2'>Select Date & Time</h3>
+              <h3 className='text-xl font-semibold mb-2'>{t('schedule.title')}</h3>
               <p className='text-muted-foreground'>
-                Choose a convenient time slot for your consultation with{' '}
-                {reviewer.fullName}
+                {t('schedule.subtitle', { name: reviewer.fullName })}
               </p>
             </div>
 
             {/* Date Selection */}
             <div className='space-y-4'>
-              <Label className='text-base font-medium'>Available Dates</Label>
+              <Label className='text-base font-medium'>{t('schedule.availableDates')}</Label>
               <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
                 {getNextWeekDates().map(dateInfo => (
                   <Button
@@ -512,7 +512,7 @@ export function ConsultationBookingSystem({
                 animate={{ opacity: 1, y: 0 }}
                 className='space-y-4'
               >
-                <Label className='text-base font-medium'>Available Times</Label>
+                <Label className='text-base font-medium'>{t('schedule.availableTimes')}</Label>
                 <div className='grid grid-cols-3 md:grid-cols-5 gap-3'>
                   {availableSlots.map(slot => (
                     <Button
@@ -535,7 +535,7 @@ export function ConsultationBookingSystem({
                     >
                       <span className='font-semibold'>{slot.time}</span>
                       {!slot.available && (
-                        <span className='text-xs text-red-500'>Booked</span>
+                        <span className='text-xs text-red-500'>{t('schedule.booked')}</span>
                       )}
                     </Button>
                   ))}
@@ -547,18 +547,21 @@ export function ConsultationBookingSystem({
               <Alert className='border-green-200 bg-green-50'>
                 <CheckCircle className='h-4 w-4 text-green-600' />
                 <AlertTitle className='text-green-800'>
-                  Selected Time
+                  {t('schedule.selectedTime')}
                 </AlertTitle>
                 <AlertDescription className='text-green-700'>
-                  {booking.consultationType} consultation on{' '}
-                  {new Date(booking.date).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}{' '}
-                  at {booking.time} ({booking.duration} minutes) - $
-                  {calculateTotalCost()}
+                  {t('schedule.selectedTimeDesc', {
+                    type: booking.consultationType,
+                    date: new Date(booking.date).toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    }),
+                    time: booking.time,
+                    minutes: booking.duration,
+                    cost: calculateTotalCost(),
+                  })}
                 </AlertDescription>
               </Alert>
             )}
@@ -573,17 +576,16 @@ export function ConsultationBookingSystem({
             className='space-y-6'
           >
             <div className='text-center mb-8'>
-              <h3 className='text-xl font-semibold mb-2'>Your Information</h3>
+              <h3 className='text-xl font-semibold mb-2'>{t('details.title')}</h3>
               <p className='text-muted-foreground'>
-                Help us prepare for your consultation by sharing some background
-                information
+                {t('details.subtitle')}
               </p>
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <div className='space-y-4'>
                 <div className='space-y-2'>
-                  <Label htmlFor='name'>Full Name *</Label>
+                  <Label htmlFor='name'>{t('details.name')}</Label>
                   <Input
                     id='name'
                     value={booking.clientInfo?.name || ''}
@@ -599,12 +601,12 @@ export function ConsultationBookingSystem({
                           }) as Partial<ConsultationBooking>
                       )
                     }
-                    placeholder='John Smith'
+                    placeholder={t('details.namePlaceholder')}
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='email'>Email Address *</Label>
+                  <Label htmlFor='email'>{t('details.email')}</Label>
                   <Input
                     id='email'
                     type='email'
@@ -621,12 +623,12 @@ export function ConsultationBookingSystem({
                           }) as Partial<ConsultationBooking>
                       )
                     }
-                    placeholder='john@example.com'
+                    placeholder={t('details.emailPlaceholder')}
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='phone'>Phone Number *</Label>
+                  <Label htmlFor='phone'>{t('details.phone')}</Label>
                   <Input
                     id='phone'
                     type='tel'
@@ -643,12 +645,12 @@ export function ConsultationBookingSystem({
                           }) as Partial<ConsultationBooking>
                       )
                     }
-                    placeholder='(555) 123-4567'
+                    placeholder={t('details.phonePlaceholder')}
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='urgency'>Urgency Level</Label>
+                  <Label htmlFor='urgency'>{t('details.urgency')}</Label>
                   <Select
                     value={booking.clientInfo?.urgencyLevel}
                     onValueChange={(value: 'high' | 'low' | 'medium') =>
@@ -669,13 +671,13 @@ export function ConsultationBookingSystem({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value='low'>
-                        Low - General consultation
+                        {t('details.urgencyLow')}
                       </SelectItem>
                       <SelectItem value='medium'>
-                        Medium - Important matter
+                        {t('details.urgencyMedium')}
                       </SelectItem>
                       <SelectItem value='high'>
-                        High - Urgent legal issue
+                        {t('details.urgencyHigh')}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -684,7 +686,7 @@ export function ConsultationBookingSystem({
 
               <div className='space-y-4'>
                 <div className='space-y-2'>
-                  <Label htmlFor='topic'>Consultation Topic *</Label>
+                  <Label htmlFor='topic'>{t('details.topic')}</Label>
                   <Textarea
                     id='topic'
                     value={booking.clientInfo?.consultationTopic || ''}
@@ -700,13 +702,13 @@ export function ConsultationBookingSystem({
                           }) as Partial<ConsultationBooking>
                       )
                     }
-                    placeholder="Brief description of what you'd like to discuss..."
+                    placeholder={t('details.topicPlaceholder')}
                     rows={3}
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='background'>Background Information</Label>
+                  <Label htmlFor='background'>{t('details.background')}</Label>
                   <Textarea
                     id='background'
                     value={booking.clientInfo?.backgroundInfo || ''}
@@ -722,13 +724,13 @@ export function ConsultationBookingSystem({
                           }) as Partial<ConsultationBooking>
                       )
                     }
-                    placeholder='Any additional context that would help prepare for our discussion...'
+                    placeholder={t('details.backgroundPlaceholder')}
                     rows={4}
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='requests'>Special Requests</Label>
+                  <Label htmlFor='requests'>{t('details.requests')}</Label>
                   <Textarea
                     id='requests'
                     value={booking.specialRequests || ''}
@@ -741,7 +743,7 @@ export function ConsultationBookingSystem({
                           }) as Partial<ConsultationBooking>
                       )
                     }
-                    placeholder='Any special accommodations or requests...'
+                    placeholder={t('details.requestsPlaceholder')}
                     rows={2}
                   />
                 </div>
@@ -758,10 +760,9 @@ export function ConsultationBookingSystem({
             className='space-y-6'
           >
             <div className='text-center mb-8'>
-              <h3 className='text-xl font-semibold mb-2'>Review & Confirm</h3>
+              <h3 className='text-xl font-semibold mb-2'>{t('review.title')}</h3>
               <p className='text-muted-foreground'>
-                Please review your consultation details before confirming your
-                booking
+                {t('review.subtitle')}
               </p>
             </div>
 
@@ -769,7 +770,7 @@ export function ConsultationBookingSystem({
               {/* Attorney Info */}
               <Card>
                 <CardHeader>
-                  <CardTitle className='text-lg'>Your Attorney</CardTitle>
+                  <CardTitle className='text-lg'>{t('review.attorney')}</CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                   <div className='flex items-center gap-4'>
@@ -799,7 +800,7 @@ export function ConsultationBookingSystem({
                   <div className='space-y-2 text-sm'>
                     <div className='flex items-center gap-2'>
                       <Award className='h-4 w-4 text-muted-foreground' />
-                      <span>{reviewer.experience} years experience</span>
+                      <span>{t('review.experience', { years: reviewer.experience })}</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <Briefcase className='h-4 w-4 text-muted-foreground' />
@@ -813,13 +814,13 @@ export function ConsultationBookingSystem({
               <Card>
                 <CardHeader>
                   <CardTitle className='text-lg'>
-                    Consultation Details
+                    {t('review.details')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                   <div className='space-y-3'>
                     <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground'>Type:</span>
+                      <span className='text-muted-foreground'>{t('review.type')}</span>
                       <Badge variant='outline'>
                         {
                           CONSULTATION_TYPES.find(
@@ -830,7 +831,7 @@ export function ConsultationBookingSystem({
                     </div>
 
                     <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground'>Date:</span>
+                      <span className='text-muted-foreground'>{t('review.date')}</span>
                       <span className='font-medium'>
                         {booking.date &&
                           new Date(booking.date).toLocaleDateString('en-US', {
@@ -842,21 +843,21 @@ export function ConsultationBookingSystem({
                     </div>
 
                     <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground'>Time:</span>
+                      <span className='text-muted-foreground'>{t('review.time')}</span>
                       <span className='font-medium'>{booking.time}</span>
                     </div>
 
                     <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground'>Duration:</span>
+                      <span className='text-muted-foreground'>{t('review.duration')}</span>
                       <span className='font-medium'>
-                        {booking.duration} minutes
+                        {t('review.minutes', { value: booking.duration })}
                       </span>
                     </div>
 
                     <Separator />
 
                     <div className='flex items-center justify-between text-lg font-semibold'>
-                      <span>Total Cost:</span>
+                      <span>{t('review.total')}</span>
                       <span>${calculateTotalCost()}</span>
                     </div>
                   </div>
@@ -867,28 +868,28 @@ export function ConsultationBookingSystem({
             {/* Client Information Summary */}
             <Card>
               <CardHeader>
-                <CardTitle className='text-lg'>Your Information</CardTitle>
+                <CardTitle className='text-lg'>{t('review.clientInfo')}</CardTitle>
               </CardHeader>
               <CardContent className='space-y-2'>
                 <div className='grid grid-cols-2 gap-4 text-sm'>
                   <div>
-                    <strong>Name:</strong> {booking.clientInfo?.name}
+                    <strong>{t('review.name')}</strong> {booking.clientInfo?.name}
                   </div>
                   <div>
-                    <strong>Email:</strong> {booking.clientInfo?.email}
+                    <strong>{t('review.email')}</strong> {booking.clientInfo?.email}
                   </div>
                   <div>
-                    <strong>Phone:</strong> {booking.clientInfo?.phone}
+                    <strong>{t('review.phone')}</strong> {booking.clientInfo?.phone}
                   </div>
                   <div>
-                    <strong>Urgency:</strong> {booking.clientInfo?.urgencyLevel}
+                    <strong>{t('review.urgency')}</strong> {booking.clientInfo?.urgencyLevel}
                   </div>
                 </div>
 
                 <Separator className='my-3' />
 
                 <div>
-                  <strong>Consultation Topic:</strong>
+                  <strong>{t('review.topic')}</strong>
                   <p className='text-muted-foreground mt-1'>
                     {booking.clientInfo?.consultationTopic}
                   </p>
@@ -896,7 +897,7 @@ export function ConsultationBookingSystem({
 
                 {booking.clientInfo?.backgroundInfo && (
                   <div>
-                    <strong>Background:</strong>
+                    <strong>{t('review.background')}</strong>
                     <p className='text-muted-foreground mt-1'>
                       {booking.clientInfo.backgroundInfo}
                     </p>
@@ -908,13 +909,10 @@ export function ConsultationBookingSystem({
             <Alert className='border-blue-200 bg-blue-50'>
               <Info className='h-4 w-4 text-blue-600' />
               <AlertTitle className='text-blue-800'>
-                What happens next?
+                {t('review.nextTitle')}
               </AlertTitle>
               <AlertDescription className='text-blue-700'>
-                After confirming your booking, you'll receive a confirmation
-                email with meeting details and preparation instructions. The
-                attorney will also receive your consultation information to
-                prepare for your session.
+                {t('review.nextDesc')}
               </AlertDescription>
             </Alert>
           </motion.div>
@@ -933,17 +931,17 @@ export function ConsultationBookingSystem({
 
             <div>
               <h3 className='text-2xl font-bold text-green-800 mb-2'>
-                Consultation Booked!
+                {t('confirmation.title')}
               </h3>
               <p className='text-muted-foreground'>
-                Your consultation with {reviewer.fullName} has been confirmed.
+                {t('confirmation.subtitle', { name: reviewer.fullName })}
               </p>
             </div>
 
             <Card className='max-w-md mx-auto'>
               <CardContent className='p-6 space-y-3'>
                 <div className='flex items-center justify-between'>
-                  <span className='text-muted-foreground'>Date & Time:</span>
+                  <span className='text-muted-foreground'>{t('confirmation.dateTime')}</span>
                   <span className='font-medium'>
                     {booking.date &&
                       new Date(booking.date).toLocaleDateString()}{' '}
@@ -951,7 +949,7 @@ export function ConsultationBookingSystem({
                   </span>
                 </div>
                 <div className='flex items-center justify-between'>
-                  <span className='text-muted-foreground'>Type:</span>
+                  <span className='text-muted-foreground'>{t('confirmation.type')}</span>
                   <span className='font-medium'>
                     {
                       CONSULTATION_TYPES.find(
@@ -961,7 +959,7 @@ export function ConsultationBookingSystem({
                   </span>
                 </div>
                 <div className='flex items-center justify-between'>
-                  <span className='text-muted-foreground'>Duration:</span>
+                  <span className='text-muted-foreground'>{t('confirmation.duration')}</span>
                   <span className='font-medium'>
                     {booking.duration} minutes
                   </span>
@@ -972,14 +970,13 @@ export function ConsultationBookingSystem({
             <Alert className='max-w-md mx-auto'>
               <Shield className='h-4 w-4' />
               <AlertDescription>
-                Confirmation details have been sent to{' '}
-                {booking.clientInfo?.email}
+                {t('confirmation.emailSent', { email: booking.clientInfo?.email })}
               </AlertDescription>
             </Alert>
 
             <div className='flex gap-4 justify-center'>
-              <Button onClick={onCancel}>Done</Button>
-              <Button variant='outline'>Add to Calendar</Button>
+              <Button onClick={onCancel}>{t('confirmation.done')}</Button>
+              <Button variant='outline'>{t('confirmation.addToCalendar')}</Button>
             </div>
           </motion.div>
         );
@@ -1028,14 +1025,14 @@ export function ConsultationBookingSystem({
           <div className='flex items-center justify-between mb-4'>
             <div>
               <CardTitle className='text-2xl font-bold'>
-                Book Legal Consultation
+                {t('header.title')}
               </CardTitle>
               <p className='text-muted-foreground'>
-                Schedule a consultation with {reviewer.fullName}
+                {t('header.subtitle', { name: reviewer.fullName })}
               </p>
             </div>
             <Badge variant='outline' className='bg-blue-50 text-blue-700'>
-              Step {currentStepIndex + 1} of {steps.length}
+              {t('header.step', { current: currentStepIndex + 1, total: steps.length })}
             </Badge>
           </div>
 
@@ -1104,25 +1101,25 @@ export function ConsultationBookingSystem({
               {currentStepIndex > 0 && (
                 <Button variant='outline' onClick={handleBack}>
                   <ArrowLeft className='h-4 w-4 mr-2' />
-                  Back
+                  {t('actions.back')}
                 </Button>
               )}
               <Button variant='outline' onClick={onCancel}>
-                Cancel
+                {t('actions.cancel')}
               </Button>
             </div>
 
             <div className='flex gap-3 items-center'>
               {booking.consultationType && booking.duration && (
                 <span className='text-sm text-muted-foreground'>
-                  Total:{' '}
+                  {t('actions.total')}{' '}
                   <span className='font-semibold'>${calculateTotalCost()}</span>
                 </span>
               )}
 
               {currentStep !== 'review' ? (
                 <Button onClick={handleNext} disabled={!isStepValid()}>
-                  Next
+                  {t('actions.next')}
                   <ArrowRight className='h-4 w-4 ml-2' />
                 </Button>
               ) : (
@@ -1134,12 +1131,12 @@ export function ConsultationBookingSystem({
                   {isLoading ? (
                     <>
                       <Timer className='h-4 w-4 mr-2 animate-spin' />
-                      Booking...
+                      {t('actions.booking')}
                     </>
                   ) : (
                     <>
                       <Zap className='h-4 w-4 mr-2' />
-                      Confirm & Pay ${calculateTotalCost()}
+                      {t('actions.confirmPay', { amount: calculateTotalCost() })}
                     </>
                   )}
                 </Button>

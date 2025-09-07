@@ -122,11 +122,11 @@ export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB in bytes
 // Helper types for UI state management
 export interface TimeCapsuleFormData {
   deliveryCondition: DeliveryCondition;
-  deliveryDate?: Date;
+  deliveryDate: Date | null;
   messagePreview: string;
   messageTitle: string;
   recipient: null | RecipientOption;
-  recording?: TimeCapsuleRecordingData;
+  recording: TimeCapsuleRecordingData | null;
 }
 
 export interface TimeCapsuleStats {

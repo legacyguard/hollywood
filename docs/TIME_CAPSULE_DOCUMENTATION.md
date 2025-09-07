@@ -21,7 +21,7 @@ The Time Capsule system is a premium feature of LegacyGuard that allows users to
 
 ### System Components
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Time Capsule System                         │
 ├─────────────────────────────────────────────────────────────────┤
@@ -123,6 +123,7 @@ WITH CHECK (
 **Purpose**: Main Time Capsule dashboard with statistics and management interface.
 
 **Key Features**:
+
 - Real-time statistics display (total, pending, delivered, failed)
 - Responsive stats cards with purple-pink gradient theming
 - Wizard integration for capsule creation
@@ -132,6 +133,7 @@ WITH CHECK (
 **Props**: None (uses hooks for data fetching)
 
 **Hooks Used**:
+
 - `useAuth()` - Clerk authentication
 - `usePageTitle()` - Sets page title
 - `useSupabaseWithClerk()` - Database client
@@ -141,12 +143,14 @@ WITH CHECK (
 **Purpose**: Multi-step wizard for creating Time Capsules.
 
 **Steps**:
+
 1. **Recipient Selection**: Choose from existing guardians or add new recipient
 2. **Delivery Settings**: Select date-based or Family Shield activation
 3. **Recording**: In-browser video/audio recording with real-time preview
 4. **Review & Seal**: Final review before creating the capsule
 
 **Key Features**:
+
 - Step navigation with progress indicator
 - Form validation and error handling
 - MediaRecorder API integration
@@ -158,6 +162,7 @@ WITH CHECK (
 **Purpose**: Display and manage created Time Capsules with premium visual design.
 
 **Key Features**:
+
 - **Visual Seal Design**: Each capsule displays as an elegant sealed card
 - **Unique Capsule IDs**: 8-character unique identifiers for authenticity
 - **Gradient Styling**: Purple-pink gradients with hover effects
@@ -166,6 +171,7 @@ WITH CHECK (
 - **Grouped Display**: Organized by delivery status
 
 **Visual Elements**:
+
 - Seal corner badge with "SEALED" text and shield icon
 - Premium gradient borders and animations
 - Enhanced avatars with gradient backgrounds
@@ -176,6 +182,7 @@ WITH CHECK (
 **Purpose**: Public viewing page for delivered Time Capsules.
 
 **Key Features**:
+
 - Secure token-based access
 - Custom video/audio player with controls
 - Beautiful presentation matching email design
@@ -185,18 +192,21 @@ WITH CHECK (
 ### 5. Wizard Steps Components
 
 #### RecipientStep.tsx
+
 - Guardian selection from existing contacts
 - New recipient form with validation
 - Email format validation
 - Relationship field for context
 
 #### DeliveryStep.tsx
+
 - Date picker for scheduled delivery
 - Family Shield activation option
 - Delivery condition validation
 - Future date enforcement
 
 #### RecordingStep.tsx
+
 - MediaRecorder API integration
 - Video/audio format selection
 - Real-time preview during recording
@@ -204,6 +214,7 @@ WITH CHECK (
 - Thumbnail generation for videos
 
 #### ReviewStep.tsx
+
 - Complete capsule preview
 - Editable message title and preview
 - Recipient and delivery confirmation
@@ -216,6 +227,7 @@ WITH CHECK (
 **Purpose**: Automated delivery system that runs on schedule to deliver ready capsules.
 
 **Functionality**:
+
 - Checks for capsules ready for delivery (date-based or Family Shield activated)
 - Generates secure viewing URLs
 - Sends beautifully designed email notifications
@@ -230,6 +242,7 @@ WITH CHECK (
 **Purpose**: Sends test preview emails to users so they can see exactly how their capsule will look when delivered.
 
 **Functionality**:
+
 - Retrieves capsule information
 - Generates test email with "TEST PREVIEW" branding
 - Uses same template as actual delivery
@@ -243,7 +256,7 @@ WITH CHECK (
 
 ### Creating a Time Capsule
 
-```
+```text
 1. User clicks "Create Time Capsule" button
    ├── Opens TimeCapsuleWizard modal
    └── Shows step 1: Recipient Selection
@@ -278,7 +291,7 @@ WITH CHECK (
 
 ### Viewing a Delivered Time Capsule
 
-```
+```text
 1. Recipient receives email notification
    ├── Beautiful HTML template with capsule details
    └── Secure viewing link with access token
@@ -330,6 +343,7 @@ WITH CHECK (
 **Purpose**: Notify recipient that a Time Capsule has been delivered.
 
 **Design Features**:
+
 - **Premium Design**: Purple-pink gradient header with heart icon
 - **Personal Touch**: Recipient name and message title prominently displayed
 - **Metadata Box**: Delivery type, creation date, and capsule details
@@ -343,6 +357,7 @@ WITH CHECK (
 **Purpose**: Show capsule creator exactly how the delivery email will look.
 
 **Design Features**:
+
 - **Test Banner**: Prominent red banner indicating "TEST PREVIEW"
 - **Identical Layout**: Same design as actual delivery email
 - **Security Info**: Masked access token display
@@ -393,6 +408,7 @@ RETURNS TEXT
 ### Manual Testing Checklist
 
 **Capsule Creation**:
+
 - [ ] Wizard step navigation works correctly
 - [ ] Recipient validation (email format, required fields)
 - [ ] Date picker enforces future dates only
@@ -401,6 +417,7 @@ RETURNS TEXT
 - [ ] Capsule appears in list with correct information
 
 **Visual Design**:
+
 - [ ] Seal corner displays correctly
 - [ ] Hover effects and animations work smoothly
 - [ ] Responsive design on mobile and desktop
@@ -408,6 +425,7 @@ RETURNS TEXT
 - [ ] Unique capsule IDs display properly
 
 **Test Preview**:
+
 - [ ] Test preview button sends email successfully
 - [ ] Email arrives with correct formatting
 - [ ] Email links work and load viewing page
@@ -415,6 +433,7 @@ RETURNS TEXT
 - [ ] Test banner clearly indicates preview status
 
 **Delivery System**:
+
 - [ ] Scheduled delivery triggers correctly
 - [ ] Family Shield integration works
 - [ ] Email delivery succeeds
@@ -422,6 +441,7 @@ RETURNS TEXT
 - [ ] Failed delivery retry logic functions
 
 **Security**:
+
 - [ ] Users cannot access other users' capsules
 - [ ] Invalid access tokens return proper error
 - [ ] File access requires proper authentication
@@ -430,11 +450,13 @@ RETURNS TEXT
 ### Automated Testing
 
 **Unit Tests**: Located in `src/test/time-capsule.test.ts`
+
 - Component rendering tests
 - Form validation tests
 - Utility function tests
 
 **Integration Tests**:
+
 - API endpoint testing
 - Database function testing
 - Edge Function testing
@@ -442,6 +464,7 @@ RETURNS TEXT
 ### Performance Testing
 
 **Media Handling**:
+
 - Recording performance across browsers
 - File upload progress and error handling
 - Media playback optimization
@@ -466,6 +489,7 @@ MAX_RECORDING_DURATION=300  # 5 minutes
 ### Supabase Configuration
 
 1. **Database Setup**:
+
    ```bash
    cd supabase
    supabase db reset
@@ -478,6 +502,7 @@ MAX_RECORDING_DURATION=300  # 5 minutes
    - Configure allowed MIME types
 
 3. **Edge Functions Deployment**:
+
    ```bash
    supabase functions deploy time-capsule-delivery
    supabase functions deploy time-capsule-test-preview
@@ -521,11 +546,13 @@ npm run preview  # Test production build locally
 ### Monitoring & Logs
 
 **Frontend Logs**:
+
 - Browser console for React errors
 - Network tab for API call failures
 - Performance monitoring for media operations
 
 **Backend Logs**:
+
 - Supabase Edge Function logs
 - Database query performance
 - Email delivery status from Resend
@@ -533,12 +560,14 @@ npm run preview  # Test production build locally
 ### Support & Maintenance
 
 **Regular Maintenance**:
+
 - Monitor storage usage and costs
 - Clean up expired access tokens
 - Review delivery success rates
 - Update browser compatibility list
 
 **User Support**:
+
 - Provide clear error messages in UI
 - Include help links for common issues
 - Monitor user feedback for UX improvements

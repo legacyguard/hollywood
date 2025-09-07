@@ -441,8 +441,8 @@ export const AnalyticsDashboard: React.FC = () => {
                       {service.service_name}
                     </div>
                     <div className='text-sm text-gray-600 dark:text-gray-400'>
-                      {service.response_time_ms}ms •{' '}
-                      {service.error_rate.toFixed(1)}% errors
+                      {t('system.response', { ms: service.response_time_ms })} •{' '}
+                      {t('system.errors', { percent: service.error_rate.toFixed(1) })}
                     </div>
                   </div>
                 </div>

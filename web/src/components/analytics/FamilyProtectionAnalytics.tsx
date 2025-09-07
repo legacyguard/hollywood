@@ -1,6 +1,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
@@ -99,6 +100,7 @@ export const FamilyProtectionAnalytics: React.FC<
   onRecommendationAction,
   onRiskMitigation,
 }) => {
+  const { t } = useTranslation('ui/family-protection-analytics');
   const [protectionAreas, setProtectionAreas] = useState<ProtectionArea[]>([]);
   const [_securityTrends, _setSecurityTrends] = useState<SecurityTrend[]>([]);
   const [overallScore, setOverallScore] = useState(0);
@@ -331,10 +333,10 @@ export const FamilyProtectionAnalytics: React.FC<
       <div className='flex items-center justify-between'>
         <div>
           <h2 className='text-2xl font-bold text-gray-900'>
-            Family Protection Analytics
+            {t('header.title')}
           </h2>
           <p className='text-gray-600'>
-            AI-powered insights into your family's protection status
+            {t('header.subtitle')}
           </p>
         </div>
         <div className='flex gap-2'>
@@ -344,7 +346,7 @@ export const FamilyProtectionAnalytics: React.FC<
             className='gap-2'
           >
             <BarChart3 className='h-4 w-4' />
-            {showDetailedAnalysis ? 'Simple View' : 'Detailed Analysis'}
+            {showDetailedAnalysis ? t('header.simple') : t('header.detailed')}
           </Button>
         </div>
       </div>
@@ -358,9 +360,9 @@ export const FamilyProtectionAnalytics: React.FC<
                 <Shield className={`h-6 w-6 ${getScoreColor(overallScore)}`} />
               </div>
               <div>
-                <CardTitle className='text-xl'>Family Security Score</CardTitle>
+                <CardTitle className='text-xl'>{t('score.title')}</CardTitle>
                 <p className='text-sm text-gray-600'>
-                  Overall protection level for your family
+                  {t('score.subtitle')}
                 </p>
               </div>
             </div>
@@ -369,11 +371,11 @@ export const FamilyProtectionAnalytics: React.FC<
                 className={`text-3xl font-bold ${getScoreColor(overallScore)}`}
               >
                 {overallScore}
-                <span className='text-lg text-gray-500'>/100</span>
+                <span className='text-lg text-gray-500'>{t('score.outOf')}</span>
               </div>
               <div className='flex items-center gap-1 text-sm'>
                 <TrendingUp className='h-3 w-3 text-green-600' />
-                <span className='text-green-600'>+8 this month</span>
+                <span className='text-green-600'>{t('score.deltaMonth', { value: 8 })}</span>
               </div>
             </div>
           </div>
@@ -385,7 +387,7 @@ export const FamilyProtectionAnalytics: React.FC<
               <CheckCircle className='h-4 w-4 text-green-600' />
               <span>
                 {protectionAreas.filter(area => area.currentScore >= 75).length}{' '}
-                areas well protected
+                {t('score.wellProtected')}
               </span>
             </div>
             <div className='flex items-center gap-2'>
@@ -396,14 +398,14 @@ export const FamilyProtectionAnalytics: React.FC<
                     area => area.currentScore < 75 && area.currentScore >= 50
                   ).length
                 }{' '}
-                areas need attention
+                {t('score.needAttention')}
               </span>
             </div>
             <div className='flex items-center gap-2'>
               <AlertTriangle className='h-4 w-4 text-red-600' />
               <span>
                 {protectionAreas.filter(area => area.currentScore < 50).length}{' '}
-                critical areas
+                {t('score.criticalAreas')}
               </span>
             </div>
           </div>
@@ -417,11 +419,10 @@ export const FamilyProtectionAnalytics: React.FC<
           <AlertDescription>
             <div className='flex items-center justify-between'>
               <span className='font-medium text-red-800'>
-                {criticalRisks.length} critical risk
-                {criticalRisks.length > 1 ? 's' : ''} detected
+                {t('alerts.criticalDetected', { count: criticalRisks.length, suffix: criticalRisks.length > 1 ? 's' : '' })}
               </span>
               <Button size='sm' variant='destructive'>
-                Review Now
+                {t('alerts.reviewNow')}
               </Button>
             </div>
           </AlertDescription>
@@ -430,10 +431,10 @@ export const FamilyProtectionAnalytics: React.FC<
 
       <Tabs defaultValue='overview' className='w-full'>
         <TabsList className='grid w-full grid-cols-4'>
-          <TabsTrigger value='overview'>Overview</TabsTrigger>
-          <TabsTrigger value='recommendations'>AI Recommendations</TabsTrigger>
-          <TabsTrigger value='trends'>Trends</TabsTrigger>
-          <TabsTrigger value='risks'>Risk Analysis</TabsTrigger>
+          <TabsTrigger value='overview'>{t('tabs.overview')}</TabsTrigger>
+          <TabsTrigger value='recommendations'>{t('tabs.recommendations')}</TabsTrigger>
+          <TabsTrigger value='trends'>{t('tabs.trends')}</TabsTrigger>
+          <TabsTrigger value='risks'>{t('tabs.risks')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value='overview' className='space-y-4'>
@@ -464,7 +465,7 @@ export const FamilyProtectionAnalytics: React.FC<
                       <div className='space-y-3'>
                         <div>
                           <div className='flex items-center justify-between text-sm mb-1'>
-                            <span>Protection Level</span>
+                            <span>{t('overview.protectionLevel')}</span>
                             <span className={getScoreColor(area.currentScore)}>
                               {area.currentScore}/{area.maxScore}
                             </span>
@@ -491,21 +492,21 @@ export const FamilyProtectionAnalytics: React.FC<
                             >
                               {Math.abs(area.trendValue)}%{' '}
                               {area.trend === 'improving'
-                                ? 'improvement'
-                                : 'decline'}
+                                ? t('overview.improvement')
+                                : t('overview.decline')}
                             </span>
                           </div>
                         )}
 
                         <div className='space-y-1 text-xs text-gray-600'>
                           <div className='flex items-center justify-between'>
-                            <span>Risks:</span>
+                            <span>{t('overview.risks')}</span>
                             <span className='font-medium'>
                               {area.risks.length}
                             </span>
                           </div>
                           <div className='flex items-center justify-between'>
-                            <span>Recommendations:</span>
+                            <span>{t('overview.recommendations')}</span>
                             <span className='font-medium'>
                               {
                                 area.recommendations.filter(r => !r.completed)
@@ -527,9 +528,9 @@ export const FamilyProtectionAnalytics: React.FC<
           <div className='flex items-center gap-2 mb-4'>
             <Lightbulb className='h-5 w-5 text-yellow-600' />
             <h3 className='text-lg font-medium'>
-              AI-Generated Recommendations
+              {t('recommendations.title')}
             </h3>
-            <Badge variant='secondary'>Powered by LegacyGuard AI</Badge>
+            <Badge variant='secondary'>{t('recommendations.powered')}</Badge>
           </div>
 
           <div className='space-y-3'>
@@ -563,11 +564,11 @@ export const FamilyProtectionAnalytics: React.FC<
                       <div className='flex items-center gap-4 text-xs text-gray-500'>
                         <div className='flex items-center gap-1'>
                           <Target className='h-3 w-3' />
-                          Impact Score: {recommendation.impactScore}/100
+                          {t('recommendations.impactScore', { score: recommendation.impactScore })}
                         </div>
                         <div className='flex items-center gap-1'>
                           <Star className='h-3 w-3 text-yellow-500' />
-                          Priority #{index + 1}
+                          {t('recommendations.priority', { rank: index + 1 })}
                         </div>
                       </div>
                     </div>
@@ -580,7 +581,7 @@ export const FamilyProtectionAnalytics: React.FC<
                         className='gap-2'
                       >
                         <Zap className='h-3 w-3' />
-                        Take Action
+                        {t('recommendations.takeAction')}
                       </Button>
                     </div>
                   </div>
@@ -592,7 +593,7 @@ export const FamilyProtectionAnalytics: React.FC<
 
         <TabsContent value='trends' className='space-y-4'>
           <div className='flex items-center justify-between'>
-            <h3 className='text-lg font-medium'>Protection Trends</h3>
+            <h3 className='text-lg font-medium'>{t('trends.title')}</h3>
             <div className='flex gap-2'>
               {(['7d', '30d', '90d', '1y'] as const).map(timeframe => (
                 <Button
@@ -614,9 +615,9 @@ export const FamilyProtectionAnalytics: React.FC<
               <div className='h-64 flex items-center justify-center text-gray-500'>
                 <div className='text-center'>
                   <PieChart className='h-12 w-12 mx-auto mb-2 text-gray-300' />
-                  <p>Trend visualization would be implemented here</p>
+                  <p>{t('trends.placeholder')}</p>
                   <p className='text-sm'>
-                    Shows protection score changes over {selectedTimeframe}
+                    {t('trends.shows', { timeframe: selectedTimeframe })}
                   </p>
                 </div>
               </div>
@@ -629,10 +630,10 @@ export const FamilyProtectionAnalytics: React.FC<
               <CardContent className='p-4'>
                 <div className='flex items-center gap-2 mb-2'>
                   <TrendingUp className='h-4 w-4 text-green-600' />
-                  <span className='text-sm font-medium'>Improving Areas</span>
+                  <span className='text-sm font-medium'>{t('trends.improving')}</span>
                 </div>
                 <div className='text-2xl font-bold text-green-600'>2</div>
-                <p className='text-xs text-gray-500'>Financial + Family</p>
+                <p className='text-xs text-gray-500'>{t('trends.financialFamily')}</p>
               </CardContent>
             </Card>
 
@@ -640,10 +641,10 @@ export const FamilyProtectionAnalytics: React.FC<
               <CardContent className='p-4'>
                 <div className='flex items-center gap-2 mb-2'>
                   <Activity className='h-4 w-4 text-gray-600' />
-                  <span className='text-sm font-medium'>Stable Areas</span>
+                  <span className='text-sm font-medium'>{t('trends.stable')}</span>
                 </div>
                 <div className='text-2xl font-bold text-gray-600'>1</div>
-                <p className='text-xs text-gray-500'>Legal</p>
+                <p className='text-xs text-gray-500'>{t('trends.legal')}</p>
               </CardContent>
             </Card>
 
@@ -651,10 +652,10 @@ export const FamilyProtectionAnalytics: React.FC<
               <CardContent className='p-4'>
                 <div className='flex items-center gap-2 mb-2'>
                   <TrendingDown className='h-4 w-4 text-red-600' />
-                  <span className='text-sm font-medium'>Declining Areas</span>
+                  <span className='text-sm font-medium'>{t('trends.declining')}</span>
                 </div>
                 <div className='text-2xl font-bold text-red-600'>1</div>
-                <p className='text-xs text-gray-500'>Healthcare</p>
+                <p className='text-xs text-gray-500'>{t('trends.healthcare')}</p>
               </CardContent>
             </Card>
           </div>
@@ -663,8 +664,8 @@ export const FamilyProtectionAnalytics: React.FC<
         <TabsContent value='risks' className='space-y-4'>
           <div className='flex items-center gap-2 mb-4'>
             <AlertTriangle className='h-5 w-5 text-red-600' />
-            <h3 className='text-lg font-medium'>Risk Analysis</h3>
-            <Badge variant='destructive'>{criticalRisks.length} Critical</Badge>
+            <h3 className='text-lg font-medium'>{t('risks.title')}</h3>
+            <Badge variant='destructive'>{t('risks.criticalCount', { count: criticalRisks.length })}</Badge>
           </div>
 
           <div className='space-y-3'>
@@ -684,14 +685,14 @@ export const FamilyProtectionAnalytics: React.FC<
                           {risk.timeframe.replace('-', ' ')}
                         </Badge>
                         <span className='text-xs text-gray-500'>
-                          Affects: {risk.affected.join(', ')}
+                          {t('risks.affects', { list: risk.affected.join(', ') })}
                         </span>
                       </div>
                       <h4 className='font-medium text-gray-900 mb-1'>
                         {risk.description}
                       </h4>
                       <p className='text-sm text-gray-600 mb-2'>
-                        <strong>Impact:</strong> {risk.impact}
+                        <strong>{t('risks.impact')}</strong> {risk.impact}
                       </p>
                     </div>
                     <Button
@@ -701,7 +702,7 @@ export const FamilyProtectionAnalytics: React.FC<
                       className='gap-2'
                     >
                       <Shield className='h-3 w-3' />
-                      Mitigate
+                      {t('risks.mitigate')}
                     </Button>
                   </div>
                 </CardContent>

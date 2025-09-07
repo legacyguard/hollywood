@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { MetaTags } from '@/components/common/MetaTags';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const BlogArticle = () => {
+  const { t } = useTranslation('ui/blog-article');
   const { slug } = useParams();
   const navigate = useNavigate();
 
@@ -39,7 +41,7 @@ const BlogArticle = () => {
         description={article.excerpt}
         imageUrl={article.featureImage}
         url={article.url}
-        keywords='will creation, estate planning, family protection, legacy planning, legal documents, family security'
+        keywords={t('meta.keywords')}
       />
 
       <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
@@ -61,7 +63,7 @@ const BlogArticle = () => {
                   variant='ghost'
                   className='text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                 >
-                  Back to Home
+                  {t('header.backToHome')}
                 </Button>
               </Link>
             </div>
@@ -79,7 +81,7 @@ const BlogArticle = () => {
             {/* Article Header */}
             <div className='text-center space-y-4'>
               <Badge variant='outline' className='text-sm'>
-                Estate Planning Guide
+                {t('badge.category')}
               </Badge>
               <h1 className='text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white leading-tight'>
                 {article.title}
@@ -90,7 +92,7 @@ const BlogArticle = () => {
 
               {/* Article Meta */}
               <div className='flex items-center justify-center gap-6 text-sm text-slate-500 dark:text-slate-400'>
-                <span>By {article.author}</span>
+                <span>{t('byline.by')} {article.author}</span>
                 <span>•</span>
                 <span>{article.publishDate}</span>
                 <span>•</span>
@@ -108,13 +110,10 @@ const BlogArticle = () => {
                   />
                   <div>
                     <h3 className='font-semibold text-blue-900 dark:text-blue-100 mb-2'>
-                      Why This Matters
+                      {t('intro.whyThisMatters.title')}
                     </h3>
                     <p className='text-blue-800 dark:text-blue-200 leading-relaxed'>
-                      Creating a will isn't about dwelling on the end—it's about
-                      ensuring your family's future is secure and your wishes
-                      are respected. It's one of the most caring things you can
-                      do for the people you love most.
+                      {t('intro.whyThisMatters.text')}
                     </p>
                   </div>
                 </div>
@@ -126,21 +125,13 @@ const BlogArticle = () => {
               {/* Reason 1 */}
               <section>
                 <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-4'>
-                  1. Protect Your Family's Financial Future
+                  {t('reason1.title')}
                 </h2>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  Without a will, your assets may not be distributed according
-                  to your wishes. State laws (intestacy laws) will determine who
-                  gets what, which could leave your family in a difficult
-                  financial situation or result in assets going to unintended
-                  beneficiaries.
+                  {t('reason1.p1')}
                 </p>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  A properly drafted will ensures that your hard-earned
-                  assets—whether it's your home, savings, investments, or
-                  personal belongings—go to the people you care about most. It
-                  also helps minimize the financial burden on your family during
-                  an already difficult time.
+                  {t('reason1.p2')}
                 </p>
 
                 <Card className='bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 my-6'>
@@ -152,14 +143,10 @@ const BlogArticle = () => {
                       />
                       <div>
                         <h4 className='font-semibold text-amber-900 dark:text-amber-100 mb-1'>
-                          Real Example
+                          {t('reason1.example.title')}
                         </h4>
                         <p className='text-amber-800 dark:text-amber-200 text-sm'>
-                          Sarah's father passed without a will. His $500,000
-                          estate went through probate for 18 months, with 40%
-                          going to legal fees and taxes. With proper planning,
-                          Sarah could have received the full inheritance much
-                          sooner.
+                          {t('reason1.example.text')}
                         </p>
                       </div>
                     </div>
@@ -170,34 +157,25 @@ const BlogArticle = () => {
               {/* Reason 2 */}
               <section>
                 <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-4'>
-                  2. Ensure Your Children Are Cared For
+                  {t('reason2.title')}
                 </h2>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  If you have minor children, a will is absolutely essential. It
-                  allows you to name guardians who will care for your children
-                  if something happens to both parents. Without this
-                  designation, the courts will decide who raises your
-                  children—and it might not be the person you would have chosen.
+                  {t('reason2.p1')}
                 </p>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  You can also establish trusts for your children's education,
-                  healthcare, and general welfare. This ensures that any
-                  inheritance is used for their benefit and protection, rather
-                  than being given to them all at once when they might not be
-                  ready to manage it responsibly.
+                  {t('reason2.p2')}
                 </p>
 
                 <div className='grid md:grid-cols-2 gap-4 my-6'>
                   <Card className='bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'>
                     <CardContent className='p-4'>
                       <h4 className='font-semibold text-green-900 dark:text-green-100 mb-2'>
-                        Guardian Selection
+                        {t('reason2.guardianSelection.title')}
                       </h4>
                       <ul className='text-green-800 dark:text-green-200 text-sm space-y-1'>
-                        <li>• Choose someone who shares your values</li>
-                        <li>• Consider their financial stability</li>
-                        <li>• Discuss the responsibility with them</li>
-                        <li>• Name backup guardians</li>
+                        {t('reason2.guardianSelection.bullets', { returnObjects: true }).map((item: string) => (
+                          <li key={item}>• {item}</li>
+                        ))}
                       </ul>
                     </CardContent>
                   </Card>
@@ -205,13 +183,12 @@ const BlogArticle = () => {
                   <Card className='bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'>
                     <CardContent className='p-4'>
                       <h4 className='font-semibold text-green-900 dark:text-green-100 mb-2'>
-                        Trust Benefits
+                        {t('reason2.trustBenefits.title')}
                       </h4>
                       <ul className='text-green-800 dark:text-green-200 text-sm space-y-1'>
-                        <li>• Control when children receive money</li>
-                        <li>• Protect assets from creditors</li>
-                        <li>• Ensure funds are used appropriately</li>
-                        <li>• Provide for special needs</li>
+                        {t('reason2.trustBenefits.bullets', { returnObjects: true }).map((item: string) => (
+                          <li key={item}>• {item}</li>
+                        ))}
                       </ul>
                     </CardContent>
                   </Card>
@@ -221,21 +198,13 @@ const BlogArticle = () => {
               {/* Reason 3 */}
               <section>
                 <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-4'>
-                  3. Avoid Family Conflicts and Legal Battles
+                  {t('reason3.title')}
                 </h2>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  Family disputes over inheritance are unfortunately common and
-                  can tear families apart. A clear, well-drafted will eliminates
-                  ambiguity and reduces the likelihood of conflicts. It provides
-                  your family with clear instructions about your wishes,
-                  preventing misunderstandings and disagreements.
+                  {t('reason3.p1')}
                 </p>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  Even in families with good relationships, the stress and grief
-                  of losing a loved one can lead to disagreements about "what
-                  they would have wanted." A will removes this uncertainty and
-                  gives your family peace of mind knowing they're following your
-                  exact wishes.
+                  {t('reason3.p2')}
                 </p>
 
                 <Card className='bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 my-6'>
@@ -247,12 +216,10 @@ const BlogArticle = () => {
                       />
                       <div>
                         <h4 className='font-semibold text-red-900 dark:text-red-100 mb-1'>
-                          Protect Family Harmony
+                          {t('reason3.card.title')}
                         </h4>
                         <p className='text-red-800 dark:text-red-200 text-sm'>
-                          Your will isn't just about money—it's about preserving
-                          family relationships. Clear instructions prevent the
-                          kind of conflicts that can last for generations.
+                          {t('reason3.card.text')}
                         </p>
                       </div>
                     </div>
@@ -263,53 +230,46 @@ const BlogArticle = () => {
               {/* Reason 4 */}
               <section>
                 <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-4'>
-                  4. Reduce Legal Costs and Speed Up the Process
+                  {t('reason4.title')}
                 </h2>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  Dying without a will (intestate) means your estate must go
-                  through probate court, which can be expensive, time-consuming,
-                  and emotionally draining for your family. Legal fees, court
-                  costs, and other expenses can significantly reduce what your
-                  family ultimately receives.
+                  {t('reason4.p1')}
                 </p>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  A well-planned estate can often avoid probate entirely or
-                  streamline the process significantly. This means your family
-                  gets access to your assets much faster, and more of your
-                  wealth goes to them rather than to legal fees and court costs.
+                  {t('reason4.p2')}
                 </p>
 
                 <div className='bg-slate-100 dark:bg-slate-800 rounded-lg p-6 my-6'>
                   <h4 className='font-semibold text-slate-900 dark:text-white mb-4 text-center'>
-                    Cost Comparison
+                    {t('reason4.costComparison.title')}
                   </h4>
                   <div className='grid md:grid-cols-2 gap-6'>
                     <div className='text-center'>
                       <div className='text-2xl font-bold text-red-600 mb-2'>
-                        Without Will
+                        {t('reason4.costComparison.withoutWill')}
                       </div>
                       <div className='text-4xl font-bold text-slate-900 dark:text-white mb-2'>
                         $15,000+
                       </div>
                       <div className='text-sm text-slate-600 dark:text-slate-400'>
-                        Legal fees & court costs
+                        {t('reason4.costComparison.feesCourt')}
                       </div>
                       <div className='text-sm text-slate-600 dark:text-slate-400'>
-                        12-24 months process
+                        {t('reason4.costComparison.monthsLong')}
                       </div>
                     </div>
                     <div className='text-center'>
                       <div className='text-2xl font-bold text-green-600 mb-2'>
-                        With Will
+                        {t('reason4.costComparison.withWill')}
                       </div>
                       <div className='text-4xl font-bold text-slate-900 dark:text-white mb-2'>
                         $2,000-5,000
                       </div>
                       <div className='text-sm text-slate-600 dark:text-slate-400'>
-                        Legal fees only
+                        {t('reason4.costComparison.feesOnly')}
                       </div>
                       <div className='text-sm text-slate-600 dark:text-slate-400'>
-                        3-6 months process
+                        {t('reason4.costComparison.monthsShort')}
                       </div>
                     </div>
                   </div>
@@ -319,20 +279,13 @@ const BlogArticle = () => {
               {/* Reason 5 */}
               <section>
                 <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-4'>
-                  5. Express Your Personal Wishes and Values
+                  {t('reason5.title')}
                 </h2>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  A will is about more than just money—it's your final
-                  opportunity to express your values, beliefs, and wishes. You
-                  can specify how you want to be remembered, what causes you
-                  want to support, and how you want your legacy to live on.
+                  {t('reason5.p1')}
                 </p>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-4'>
-                  Whether it's leaving a portion of your estate to charity,
-                  creating educational funds for future generations, or simply
-                  ensuring that sentimental items go to the right people, a will
-                  allows you to make a lasting impact that reflects who you are
-                  and what matters to you.
+                  {t('reason5.p2')}
                 </p>
 
                 <Card className='bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800 my-6'>
@@ -344,13 +297,10 @@ const BlogArticle = () => {
                       />
                       <div>
                         <h4 className='font-semibold text-purple-900 dark:text-purple-100 mb-1'>
-                          Legacy Beyond Money
+                          {t('reason5.card.title')}
                         </h4>
                         <p className='text-purple-800 dark:text-purple-200 text-sm'>
-                          Consider including personal letters, family stories,
-                          or specific instructions about how you want certain
-                          items to be used or remembered. This creates a
-                          meaningful connection for future generations.
+                          {t('reason5.card.text')}
                         </p>
                       </div>
                     </div>
@@ -361,7 +311,7 @@ const BlogArticle = () => {
               {/* How LegacyGuard Helps */}
               <section className='bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-blue-900/20 rounded-lg p-8 border border-slate-200 dark:border-slate-700'>
                 <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-6 text-center'>
-                  How LegacyGuard Makes Will Creation Easier
+                  {t('howHelps.title')}
                 </h2>
 
                 <div className='grid md:grid-cols-2 gap-6 mb-6'>
@@ -376,13 +326,10 @@ const BlogArticle = () => {
                         </div>
                         <div>
                           <h3 className='font-semibold text-slate-900 dark:text-white mb-2'>
-                            Secure Document Storage
+                            {t('howHelps.cards.storage.title')}
                           </h3>
                           <p className='text-slate-600 dark:text-slate-300 text-sm'>
-                            Store your will and other legal documents securely
-                            with bank-level encryption. Access them anytime,
-                            anywhere, and share them securely with family
-                            members or legal professionals.
+                            {t('howHelps.cards.storage.text')}
                           </p>
                         </div>
                       </div>
@@ -400,13 +347,10 @@ const BlogArticle = () => {
                         </div>
                         <div>
                           <h3 className='font-semibold text-slate-900 dark:text-white mb-2'>
-                            Family Access Management
+                            {t('howHelps.cards.family.title')}
                           </h3>
                           <p className='text-slate-600 dark:text-slate-300 text-sm'>
-                            Set up emergency access for trusted family members
-                            and designate guardians for minor children. Ensure
-                            your family can access important documents when they
-                            need them most.
+                            {t('howHelps.cards.family.text')}
                           </p>
                         </div>
                       </div>
@@ -424,13 +368,10 @@ const BlogArticle = () => {
                         </div>
                         <div>
                           <h3 className='font-semibold text-slate-900 dark:text-white mb-2'>
-                            Reminder System
+                            {t('howHelps.cards.reminders.title')}
                           </h3>
                           <p className='text-slate-600 dark:text-slate-300 text-sm'>
-                            Get gentle reminders to review and update your will
-                            regularly. Life changes—marriages, births, divorces,
-                            and new assets—require will updates to keep your
-                            plan current.
+                            {t('howHelps.cards.reminders.text')}
                           </p>
                         </div>
                       </div>
@@ -448,13 +389,10 @@ const BlogArticle = () => {
                         </div>
                         <div>
                           <h3 className='font-semibold text-slate-900 dark:text-white mb-2'>
-                            Document Organization
+                            {t('howHelps.cards.organization.title')}
                           </h3>
                           <p className='text-slate-600 dark:text-slate-300 text-sm'>
-                            Keep all your estate planning documents organized in
-                            one secure location. From wills and trusts to
-                            insurance policies and property deeds, everything is
-                            easily accessible.
+                            {t('howHelps.cards.organization.text')}
                           </p>
                         </div>
                       </div>
@@ -464,17 +402,14 @@ const BlogArticle = () => {
 
                 <div className='text-center'>
                   <p className='text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto'>
-                    LegacyGuard doesn't replace the need for professional legal
-                    advice, but it provides the secure foundation and
-                    organizational tools that make the will creation process
-                    smoother and more manageable.
+                    {t('howHelps.footer.text')}
                   </p>
                   <Link to='/sign-up'>
                     <Button
                       size='lg'
                       className='bg-blue-600 hover:bg-blue-700 text-white'
                     >
-                      Start Securing Your Legacy Today
+                      {t('howHelps.footer.cta')}
                     </Button>
                   </Link>
                 </div>
@@ -483,11 +418,10 @@ const BlogArticle = () => {
               {/* Next Steps */}
               <section>
                 <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-4'>
-                  Your Next Steps
+                  {t('nextSteps.title')}
                 </h2>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-6'>
-                  Creating a will doesn't have to be overwhelming. Here's a
-                  simple roadmap to get you started:
+                  {t('nextSteps.intro')}
                 </p>
 
                 <div className='space-y-4'>
@@ -497,12 +431,10 @@ const BlogArticle = () => {
                     </div>
                     <div>
                       <h4 className='font-semibold text-slate-900 dark:text-white mb-1'>
-                        Gather Information
+                        {t('nextSteps.steps.gather.title')}
                       </h4>
                       <p className='text-slate-600 dark:text-slate-400 text-sm'>
-                        List your assets, debts, and important documents.
-                        Include bank accounts, investments, real estate,
-                        insurance policies, and personal items of value.
+                        {t('nextSteps.steps.gather.text')}
                       </p>
                     </div>
                   </div>
@@ -513,12 +445,10 @@ const BlogArticle = () => {
                     </div>
                     <div>
                       <h4 className='font-semibold text-slate-900 dark:text-white mb-1'>
-                        Choose Beneficiaries
+                        {t('nextSteps.steps.beneficiaries.title')}
                       </h4>
                       <p className='text-slate-600 dark:text-slate-400 text-sm'>
-                        Decide who will inherit your assets. Consider family
-                        members, friends, charities, or organizations that are
-                        important to you.
+                        {t('nextSteps.steps.beneficiaries.text')}
                       </p>
                     </div>
                   </div>
@@ -529,12 +459,10 @@ const BlogArticle = () => {
                     </div>
                     <div>
                       <h4 className='font-semibold text-slate-900 dark:text-white mb-1'>
-                        Select Guardians
+                        {t('nextSteps.steps.guardians.title')}
                       </h4>
                       <p className='text-slate-600 dark:text-slate-400 text-sm'>
-                        If you have minor children, choose guardians who will
-                        care for them. Discuss this responsibility with the
-                        people you're considering.
+                        {t('nextSteps.steps.guardians.text')}
                       </p>
                     </div>
                   </div>
@@ -545,12 +473,10 @@ const BlogArticle = () => {
                     </div>
                     <div>
                       <h4 className='font-semibold text-slate-900 dark:text-white mb-1'>
-                        Consult a Professional
+                        {t('nextSteps.steps.consult.title')}
                       </h4>
                       <p className='text-slate-600 dark:text-slate-400 text-sm'>
-                        Work with an estate planning attorney to draft your
-                        will. They can ensure it's legally valid and addresses
-                        all your specific needs and concerns.
+                        {t('nextSteps.steps.consult.text')}
                       </p>
                     </div>
                   </div>
@@ -561,12 +487,10 @@ const BlogArticle = () => {
                     </div>
                     <div>
                       <h4 className='font-semibold text-slate-900 dark:text-white mb-1'>
-                        Store Securely
+                        {t('nextSteps.steps.store.title')}
                       </h4>
                       <p className='text-slate-600 dark:text-slate-400 text-sm'>
-                        Keep your will in a safe place and let trusted family
-                        members know where to find it. Consider using
-                        LegacyGuard for secure digital storage and easy access.
+                        {t('nextSteps.steps.store.text')}
                       </p>
                     </div>
                   </div>
@@ -576,20 +500,13 @@ const BlogArticle = () => {
               {/* Conclusion */}
               <section className='bg-gradient-to-r from-slate-100 to-blue-100 dark:from-slate-800 dark:to-blue-900/20 rounded-lg p-8 border border-slate-200 dark:border-slate-700'>
                 <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-4 text-center'>
-                  The Gift of Peace of Mind
+                  {t('conclusion.title')}
                 </h2>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-6 text-center max-w-3xl mx-auto'>
-                  Creating a will is one of the most caring and responsible
-                  things you can do for your family. It's not about dwelling on
-                  the end—it's about ensuring that the people you love are
-                  protected, provided for, and able to honor your wishes when
-                  you're no longer here to guide them.
+                  {t('conclusion.p1')}
                 </p>
                 <p className='text-slate-700 dark:text-slate-300 leading-relaxed mb-6 text-center max-w-3xl mx-auto'>
-                  The peace of mind that comes from knowing your affairs are in
-                  order is priceless. Start today, even if it's just a simple
-                  will. You can always update it as your life changes. The
-                  important thing is to begin.
+                  {t('conclusion.p2')}
                 </p>
 
                 <div className='text-center'>
@@ -598,12 +515,12 @@ const BlogArticle = () => {
                       size='lg'
                       className='bg-slate-900 hover:bg-slate-800 text-white mr-4'
                     >
-                      Get Started with LegacyGuard
+                      {t('conclusion.primary')}
                     </Button>
                   </Link>
                   <Link to='/'>
                     <Button variant='outline' size='lg'>
-                      Learn More About LegacyGuard
+                      {t('conclusion.secondary')}
                     </Button>
                   </Link>
                 </div>

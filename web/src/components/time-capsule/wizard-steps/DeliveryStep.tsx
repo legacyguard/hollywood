@@ -16,9 +16,9 @@ import { cn } from '@/lib/utils';
 
 interface DeliveryStepProps {
   deliveryCondition: DeliveryCondition;
-  deliveryDate?: Date;
+  deliveryDate: Date | null;
   onDeliveryConditionChange: (condition: DeliveryCondition) => void;
-  onDeliveryDateChange: (date?: Date) => void;
+  onDeliveryDateChange: (date: Date | null) => void;
 }
 
 export function DeliveryStep({
@@ -30,7 +30,7 @@ export function DeliveryStep({
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const handleDateSelect = (date: Date | undefined) => {
-    onDeliveryDateChange(date);
+    onDeliveryDateChange(date ?? null);
     setIsCalendarOpen(false);
   };
 

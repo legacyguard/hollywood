@@ -32,32 +32,6 @@ interface TimeCapsuleWizardProps {
   onClose: () => void;
 }
 
-const WIZARD_STEPS = [
-  {
-    id: 1,
-    title: t('steps.recipient.title'),
-    description: t('steps.recipient.description'),
-    icon: 'user-plus',
-  },
-  {
-    id: 2,
-    title: t('steps.delivery.title'),
-    description: t('steps.delivery.description'),
-    icon: 'calendar',
-  },
-  {
-    id: 3,
-    title: t('steps.recording.title'),
-    description: t('steps.recording.description'),
-    icon: 'video',
-  },
-  {
-    id: 4,
-    title: t('steps.review.title'),
-    description: t('steps.review.description'),
-    icon: 'check-circle',
-  },
-];
 
 export function TimeCapsuleWizard({
   isOpen,
@@ -66,6 +40,34 @@ export function TimeCapsuleWizard({
   onCapsuleCreated,
 }: TimeCapsuleWizardProps) {
   const { t } = useTranslation('ui/time-capsule-wizard');
+  
+  const WIZARD_STEPS = [
+    {
+      id: 1,
+      title: t('steps.recipient.title'),
+      description: t('steps.recipient.description'),
+      icon: 'user-plus',
+    },
+    {
+      id: 2,
+      title: t('steps.delivery.title'),
+      description: t('steps.delivery.description'),
+      icon: 'calendar',
+    },
+    {
+      id: 3,
+      title: t('steps.recording.title'),
+      description: t('steps.recording.description'),
+      icon: 'video',
+    },
+    {
+      id: 4,
+      title: t('steps.review.title'),
+      description: t('steps.review.description'),
+      icon: 'check-circle',
+    },
+  ];
+
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   const [currentStep, setCurrentStep] = useState(1);
@@ -74,10 +76,10 @@ export function TimeCapsuleWizard({
   const [formData, setFormData] = useState<TimeCapsuleFormData>({
     recipient: null,
     deliveryCondition: 'ON_DATE' as DeliveryCondition,
-    deliveryDate: undefined,
+    deliveryDate: null,
     messageTitle: '',
     messagePreview: '',
-    recording: undefined,
+    recording: null,
   });
 
   // Reset form when dialog closes
@@ -86,10 +88,10 @@ export function TimeCapsuleWizard({
     setFormData({
       recipient: null,
       deliveryCondition: 'ON_DATE',
-      deliveryDate: undefined,
+      deliveryDate: null,
       messageTitle: '',
       messagePreview: '',
-      recording: undefined,
+      recording: null,
     });
     setIsSubmitting(false);
     onClose();
@@ -130,11 +132,11 @@ export function TimeCapsuleWizard({
         return (
           formData.deliveryCondition === 'ON_DEATH' ||
           (formData.deliveryCondition === 'ON_DATE' &&
-            formData.deliveryDate !== undefined)
+            formData.deliveryDate !== null)
         );
       case 3:
         return (
-          formData.recording !== undefined &&
+          formData.recording !== null &&
           formData.messageTitle.trim() !== ''
         );
       case 4:
@@ -301,10 +303,10 @@ export function TimeCapsuleWizard({
 
           <div className='text-center'>
             <h3 className='text-lg font-semibold'>
-              {WIZARD_STEPS[currentStep - 1].title}
+              {WIZARD_STEPS[currentStep - 1]?.title || ''}
             </h3>
             <p className='text-sm text-muted-foreground'>
-              {WIZARD_STEPS[currentStep - 1].description}
+              {WIZARD_STEPS[currentStep - 1]?.description || ''}
             </p>
           </div>
         </div>

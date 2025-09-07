@@ -604,7 +604,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                             </p>
                             <div className='flex items-center gap-2 mt-3'>
                               <Badge variant='outline' className='text-xs'>
-                                {template.category.replace('-', ' ')}
+                                {t(`categories.${template.category}`)}
                               </Badge>
                               <Badge variant='secondary' className='text-xs'>
                                 {template.estimatedDuration}
@@ -1053,7 +1053,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                 </div>
                 <div className='flex items-center gap-2'>
                   <Badge variant='outline' className='text-xs'>
-                    {project.category.replace('-', ' ')}
+                    {t(`categories.${project.category}`)}
                   </Badge>
                   <Badge className={getPriorityColor(project.priority)}>
                     {t(`priorities.${project.priority}`)}

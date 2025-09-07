@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { TimeCapsule } from '@/types/timeCapsule';
 import { format } from 'date-fns';
-import { useTranslation } from 'react-i18next';
+ 
 
 interface TimeCapsuleListProps {
   onDelete: (id: string) => void;
@@ -38,7 +38,7 @@ export function TimeCapsuleList({
   onDelete,
   onTestPreview,
 }: TimeCapsuleListProps) {
-  const { t } = useTranslation('ui/time-capsule-list');
+  const defaultOnTestPreview = onTestPreview || (() => {});
   const [deleteConfirm, setDeleteConfirm] = useState<null | string>(null);
 
   const getInitials = (name: string): string => {
@@ -114,19 +114,19 @@ export function TimeCapsuleList({
   return (
     <div className='space-y-6'>
       {/* Pending Capsules */}
-      {groupedCapsules.pending && (
+      {groupedCapsules['pending'] && (
         <div className='space-y-4'>
           <h3 className='text-lg font-semibold flex items-center gap-2'>
             <Icon name={'clock' as any} className='w-5 h-5 text-orange-600' />
-            Pending Delivery ({groupedCapsules.pending.length})
+            Pending Delivery ({groupedCapsules['pending'].length})
           </h3>
           <div className='grid gap-4'>
-            {groupedCapsules.pending.map(capsule => (
+            {groupedCapsules['pending'].map(capsule => (
               <TimeCapsuleCard
                 key={capsule.id}
                 capsule={capsule}
                 onDelete={() => setDeleteConfirm(capsule.id)}
-                onTestPreview={onTestPreview}
+                onTestPreview={defaultOnTestPreview}
                 getInitials={getInitials}
                 formatDuration={formatDuration}
                 formatFileSize={formatFileSize}
@@ -139,22 +139,22 @@ export function TimeCapsuleList({
       )}
 
       {/* Delivered Capsules */}
-      {groupedCapsules.delivered && (
+      {groupedCapsules['delivered'] && (
         <div className='space-y-4'>
           <h3 className='text-lg font-semibold flex items-center gap-2'>
             <Icon
               name={'check-circle' as any}
               className='w-5 h-5 text-green-600'
             />
-            Delivered ({groupedCapsules.delivered.length})
+            Delivered ({groupedCapsules['delivered'].length})
           </h3>
           <div className='grid gap-4'>
-            {groupedCapsules.delivered.map(capsule => (
+            {groupedCapsules['delivered'].map(capsule => (
               <TimeCapsuleCard
                 key={capsule.id}
                 capsule={capsule}
                 onDelete={() => setDeleteConfirm(capsule.id)}
-                onTestPreview={onTestPreview}
+                onTestPreview={defaultOnTestPreview}
                 getInitials={getInitials}
                 formatDuration={formatDuration}
                 formatFileSize={formatFileSize}
@@ -168,22 +168,22 @@ export function TimeCapsuleList({
       )}
 
       {/* Failed Capsules */}
-      {groupedCapsules.failed && (
+      {groupedCapsules['failed'] && (
         <div className='space-y-4'>
           <h3 className='text-lg font-semibold flex items-center gap-2'>
             <Icon
               name={'alert-circle' as any}
               className='w-5 h-5 text-red-600'
             />
-            Failed Delivery ({groupedCapsules.failed.length})
+            Failed Delivery ({groupedCapsules['failed'].length})
           </h3>
           <div className='grid gap-4'>
-            {groupedCapsules.failed.map(capsule => (
+            {groupedCapsules['failed'].map(capsule => (
               <TimeCapsuleCard
                 key={capsule.id}
                 capsule={capsule}
                 onDelete={() => setDeleteConfirm(capsule.id)}
-                onTestPreview={onTestPreview}
+                onTestPreview={defaultOnTestPreview}
                 getInitials={getInitials}
                 formatDuration={formatDuration}
                 formatFileSize={formatFileSize}
@@ -371,14 +371,14 @@ function TimeCapsuleCard({
                 <p className='text-sm font-medium text-gray-900'>
                   {capsule.delivery_condition === 'ON_DATE' &&
                   capsule.delivery_date
-                    ? t('delivery.scheduled')
-                    : t('delivery.familyShieldActivation')}
+                    ? 'Scheduled Delivery'
+                    : 'Family Shield Activation'}
                 </p>
                 <p className='text-xs text-gray-600'>
                   {capsule.delivery_condition === 'ON_DATE' &&
                   capsule.delivery_date
                     ? `Will be delivered: ${format(new Date(capsule.delivery_date), 'MMMM d, yyyy')}`
-                    : t('delivery.familyShieldDescription')}
+                    : 'Will be delivered when Family Shield is activated'}
                 </p>
               </div>
             </div>

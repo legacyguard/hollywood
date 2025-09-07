@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -76,6 +77,7 @@ export const ProfessionalReviewNetwork: React.FC<
   onTrustSealUpgrade,
   validationScore = 0,
 }) => {
+  const { t } = useTranslation('ui/professional-review-network');
   const [activeTab, setActiveTab] = useState('attorney');
   const [reviewRequest, setReviewRequest] = useState<null | ReviewRequest>(
     null
@@ -317,13 +319,13 @@ export const ProfessionalReviewNetwork: React.FC<
         <CardHeader>
           <CardTitle className='flex items-center space-x-2'>
             {statusIcons[reviewRequest.status]}
-            <span>Review Status</span>
+            <span>{t('status.title')}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className='space-y-4'>
             <div className='flex justify-between items-center'>
-              <span className='font-medium'>Status:</span>
+              <span className='font-medium'>{t('status.status')}</span>
               <Badge
                 variant={
                   reviewRequest.status === 'completed' ? 'default' : 'secondary'
@@ -335,7 +337,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
             {reviewRequest.estimatedCompletion && (
               <div className='flex justify-between items-center'>
-                <span className='font-medium'>Estimated Completion:</span>
+                <span className='font-medium'>{t('status.estimated')}</span>
                 <span>
                   {reviewRequest.estimatedCompletion.toLocaleDateString()}
                 </span>
@@ -343,7 +345,7 @@ export const ProfessionalReviewNetwork: React.FC<
             )}
 
             <div className='flex justify-between items-center'>
-              <span className='font-medium'>Priority:</span>
+              <span className='font-medium'>{t('status.priority')}</span>
               <Badge variant='outline'>{reviewRequest.priority}</Badge>
             </div>
 
@@ -351,8 +353,8 @@ export const ProfessionalReviewNetwork: React.FC<
             reviewRequest.status === 'assigned' ? (
               <div className='space-y-2'>
                 <div className='flex justify-between text-sm'>
-                  <span>Review Progress</span>
-                  <span>75%</span>
+                  <span>{t('status.progress')}</span>
+                  <span>{t('status.percent', { value: 75 })}</span>
                 </div>
                 <Progress value={75} className='w-full' />
               </div>
@@ -369,7 +371,7 @@ export const ProfessionalReviewNetwork: React.FC<
     return (
       <Card className='mb-6'>
         <CardHeader>
-          <CardTitle>Professional Review Results</CardTitle>
+          <CardTitle>{t('feedback.title')}</CardTitle>
         </CardHeader>
         <CardContent className='space-y-6'>
           {/* Overall Scores */}
@@ -378,25 +380,25 @@ export const ProfessionalReviewNetwork: React.FC<
               <div className='text-2xl font-bold text-blue-600'>
                 {reviewFeedback.overall.legalCompliance}%
               </div>
-              <div className='text-sm text-gray-600'>Legal Compliance</div>
+              <div className='text-sm text-gray-600'>{t('feedback.scores.legalCompliance')}</div>
             </div>
             <div className='text-center'>
               <div className='text-2xl font-bold text-green-600'>
                 {reviewFeedback.overall.clarity}%
               </div>
-              <div className='text-sm text-gray-600'>Clarity</div>
+              <div className='text-sm text-gray-600'>{t('feedback.scores.clarity')}</div>
             </div>
             <div className='text-center'>
               <div className='text-2xl font-bold text-purple-600'>
                 {reviewFeedback.overall.completeness}%
               </div>
-              <div className='text-sm text-gray-600'>Completeness</div>
+              <div className='text-sm text-gray-600'>{t('feedback.scores.completeness')}</div>
             </div>
             <div className='text-center'>
               <div className='text-2xl font-bold text-orange-600'>
                 {reviewFeedback.overall.recommendations}%
               </div>
-              <div className='text-sm text-gray-600'>Recommendations</div>
+              <div className='text-sm text-gray-600'>{t('feedback.scores.recommendations')}</div>
             </div>
           </div>
 
@@ -404,14 +406,14 @@ export const ProfessionalReviewNetwork: React.FC<
 
           {/* Summary */}
           <div>
-            <h4 className='font-semibold mb-2'>Summary</h4>
+            <h4 className='font-semibold mb-2'>{t('feedback.summary')}</h4>
             <p className='text-gray-700'>{reviewFeedback.summary}</p>
           </div>
 
           {/* Specific Issues */}
           {reviewFeedback.specificIssues.length > 0 && (
             <div>
-              <h4 className='font-semibold mb-3'>Issues to Address</h4>
+              <h4 className='font-semibold mb-3'>{t('feedback.issues')}</h4>
               <div className='space-y-3'>
                 {reviewFeedback.specificIssues.map((issue, index) => (
                   <Alert
@@ -441,10 +443,10 @@ export const ProfessionalReviewNetwork: React.FC<
                         </div>
                         <p className='text-sm'>{issue.description}</p>
                         <p className='text-sm font-medium'>
-                          Recommendation: {issue.recommendation}
+                          {t('feedback.recommendation')} {issue.recommendation}
                         </p>
                         <p className='text-xs text-gray-500'>
-                          Estimated fix time: {issue.estimated_fix_time}
+                          {t('feedback.fixTime')} {issue.estimated_fix_time}
                         </p>
                       </div>
                     </AlertDescription>
@@ -456,7 +458,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
           {/* Next Steps */}
           <div>
-            <h4 className='font-semibold mb-2'>Next Steps</h4>
+            <h4 className='font-semibold mb-2'>{t('feedback.nextSteps')}</h4>
             <ul className='list-disc list-inside space-y-1 text-sm text-gray-700'>
               {reviewFeedback.nextSteps.map((step, index) => (
                 <li key={index}>{step}</li>
@@ -471,10 +473,9 @@ export const ProfessionalReviewNetwork: React.FC<
   return (
     <div className='space-y-6'>
       <div>
-        <h2 className='text-2xl font-bold mb-2'>Professional Review Network</h2>
+        <h2 className='text-2xl font-bold mb-2'>{t('header.title')}</h2>
         <p className='text-gray-600'>
-          Connect with legal professionals for expert review and validation of
-          your will.
+          {t('header.description')}
         </p>
       </div>
 
@@ -494,10 +495,9 @@ export const ProfessionalReviewNetwork: React.FC<
             <Alert className='mt-4'>
               <AlertCircle className='h-4 w-4' />
               <AlertDescription>
-                <div className='font-medium mb-1'>Enhance Your Trust Seal</div>
+                <div className='font-medium mb-1'>{t('trust.enhance')}</div>
                 <div className='text-sm'>
-                  Get professional review to upgrade your will's trust seal and
-                  enhance its legal credibility.
+                  {t('trust.enhanceDesc')}
                 </div>
               </AlertDescription>
             </Alert>
@@ -514,24 +514,23 @@ export const ProfessionalReviewNetwork: React.FC<
             className='w-full'
           >
             <TabsList className='grid w-full grid-cols-3'>
-              <TabsTrigger value='attorney'>Attorney Review</TabsTrigger>
-              <TabsTrigger value='planner'>Estate Planning</TabsTrigger>
-              <TabsTrigger value='notary'>Notary Services</TabsTrigger>
+              <TabsTrigger value='attorney'>{t('tabs.attorney')}</TabsTrigger>
+              <TabsTrigger value='planner'>{t('tabs.planner')}</TabsTrigger>
+              <TabsTrigger value='notary'>{t('tabs.notary')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value='attorney' className='space-y-6'>
               <Card>
                 <CardHeader>
-                  <CardTitle>Request Attorney Review</CardTitle>
+                  <CardTitle>{t('attorney.title')}</CardTitle>
                   <CardDescription>
-                    Get professional legal review of your will from qualified
-                    attorneys.
+                    {t('attorney.description')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     <div>
-                      <Label htmlFor='priority'>Review Priority</Label>
+                      <Label htmlFor='priority'>{t('attorney.priority')}</Label>
                       <Select
                         value={attorneyForm.priority}
                         onValueChange={value =>
@@ -546,20 +545,20 @@ export const ProfessionalReviewNetwork: React.FC<
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value='standard'>
-                            Standard (7 days) - €200-800
+                            {t('attorney.priorityOptions.standard')}
                           </SelectItem>
                           <SelectItem value='urgent'>
-                            Urgent (3 days) - €400-1200
+                            {t('attorney.priorityOptions.urgent')}
                           </SelectItem>
                           <SelectItem value='express'>
-                            Express (24 hours) - €800-2000
+                            {t('attorney.priorityOptions.express')}
                           </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div>
-                      <Label htmlFor='language'>Preferred Language</Label>
+                      <Label htmlFor='language'>{t('attorney.language')}</Label>
                       <Select
                         value={attorneyForm.language}
                         onValueChange={value =>
@@ -584,11 +583,11 @@ export const ProfessionalReviewNetwork: React.FC<
 
                   <div className='grid grid-cols-2 gap-4'>
                     <div>
-                      <Label htmlFor='budget-min'>Budget Range (EUR)</Label>
+                      <Label htmlFor='budget-min'>{t('attorney.budget')}</Label>
                       <div className='flex space-x-2'>
                         <Input
                           type='number'
-                          placeholder='Min'
+                          placeholder={t('attorney.budgetMin')}
                           value={attorneyForm.budgetMin}
                           onChange={e =>
                             setAttorneyForm(prev => ({
@@ -599,7 +598,7 @@ export const ProfessionalReviewNetwork: React.FC<
                         />
                         <Input
                           type='number'
-                          placeholder='Max'
+                          placeholder={t('attorney.budgetMax')}
                           value={attorneyForm.budgetMax}
                           onChange={e =>
                             setAttorneyForm(prev => ({
@@ -612,7 +611,7 @@ export const ProfessionalReviewNetwork: React.FC<
                     </div>
 
                     <div>
-                      <Label htmlFor='timeline'>Timeline</Label>
+                      <Label htmlFor='timeline'>{t('attorney.timeline')}</Label>
                       <Select
                         value={attorneyForm.timeline}
                         onValueChange={value =>
@@ -627,12 +626,14 @@ export const ProfessionalReviewNetwork: React.FC<
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value='within_week'>
-                            Within a week
+                            {t('attorney.timelineOptions.within_week')}
                           </SelectItem>
                           <SelectItem value='within_month'>
-                            Within a month
+                            {t('attorney.timelineOptions.within_month')}
                           </SelectItem>
-                          <SelectItem value='flexible'>Flexible</SelectItem>
+                          <SelectItem value='flexible'>
+                            {t('attorney.timelineOptions.flexible')}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -640,10 +641,10 @@ export const ProfessionalReviewNetwork: React.FC<
 
                   <div>
                     <Label htmlFor='concerns'>
-                      Specific Concerns (comma-separated)
+                      {t('attorney.concerns')}
                     </Label>
                     <Textarea
-                      placeholder='e.g., asset distribution, tax implications, guardianship arrangements'
+                      placeholder={t('attorney.concernsPlaceholder')}
                       value={attorneyForm.specificConcerns}
                       onChange={e =>
                         setAttorneyForm(prev => ({
@@ -659,7 +660,7 @@ export const ProfessionalReviewNetwork: React.FC<
                     disabled={isLoading}
                     className='w-full'
                   >
-                    {isLoading ? 'Processing...' : 'Request Attorney Review'}
+                    {isLoading ? t('attorney.processing') : t('attorney.submit')}
                   </Button>
                 </CardContent>
               </Card>
@@ -668,10 +669,9 @@ export const ProfessionalReviewNetwork: React.FC<
             <TabsContent value='planner' className='space-y-6'>
               <Card>
                 <CardHeader>
-                  <CardTitle>Estate Planning Consultation</CardTitle>
+                  <CardTitle>{t('planner.title')}</CardTitle>
                   <CardDescription>
-                    Get comprehensive estate planning advice from certified
-                    planners.
+                    {t('planner.description')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
@@ -680,9 +680,7 @@ export const ProfessionalReviewNetwork: React.FC<
                     disabled={isLoading}
                     className='w-full'
                   >
-                    {isLoading
-                      ? 'Finding Planners...'
-                      : 'Get Consultation Offers'}
+                    {isLoading ? t('planner.finding') : t('planner.find')}
                   </Button>
                 </CardContent>
               </Card>
@@ -691,7 +689,7 @@ export const ProfessionalReviewNetwork: React.FC<
                 <Card key={offer.id}>
                   <CardHeader>
                     <CardTitle className='flex justify-between items-start'>
-                      <span>Estate Planning Proposal</span>
+                      <span>{t('planner.proposal')}</span>
                       <Badge variant='outline'>
                         {offer.willComplexityAssessment.complexity}
                       </Badge>
@@ -701,7 +699,7 @@ export const ProfessionalReviewNetwork: React.FC<
                     <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
                       <div>
                         <span className='text-sm font-medium'>
-                          Estimated Hours
+                          {t('planner.estimatedHours')}
                         </span>
                         <div className='text-2xl font-bold'>
                           {offer.willComplexityAssessment.estimatedHours}h
@@ -709,14 +707,14 @@ export const ProfessionalReviewNetwork: React.FC<
                       </div>
                       <div>
                         <span className='text-sm font-medium'>
-                          Total Estimate
+                          {t('planner.totalEstimate')}
                         </span>
                         <div className='text-2xl font-bold'>
                           €{offer.totalEstimate.min}-{offer.totalEstimate.max}
                         </div>
                       </div>
                       <div>
-                        <span className='text-sm font-medium'>Timeline</span>
+                        <span className='text-sm font-medium'>{t('planner.timeline')}</span>
                         <div className='text-lg font-semibold'>
                           {offer.proposedTimeline}
                         </div>
@@ -725,7 +723,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
                     <div>
                       <h4 className='font-semibold mb-2'>
-                        Key Issues Identified
+                        {t('planner.keyIssues')}
                       </h4>
                       <ul className='list-disc list-inside text-sm space-y-1'>
                         {offer.willComplexityAssessment.keyIssues.map(
@@ -738,7 +736,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
                     <div>
                       <h4 className='font-semibold mb-2'>
-                        Recommended Services
+                        {t('planner.recommendedServices')}
                       </h4>
                       <div className='space-y-2'>
                         {offer.recommendedServices.map((service, index) => (
@@ -764,7 +762,7 @@ export const ProfessionalReviewNetwork: React.FC<
                                       : 'outline'
                                 }
                               >
-                                {service.priority}
+                                {t(`planner.priority.${service.priority}`)}
                               </Badge>
                               <div className='text-sm font-medium'>
                                 €{service.estimatedCost}
@@ -777,9 +775,9 @@ export const ProfessionalReviewNetwork: React.FC<
 
                     <div className='flex justify-between items-center pt-4 border-t'>
                       <span className='text-sm text-gray-600'>
-                        Valid until: {offer.validUntil.toLocaleDateString()}
+                        {t('planner.validUntil')} {offer.validUntil.toLocaleDateString()}
                       </span>
-                      <Button>Accept Proposal</Button>
+                      <Button>{t('planner.acceptProposal')}</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -789,19 +787,17 @@ export const ProfessionalReviewNetwork: React.FC<
             <TabsContent value='notary' className='space-y-6'>
               <Card>
                 <CardHeader>
-                  <CardTitle>Find Notary Services</CardTitle>
+                  <CardTitle>{t('notary.title')}</CardTitle>
                   <CardDescription>
-                    Connect with certified notaries for will witnessing and
-                    document certification. Including integration with
-                    brnoadvokati.cz for Czech and Slovak services.
+                    {t('notary.description')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     <div>
-                      <Label htmlFor='location'>Location</Label>
+                      <Label htmlFor='location'>{t('notary.location')}</Label>
                       <Input
-                        placeholder='e.g., Brno, Prague, Bratislava'
+                        placeholder={t('notary.locationPlaceholder')}
                         value={notaryForm.location}
                         onChange={e =>
                           setNotaryForm(prev => ({
@@ -813,7 +809,7 @@ export const ProfessionalReviewNetwork: React.FC<
                     </div>
 
                     <div>
-                      <Label htmlFor='service-type'>Service Type</Label>
+                      <Label htmlFor='service-type'>{t('notary.serviceType')}</Label>
                       <Select
                         value={notaryForm.serviceType}
                         onValueChange={value =>
@@ -828,13 +824,13 @@ export const ProfessionalReviewNetwork: React.FC<
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value='will_witnessing'>
-                            Will Witnessing
+                            {t('notary.serviceOptions.will_witnessing')}
                           </SelectItem>
                           <SelectItem value='document_certification'>
-                            Document Certification
+                            {t('notary.serviceOptions.document_certification')}
                           </SelectItem>
                           <SelectItem value='full_notarization'>
-                            Full Notarization
+                            {t('notary.serviceOptions.full_notarization')}
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -843,7 +839,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
                   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     <div>
-                      <Label htmlFor='notary-language'>Language</Label>
+                      <Label htmlFor='notary-language'>{t('notary.language')}</Label>
                       <Select
                         value={notaryForm.language}
                         onValueChange={value =>
@@ -863,7 +859,7 @@ export const ProfessionalReviewNetwork: React.FC<
                     </div>
 
                     <div>
-                      <Label htmlFor='timeframe'>Timeframe</Label>
+                      <Label htmlFor='timeframe'>{t('notary.timeframe')}</Label>
                       <Select
                         value={notaryForm.timeframe}
                         onValueChange={value =>
@@ -875,12 +871,14 @@ export const ProfessionalReviewNetwork: React.FC<
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value='within_week'>
-                            Within a week
+                            {t('notary.timeframeOptions.within_week')}
                           </SelectItem>
                           <SelectItem value='within_month'>
-                            Within a month
+                            {t('notary.timeframeOptions.within_month')}
                           </SelectItem>
-                          <SelectItem value='flexible'>Flexible</SelectItem>
+                          <SelectItem value='flexible'>
+                            {t('notary.timeframeOptions.flexible')}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -891,7 +889,7 @@ export const ProfessionalReviewNetwork: React.FC<
                     disabled={isLoading || !notaryForm.location}
                     className='w-full'
                   >
-                    {isLoading ? 'Finding Notaries...' : 'Find Notary Services'}
+                    {isLoading ? t('notary.finding') : t('notary.find')}
                   </Button>
                 </CardContent>
               </Card>
@@ -906,7 +904,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
                       <div>
                         <h4 className='font-semibold mb-3'>
-                          Available Services
+                          {t('notary.availableServices')}
                         </h4>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
                           {match.services.map((service, index) => (
@@ -930,7 +928,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
                       <div>
                         <h4 className='font-semibold mb-3'>
-                          Available Appointments
+                          {t('notary.availableAppointments')}
                         </h4>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
                           {match.availableSlots
@@ -950,7 +948,7 @@ export const ProfessionalReviewNetwork: React.FC<
                                   </div>
                                 </div>
                                 <Button size='sm' variant='outline'>
-                                  Book
+                                  {t('notary.book')}
                                 </Button>
                               </div>
                             ))}
@@ -960,7 +958,7 @@ export const ProfessionalReviewNetwork: React.FC<
                       {match.distanceFromUser && (
                         <div className='flex items-center text-sm text-gray-600'>
                           <MapPin className='h-4 w-4 mr-1' />
-                          {match.distanceFromUser.toFixed(1)} km away
+                          {t('notary.away', { km: match.distanceFromUser.toFixed(1) })}
                         </div>
                       )}
                     </div>

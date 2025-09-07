@@ -1,6 +1,39 @@
 {
   "header": {
     "title": "Analytics Dashboard",
+    "subtitle": "Track subscriptions, revenue, churn, and system health"
+  },
+  "dateRange": {
+    "7d": "Last 7 days",
+    "30d": "Last 30 days",
+    "90d": "Last 90 days"
+  },
+  "metrics": {
+    "totalUsers": "Total Users",
+    "mrr": "Monthly Recurring Revenue",
+    "churnRate": "Churn Rate",
+    "newSubscriptions": "New Subscriptions"
+  },
+  "plans": {
+    "free": "Free",
+    "essential": "Essential",
+    "family": "Family",
+    "premium": "Premium"
+  },
+  "charts": {
+    "revenueTrend": "Revenue Trend",
+    "userGrowth": "User Growth",
+    "planDistribution": "Plan Distribution",
+    "systemHealth": "System Health"
+  },
+  "system": {
+    "errors": "{{percent}}% errors",
+    "response": "{{ms}}ms"
+  }
+}
+{
+  "header": {
+    "title": "Analytics Dashboard",
     "subtitle": "Monitor your business metrics and system health"
   },
   "dateRange": {

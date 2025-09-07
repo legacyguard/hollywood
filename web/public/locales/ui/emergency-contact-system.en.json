@@ -1,4 +1,81 @@
 {
+  "relationships": {
+    "Guardian": "Guardian"
+  },
+  "notifications": {
+    "loadError": "Failed to load notifications.",
+    "saveError": "Failed to save contact.",
+    "testNotificationSuccess": "Test notification sent to {{name}}.",
+    "testNotificationError": "Failed to send test notification.",
+    "deleteSuccess": "Contact deleted.",
+    "deleteError": "Failed to delete contact.",
+    "sectionTitle": "Recent Notifications"
+  },
+  "form": {
+    "dialog": {
+      "editTitle": "Edit Emergency Contact",
+      "addTitle": "Add Contact"
+    },
+    "fields": {
+      "name": { "label": "Full Name", "placeholder": "John Smith" },
+      "relationship": {
+        "label": "Relationship",
+        "placeholder": "Select relationship",
+        "options": {
+          "spouse": "Spouse",
+          "parent": "Parent",
+          "child": "Child",
+          "sibling": "Sibling",
+          "friend": "Friend",
+          "relative": "Relative",
+          "professional": "Professional"
+        }
+      },
+      "email": { "label": "Email", "placeholder": "john@example.com" },
+      "phone": { "label": "Phone", "placeholder": "+1 202 555 0123" },
+      "notes": { "label": "Notes", "placeholder": "Additional context..." }
+    },
+    "buttons": {
+      "addContact": "Add Contact",
+      "updateContact": "Update Contact",
+      "cancel": "Cancel"
+    }
+  },
+  "statistics": {
+    "totalContacts": "Total Contacts",
+    "primary": "Primary",
+    "recentMessages": "Recent Messages"
+  },
+  "contactCard": {
+    "emergencyBadge": "Can trigger emergency"
+  },
+  "personalityModes": {
+    "empathetic": {
+      "canActivateEmergency": "Can activate emergency",
+      "updateSuccessToast": "Contact updated successfully.",
+      "addSuccessToast": "Contact added successfully.",
+      "primaryContactsTitle": "Primary Contacts",
+      "secondaryContactsTitle": "Secondary Contacts"
+    },
+    "pragmatic": {
+      "canActivateEmergency": "Can activate emergency",
+      "updateSuccessToast": "Contact updated successfully.",
+      "addSuccessToast": "Contact added successfully.",
+      "primaryContactsTitle": "Primary Contacts",
+      "secondaryContactsTitle": "Secondary Contacts"
+    },
+    "adaptive": {
+      "canActivateEmergency": "Can activate emergency",
+      "updateSuccessToast": "Contact updated successfully.",
+      "addSuccessToast": "Contact added successfully.",
+      "primaryContactsTitle": "Primary Contacts",
+      "secondaryContactsTitle": "Secondary Contacts",
+      "testNotificationTitle": "Status Update",
+      "testNotificationMessage": "Hello {{name}}, this is a test notification from Family Shield."
+    }
+  }
+}
+{
   "personalityModes": {
     "empathetic": {
       "title": "💚 Circle of Care",
