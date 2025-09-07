@@ -11,9 +11,11 @@ import { toast } from 'sonner';
 import { EnhancedWillWizard } from '@/components/legacy/EnhancedWillWizard';
 import type { WillData } from '@/components/legacy/WillWizard';
 import type { WillType } from '@/components/legacy/WillTypeSelector';
+import { useTranslation } from 'react-i18next';
 
 export default function LegacyPage() {
-  usePageTitle('Legacy Planning');
+  const { t } = useTranslation('ui/legacy-page');
+  usePageTitle(t('header.title'));
   useAuth();
   const { user } = useUser();
   const [showWillWizard, setShowWillWizard] = useState(false);
@@ -30,7 +32,7 @@ export default function LegacyPage() {
     // TODO: Save will to database
     // console.log('Will completed:', willData);
     toast.success(
-      'Will created successfully! You can access it from your vault.'
+      t('toastMessages.willCreatedSuccess')
     );
     setShowWillWizard(false);
   };
@@ -66,15 +68,13 @@ export default function LegacyPage() {
 
             <FadeIn duration={0.8} delay={0.4}>
               <h1 className='text-4xl lg:text-5xl font-bold font-heading text-card-foreground mb-6'>
-                Legacy Planning
+                {t('header.title')}
               </h1>
             </FadeIn>
 
             <FadeIn duration={0.8} delay={0.6}>
               <p className='text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed'>
-                {firstName}, this is the most personal part of your digital
-                legacy. Create your will, record final wishes, and leave
-                heartfelt messages for those you love most.
+                {t('header.personalMessage', { firstName })}
               </p>
             </FadeIn>
 
@@ -85,7 +85,7 @@ export default function LegacyPage() {
                 className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
               >
                 <Icon name={'documents' as any} className='w-5 h-5 mr-2' />
-                Create Your Will Now
+                {t('buttons.createWillNow')}
               </Button>
             </FadeIn>
           </div>
@@ -96,11 +96,10 @@ export default function LegacyPage() {
           <FadeIn duration={0.6} delay={1.0}>
             <div className='text-center mb-16'>
               <h2 className='text-3xl font-bold mb-4'>
-                What's Coming to Legacy Planning
+                {t('sections.whatsComing.title')}
               </h2>
               <p className='text-lg text-muted-foreground max-w-2xl mx-auto'>
-                We're crafting tools that honor the profound nature of legacy
-                planning with the care it deserves.
+                {t('sections.whatsComing.subtitle')}
               </p>
             </div>
           </FadeIn>
@@ -120,23 +119,21 @@ export default function LegacyPage() {
                 </div>
                 <div className='flex items-center justify-center gap-2 mb-4'>
                   <h3 className='text-xl font-semibold'>
-                    Digital Will Creator
+                    {t('features.digitalWillCreator.title')}
                   </h3>
                   <div className='inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 rounded-full'>
                     <div className='w-2 h-2 bg-green-500 rounded-full'></div>
                     <span className='text-xs font-medium text-green-700 dark:text-green-300'>
-                      Available
+                      {t('features.digitalWillCreator.statusLabel')}
                     </span>
                   </div>
                 </div>
                 <p className='text-muted-foreground leading-relaxed mb-4'>
-                  Step-by-step guidance to create a comprehensive will with
-                  built-in legal templates and jurisdiction-specific
-                  requirements.
+                  {t('features.digitalWillCreator.description')}
                 </p>
                 <Button className='bg-primary hover:bg-primary-hover text-primary-foreground'>
                   <Icon name={'arrow-right' as any} className='w-4 h-4 mr-2' />
-                  Start Creating Your Will
+                  {t('buttons.startCreatingWill')}
                 </Button>
               </Card>
             </FadeIn>
@@ -150,11 +147,10 @@ export default function LegacyPage() {
                   />
                 </div>
                 <h3 className='text-xl font-semibold mb-4'>
-                  Time Capsule Messages
+                  {t('features.timeCapsuleMessages.title')}
                 </h3>
                 <p className='text-muted-foreground leading-relaxed'>
-                  Record video messages, write letters, and create digital time
-                  capsules to be delivered on special occasions or milestones.
+                  {t('features.timeCapsuleMessages.description')}
                 </p>
               </Card>
             </FadeIn>
@@ -168,11 +164,10 @@ export default function LegacyPage() {
                   />
                 </div>
                 <h3 className='text-xl font-semibold mb-4'>
-                  Healthcare Directives
+                  {t('features.healthcareDirectives.title')}
                 </h3>
                 <p className='text-muted-foreground leading-relaxed'>
-                  Document your medical wishes, power of attorney preferences,
-                  and healthcare decisions with easy-to-update templates.
+                  {t('features.healthcareDirectives.description')}
                 </p>
               </Card>
             </FadeIn>
@@ -186,12 +181,10 @@ export default function LegacyPage() {
                   />
                 </div>
                 <h3 className='text-xl font-semibold mb-4'>
-                  Asset Distribution
+                  {t('features.assetDistribution.title')}
                 </h3>
                 <p className='text-muted-foreground leading-relaxed'>
-                  Organize and distribute your financial assets, personal
-                  belongings, and digital accounts with clear instructions for
-                  beneficiaries.
+                  {t('features.assetDistribution.description')}
                 </p>
               </Card>
             </FadeIn>
@@ -204,11 +197,9 @@ export default function LegacyPage() {
                     className='w-8 h-8 text-rose-600 group-hover:scale-110 transition-transform duration-300'
                   />
                 </div>
-                <h3 className='text-xl font-semibold mb-4'>Final Wishes</h3>
+                <h3 className='text-xl font-semibold mb-4'>{t('features.finalWishes.title')}</h3>
                 <p className='text-muted-foreground leading-relaxed'>
-                  Record your preferences for funeral arrangements, memorial
-                  services, and how you'd like to be remembered by those you
-                  love.
+                  {t('features.finalWishes.description')}
                 </p>
               </Card>
             </FadeIn>
@@ -222,11 +213,10 @@ export default function LegacyPage() {
                   />
                 </div>
                 <h3 className='text-xl font-semibold mb-4'>
-                  Guardian Integration
+                  {t('features.guardianIntegration.title')}
                 </h3>
                 <p className='text-muted-foreground leading-relaxed'>
-                  Seamlessly connect with your trusted guardians to ensure your
-                  legacy plans are accessible when they're needed most.
+                  {t('features.guardianIntegration.description')}
                 </p>
               </Card>
             </FadeIn>
@@ -241,14 +231,10 @@ export default function LegacyPage() {
                   className='w-12 h-12 text-primary mx-auto mb-6'
                 />
                 <h3 className='text-2xl font-bold mb-6'>
-                  Why Legacy Planning Matters
+                  {t('sections.whyItMatters.title')}
                 </h3>
                 <p className='text-lg text-muted-foreground leading-relaxed mb-8'>
-                  {firstName}, legacy planning isn't just about legal
-                  documents—it's about peace of mind for you and clarity for
-                  your loved ones. It's ensuring your voice continues to guide
-                  and comfort those you care about, even when you can't be there
-                  in person.
+                  {t('sections.whyItMatters.content', { firstName })}
                 </p>
                 <div className='grid md:grid-cols-3 gap-8 text-left'>
                   <div className='flex gap-4'>
@@ -257,10 +243,9 @@ export default function LegacyPage() {
                       className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                     />
                     <div>
-                      <h4 className='font-semibold mb-2'>Peace of Mind</h4>
+                      <h4 className='font-semibold mb-2'>{t('sections.whyItMatters.benefits.peaceOfMind.title')}</h4>
                       <p className='text-sm text-muted-foreground'>
-                        Know that your wishes will be respected and your family
-                        will be cared for.
+                        {t('sections.whyItMatters.benefits.peaceOfMind.description')}
                       </p>
                     </div>
                   </div>
@@ -270,10 +255,9 @@ export default function LegacyPage() {
                       className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                     />
                     <div>
-                      <h4 className='font-semibold mb-2'>Family Harmony</h4>
+                      <h4 className='font-semibold mb-2'>{t('sections.whyItMatters.benefits.familyHarmony.title')}</h4>
                       <p className='text-sm text-muted-foreground'>
-                        Clear instructions prevent confusion and conflict during
-                        difficult times.
+                        {t('sections.whyItMatters.benefits.familyHarmony.description')}
                       </p>
                     </div>
                   </div>
@@ -283,10 +267,9 @@ export default function LegacyPage() {
                       className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                     />
                     <div>
-                      <h4 className='font-semibold mb-2'>Time to Connect</h4>
+                      <h4 className='font-semibold mb-2'>{t('sections.whyItMatters.benefits.timeToConnect.title')}</h4>
                       <p className='text-sm text-muted-foreground'>
-                        Create meaningful messages that will comfort your loved
-                        ones for years to come.
+                        {t('sections.whyItMatters.benefits.timeToConnect.description')}
                       </p>
                     </div>
                   </div>
@@ -303,12 +286,10 @@ export default function LegacyPage() {
                 className='w-12 h-12 text-primary mx-auto mb-6'
               />
               <h3 className='text-2xl font-bold mb-4'>
-                Ready to Secure Your Legacy?
+                {t('sections.readyToSecure.title')}
               </h3>
               <p className='text-muted-foreground mb-8'>
-                Take the first step towards peace of mind. Our Digital Will
-                Creator guides you through every step with personalized
-                templates and expert guidance.
+                {t('sections.readyToSecure.subtitle')}
               </p>
 
               <Button
@@ -317,11 +298,11 @@ export default function LegacyPage() {
                 className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
               >
                 <Icon name={'documents' as any} className='w-5 h-5 mr-2' />
-                Start Your Will Now
+                {t('buttons.startWillNow')}
               </Button>
 
               <p className='text-xs text-muted-foreground mt-4'>
-                Free to start • Legal templates included • Save progress anytime
+                {t('sections.readyToSecure.disclaimer')}
               </p>
             </Card>
           </FadeIn>
@@ -335,13 +316,9 @@ export default function LegacyPage() {
                   className='w-5 h-5 text-muted-foreground flex-shrink-0 mt-1'
                 />
                 <div>
-                  <h4 className='font-semibold mb-2'>Important Legal Notice</h4>
+                  <h4 className='font-semibold mb-2'>{t('sections.legalNotice.title')}</h4>
                   <p className='text-sm text-muted-foreground leading-relaxed'>
-                    While LegacyGuard provides tools and templates to help
-                    organize your legacy planning, we strongly recommend
-                    consulting with qualified legal and financial professionals
-                    to ensure your documents meet all legal requirements in your
-                    jurisdiction and properly reflect your intentions.
+                    {t('sections.legalNotice.content')}
                   </p>
                 </div>
               </div>

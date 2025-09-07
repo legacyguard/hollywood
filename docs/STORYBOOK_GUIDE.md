@@ -26,11 +26,13 @@ Storybook will be available at `http://localhost:6006`
 ### Core UI Components
 
 #### Buttons & Actions
+
 - **Button** - Primary action component with multiple variants
 - **EnhancedButton** - Advanced button with loading states and animations
 - **IconButton** - Icon-only button variations
 
 #### Form Controls
+
 - **Input** - Text input with validation states
 - **EnhancedInput** - Input with advanced features (masks, formatting)
 - **Select** - Dropdown selection component
@@ -42,6 +44,7 @@ Storybook will be available at `http://localhost:6006`
 - **Form** - Complete form management with validation
 
 #### Layout & Containers
+
 - **Card** - Content container with header/footer
 - **EnhancedCard** - Card with animations and interactions
 - **Dialog** - Modal overlay component
@@ -52,6 +55,7 @@ Storybook will be available at `http://localhost:6006`
 - **Separator** - Visual divider
 
 #### Data Display
+
 - **Table** - Data table with sorting/filtering
 - **Badge** - Status indicators and labels
 - **Avatar** - User profile images
@@ -60,6 +64,7 @@ Storybook will be available at `http://localhost:6006`
 - **Chart** - Data visualization components
 
 #### Navigation
+
 - **NavigationMenu** - Main navigation component
 - **Breadcrumb** - Navigation path display
 - **Pagination** - Page navigation controls
@@ -67,6 +72,7 @@ Storybook will be available at `http://localhost:6006`
 - **CommandMenu** - Command palette
 
 #### Feedback & Overlays
+
 - **Alert** - Inline notifications
 - **AlertDialog** - Confirmation dialogs
 - **Toast** (Sonner) - Temporary notifications
@@ -77,38 +83,45 @@ Storybook will be available at `http://localhost:6006`
 ### Application Components
 
 #### Authentication
+
 - **SignIn** - Login form component
 - **SignUp** - Registration form component
 - **ProtectedRoute** - Route protection wrapper
 
 #### Dashboard
+
 - **DashboardLayout** - Main application layout
 - **PillarCard** - Feature showcase cards
 - **AttentionSection** - Important notifications area
 - **ProgressBar** - Completion progress display
 
 #### Family Management
+
 - **FamilyShield** - Family member management
 - **GuardianSetup** - Guardian configuration
 - **FamilyProtectionHeader** - Family section header
 
 #### Document Management
+
 - **DocumentCard** - Document display card
 - **IntelligentOrganizer** - AI-powered document organizer
 - **VaultPage** - Secure document storage
 
 #### Legacy Features
+
 - **LegacyGarden** - Visual legacy representation
 - **TimeCapsule** - Future message system
 - **MilestoneAnimations** - Achievement animations
 
 #### AI Assistant
+
 - **SofiaSystem** - AI assistant interface
 - **SofiaFirefly** - Assistant animation component
 
 ## 🎨 Design System
 
 ### Theme Variables
+
 ```css
 --primary: Main brand color
 --secondary: Secondary brand color
@@ -118,6 +131,7 @@ Storybook will be available at `http://localhost:6006`
 ```
 
 ### Typography Scale
+
 - **text-xs**: 0.75rem
 - **text-sm**: 0.875rem
 - **text-base**: 1rem
@@ -128,6 +142,7 @@ Storybook will be available at `http://localhost:6006`
 - **text-4xl**: 2.25rem
 
 ### Spacing System
+
 - **space-1**: 0.25rem
 - **space-2**: 0.5rem
 - **space-3**: 0.75rem
@@ -184,12 +199,14 @@ export const Default: Story = {
 ## 🧪 Testing in Storybook
 
 ### Visual Testing
+
 - Use Chromatic for visual regression testing
 - Capture all component states
 - Test responsive breakpoints
 - Verify dark mode appearance
 
 ### Interaction Testing
+
 ```tsx
 export const Interactive: Story = {
   play: async ({ canvasElement }) => {
@@ -202,6 +219,7 @@ export const Interactive: Story = {
 ```
 
 ### Accessibility Testing
+
 - Run a11y addon checks
 - Verify ARIA attributes
 - Test keyboard navigation
@@ -210,6 +228,7 @@ export const Interactive: Story = {
 ## 🔧 Storybook Addons
 
 ### Installed Addons
+
 - **@storybook/addon-essentials** - Core addons bundle
 - **@storybook/addon-a11y** - Accessibility testing
 - **@storybook/addon-themes** - Theme switching
@@ -219,34 +238,42 @@ export const Interactive: Story = {
 ### Using Addons
 
 #### Theme Switcher
+
 Toggle between light and dark themes using the toolbar
 
 #### Viewport
+
 Test responsive behavior across devices:
+
 - Mobile (320px)
 - Tablet (768px)
 - Desktop (1024px)
 - Wide (1440px)
 
 #### Controls
+
 Modify component props in real-time
 
 #### Actions
+
 Monitor component events and callbacks
 
 ## 📦 Building & Deployment
 
 ### Local Build
+
 ```bash
 npm run build-storybook
 ```
 
 ### Deployment
+
 Storybook is automatically deployed to Vercel on push to main branch.
 
 Production URL: `https://storybook.legacyguard.com`
 
 ### CI/CD Integration
+
 ```yaml
 # .github/workflows/storybook.yml
 - name: Build Storybook
@@ -259,6 +286,7 @@ Production URL: `https://storybook.legacyguard.com`
 ## 🎯 Component Guidelines
 
 ### New Component Checklist
+
 - [ ] Create component file
 - [ ] Write TypeScript types
 - [ ] Add JSDoc comments
@@ -271,6 +299,7 @@ Production URL: `https://storybook.legacyguard.com`
 - [ ] Update this guide
 
 ### Component Documentation Template
+
 ```tsx
 /**
  * Component description
@@ -288,17 +317,22 @@ Production URL: `https://storybook.legacyguard.com`
 ## 🔍 Finding Components
 
 ### Search
+
 Use the search bar to find components by name
 
 ### Categories
+
 Browse components by category in the sidebar:
+
 - UI (Core components)
 - Forms (Input components)
 - Layout (Structure components)
 - Features (Application-specific)
 
 ### Tags
+
 Filter components by tags:
+
 - `form` - Form-related components
 - `navigation` - Navigation components
 - `feedback` - User feedback components
@@ -307,6 +341,7 @@ Filter components by tags:
 ## 🤝 Contributing
 
 ### Adding Stories
+
 1. Create story file next to component
 2. Follow naming convention: `Component.stories.tsx`
 3. Include all component variants
@@ -314,6 +349,7 @@ Filter components by tags:
 5. Document props and usage
 
 ### Updating Documentation
+
 1. Keep stories in sync with component changes
 2. Update examples when API changes
 3. Add new variants as they're created
@@ -322,11 +358,13 @@ Filter components by tags:
 ## 📚 Resources
 
 ### Internal
+
 - [Component Development Guide](./COMPONENT_GUIDE.md)
 - [Design System](./DESIGN_SYSTEM.md)
 - [Testing Guide](./TESTING_GUIDE.md)
 
 ### External
+
 - [Storybook Documentation](https://storybook.js.org/docs)
 - [React Component Patterns](https://reactpatterns.com)
 - [Accessibility Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
@@ -336,6 +374,7 @@ Filter components by tags:
 ### Common Issues
 
 #### Storybook won't start
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules .storybook-cache
@@ -344,11 +383,13 @@ npm run storybook
 ```
 
 #### Story not appearing
+
 - Check story export name
 - Verify meta configuration
 - Ensure component is exported
 
 #### Controls not working
+
 - Verify argTypes configuration
 - Check prop types match
 - Ensure component uses props
@@ -356,12 +397,14 @@ npm run storybook
 ## 📈 Metrics
 
 ### Coverage Goals
+
 - **Component Coverage**: 100% of exported components
 - **Variant Coverage**: All component states documented
 - **Interaction Coverage**: Key user flows demonstrated
 - **Documentation Coverage**: All props documented
 
 ### Quality Metrics
+
 - **Load Time**: < 3s for initial load
 - **Build Size**: < 10MB for production build
 - **Accessibility Score**: 100% WCAG AA compliance

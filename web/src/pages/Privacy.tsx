@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export function PrivacyPage() {
+  const { t } = useTranslation('ui/privacy-page');
   const navigate = useNavigate();
 
   return (
@@ -31,7 +33,7 @@ export function PrivacyPage() {
               onClick={() => navigate('/')}
               className='text-green-700 hover:text-green-900'
             >
-              Back to Home
+              {t('header.backToHome')}
             </Button>
           </div>
         </div>
@@ -45,92 +47,69 @@ export function PrivacyPage() {
           transition={{ duration: 0.8 }}
         >
           <h1 className='text-4xl font-bold text-green-900 dark:text-green-100 mb-8 text-center'>
-            Privacy Policy
+            {t('title')}
           </h1>
 
           <Card className='p-8 bg-white/80 dark:bg-slate-800/80'>
             <CardContent className='prose dark:prose-invert max-w-none'>
               <p className='text-lg text-green-700 dark:text-green-300 mb-6'>
-                Last updated: {new Date().toLocaleDateString()}
+                {t('lastUpdated', { date: new Date().toLocaleDateString() })}
               </p>
 
-              <h2>Your Privacy is Our Priority</h2>
+              <h2>{t('sections.priority.title')}</h2>
               <p>
-                At LegacyGuard, we understand that your personal and family
-                information is incredibly sensitive. This Privacy Policy
-                explains how we collect, use, and protect your information when
-                you use our service.
+                {t('sections.priority.content')}
               </p>
 
-              <h2>Information We Collect</h2>
+              <h2>{t('sections.informationWeCollect.title')}</h2>
               <ul>
                 <li>
-                  <strong>Account Information:</strong> Email address, name, and
-                  authentication data
+                  <strong>{t('sections.informationWeCollect.accountInfo.title')}</strong> {t('sections.informationWeCollect.accountInfo.description')}
                 </li>
                 <li>
-                  <strong>Document Data:</strong> Files and documents you upload
-                  (encrypted on your device)
+                  <strong>{t('sections.informationWeCollect.documentData.title')}</strong> {t('sections.informationWeCollect.documentData.description')}
                 </li>
                 <li>
-                  <strong>Usage Data:</strong> How you interact with our service
-                  to improve your experience
+                  <strong>{t('sections.informationWeCollect.usageData.title')}</strong> {t('sections.informationWeCollect.usageData.description')}
                 </li>
               </ul>
 
-              <h2>Zero-Knowledge Architecture</h2>
+              <h2>{t('sections.zeroKnowledgeArchitecture.title')}</h2>
               <p>
-                LegacyGuard uses end-to-end encryption with a zero-knowledge
-                architecture. This means:
+                {t('sections.zeroKnowledgeArchitecture.intro')}
               </p>
               <ul>
-                <li>
-                  Your documents are encrypted on your device before being
-                  uploaded
-                </li>
-                <li>
-                  We cannot read, access, or decrypt your personal documents
-                </li>
-                <li>Only you have the keys to decrypt your information</li>
-                <li>
-                  Even if compelled by law enforcement, we cannot provide your
-                  decrypted data
-                </li>
+                {t('sections.zeroKnowledgeArchitecture.points', { returnObjects: true }).map((point: string, index: number) => (
+                  <li key={index}>{point}</li>
+                ))}
               </ul>
 
-              <h2>How We Use Your Information</h2>
+              <h2>{t('sections.howWeUseInformation.title')}</h2>
               <ul>
-                <li>To provide and maintain our service</li>
-                <li>To authenticate your identity</li>
-                <li>To send you important service notifications</li>
-                <li>To provide customer support when requested</li>
+                {t('sections.howWeUseInformation.points', { returnObjects: true }).map((point: string, index: number) => (
+                  <li key={index}>{point}</li>
+                ))}
               </ul>
 
-              <h2>Data Security</h2>
-              <p>We implement industry-leading security measures including:</p>
+              <h2>{t('sections.dataSecurity.title')}</h2>
+              <p>{t('sections.dataSecurity.intro')}</p>
               <ul>
-                <li>AES-256 encryption for all data</li>
-                <li>TLS encryption for all data transmission</li>
-                <li>Regular security audits and penetration testing</li>
-                <li>
-                  Secure data centers with physical and digital protections
-                </li>
+                {t('sections.dataSecurity.points', { returnObjects: true }).map((point: string, index: number) => (
+                  <li key={index}>{point}</li>
+                ))}
               </ul>
 
-              <h2>Your Rights</h2>
-              <p>You have the right to:</p>
+              <h2>{t('sections.yourRights.title')}</h2>
+              <p>{t('sections.yourRights.intro')}</p>
               <ul>
-                <li>Access your personal information</li>
-                <li>Correct inaccurate information</li>
-                <li>Delete your account and associated data</li>
-                <li>Export your data in a portable format</li>
-                <li>Opt-out of non-essential communications</li>
+                {t('sections.yourRights.points', { returnObjects: true }).map((point: string, index: number) => (
+                  <li key={index}>{point}</li>
+                ))}
               </ul>
 
-              <h2>Contact Us</h2>
+              <h2>{t('sections.contactUs.title')}</h2>
               <p>
-                If you have any questions about this Privacy Policy, please
-                contact us at privacy@legacyguard.com
+                {t('sections.contactUs.content')}
               </p>
             </CardContent>
           </Card>

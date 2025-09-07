@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from './Button';
+import { Heart, Settings, Star } from '@tamagui/lucide-icons';
 import { View } from 'tamagui';
-import { Heart, Star, Settings } from '@tamagui/lucide-icons';
+import { Button } from './Button';
 
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',

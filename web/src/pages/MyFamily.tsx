@@ -20,6 +20,7 @@ import {
 import { PersonRoleAssignment } from '@/components/family/PersonRoleAssignment';
 import { FamilyInsights } from '@/components/family/FamilyInsights';
 import type { WillData } from '@/types/will';
+import { useTranslation } from 'react-i18next';
 
 interface FamilyMember {
   dateOfBirth?: string;
@@ -47,6 +48,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
   willData,
   onWillDataUpdate,
 }) => {
+  const { t } = useTranslation('ui/my-family-page');
   const [selectedPerson, setSelectedPerson] = useState<FamilyMember | null>(
     null
   );
@@ -207,7 +209,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
             </p>
             {member.dateOfBirth && (
               <p className='text-xs text-gray-500'>
-                Born: {member.dateOfBirth}
+                {t('memberCard.born', { date: member.dateOfBirth })}
               </p>
             )}
           </div>
@@ -228,33 +230,33 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
           <div className='flex flex-wrap gap-1'>
             {member.roles.isHeir && (
               <Badge variant='default' className='text-xs'>
-                Heir ({member.roles.heirPercentage}%)
+                {t('memberCard.roles.heir', { percentage: member.roles.heirPercentage })}
               </Badge>
             )}
             {member.roles.isExecutor && (
               <Badge variant='secondary' className='text-xs'>
                 <Crown className='h-3 w-3 mr-1' />
-                Executor
+                {t('memberCard.roles.executor')}
               </Badge>
             )}
             {member.roles.isGuardian && (
               <Badge variant='outline' className='text-xs'>
                 <Shield className='h-3 w-3 mr-1' />
-                Guardian
+                {t('memberCard.roles.guardian')}
               </Badge>
             )}
             {member.roles.hasLegacyMessages && (
               <Badge variant='outline' className='text-xs'>
                 <Heart className='h-3 w-3 mr-1' />
-                Legacy
+                {t('memberCard.roles.legacy')}
               </Badge>
             )}
           </div>
 
           {member.status !== 'complete' && (
             <div className='text-xs text-gray-600'>
-              {member.status === 'partial' && 'Roles incomplete'}
-              {member.status === 'missing_info' && 'No roles assigned'}
+              {member.status === 'partial' && t('memberCard.status.partial')}
+              {member.status === 'missing_info' && t('memberCard.status.missingInfo')}
             </div>
           )}
         </div>
@@ -268,15 +270,14 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
       <div className='mb-8'>
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-3xl font-bold mb-2'>My Family</h1>
+            <h1 className='text-3xl font-bold mb-2'>{t('header.title')}</h1>
             <p className='text-gray-600'>
-              Manage your family members and assign their roles in your estate
-              plan
+              {t('header.subtitle')}
             </p>
           </div>
           <Button onClick={() => setShowRoleAssignment(true)}>
             <UserPlus className='h-4 w-4 mr-2' />
-            Add Family Member
+            {t('buttons.addFamilyMember')}
           </Button>
         </div>
       </div>
@@ -287,7 +288,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
           <CardContent className='p-4 text-center'>
             <Users className='h-8 w-8 text-blue-600 mx-auto mb-2' />
             <div className='text-2xl font-bold'>{insights.totalMembers}</div>
-            <div className='text-sm text-gray-600'>Family Members</div>
+            <div className='text-sm text-gray-600'>{t('insights.familyMembers')}</div>
           </CardContent>
         </Card>
 
@@ -295,7 +296,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
           <CardContent className='p-4 text-center'>
             <FileText className='h-8 w-8 text-green-600 mx-auto mb-2' />
             <div className='text-2xl font-bold'>{insights.heirsAssigned}</div>
-            <div className='text-sm text-gray-600'>Heirs Assigned</div>
+            <div className='text-sm text-gray-600'>{t('insights.heirsAssigned')}</div>
           </CardContent>
         </Card>
 
@@ -305,7 +306,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
             <div className='text-2xl font-bold'>
               {insights.guardiansAssigned}
             </div>
-            <div className='text-sm text-gray-600'>Guardians Assigned</div>
+            <div className='text-sm text-gray-600'>{t('insights.guardiansAssigned')}</div>
           </CardContent>
         </Card>
 
@@ -313,7 +314,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
           <CardContent className='p-4 text-center'>
             <CheckCircle className='h-8 w-8 text-emerald-600 mx-auto mb-2' />
             <div className='text-2xl font-bold'>{insights.completionRate}%</div>
-            <div className='text-sm text-gray-600'>Complete</div>
+            <div className='text-sm text-gray-600'>{t('insights.complete')}</div>
           </CardContent>
         </Card>
       </div>
@@ -323,10 +324,10 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
         <Alert className='mb-6'>
           <AlertCircle className='h-4 w-4' />
           <AlertDescription>
-            {insights.missingRoles} family member
-            {insights.missingRoles > 1 ? 's have' : ' has'} no assigned roles.
-            Click on them in the family tree to assign inheritance, guardian, or
-            executor roles.
+            {t('alerts.missingRoles', {
+              count: insights.missingRoles,
+              plural: insights.missingRoles > 1 ? t('alerts.missingRolesPlural') : t('alerts.missingRolesSingular')
+            })}
           </AlertDescription>
         </Alert>
       )}
@@ -338,13 +339,12 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
             <CardHeader>
               <CardTitle className='flex items-center'>
                 <Users className='h-5 w-5 mr-2' />
-                Interactive Family Tree
+                {t('familyTree.title')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className='text-sm text-gray-600 mb-4'>
-                Click on any family member to assign roles: heirs, guardians,
-                executors, or legacy messages
+                {t('familyTree.description')}
               </p>
 
               {/* Enhanced Family Tree with role assignment capabilities */}
@@ -357,7 +357,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
                 familyMembers={mockFamilyMembers}
               /> */}
               <div className='p-8 text-center text-muted-foreground'>
-                Family Tree Visualization component will be implemented here
+                {t('familyTree.placeholder')}
               </div>
             </CardContent>
           </Card>
@@ -367,7 +367,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
         <div className='space-y-6'>
           <Card>
             <CardHeader>
-              <CardTitle>Family Members</CardTitle>
+              <CardTitle>{t('familyMembersList.title')}</CardTitle>
             </CardHeader>
             <CardContent className='space-y-3'>
               {familyMembers.map(renderFamilyMemberCard)}

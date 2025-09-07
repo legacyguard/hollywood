@@ -237,7 +237,7 @@ export class WillGuardianIntegrationService {
       const _guardians = await this.getGuardiansForWillRoles(userId);
 
       // Sort executors by suitability
-      const sortedExecutors = _guardians.potentialExecutors.sort((a: any, b: any) => {
+      const sortedExecutors = _guardians.potentialExecutors.sort((a, b) => {
         // Prioritize existing will executors, then lawyers, then financial advisors
         const aScore =
           (a.is_will_executor ? 3 : 0) +
@@ -252,7 +252,7 @@ export class WillGuardianIntegrationService {
 
       // Sort child guardians by suitability
       const sortedChildGuardians = _guardians.potentialChildGuardians.sort(
-        (a: any, b: any) => {
+        (a, b) => {
           // Prioritize existing child guardians, then family members
           const aScore =
             (a.is_child_guardian ? 2 : 0) +
@@ -268,12 +268,22 @@ export class WillGuardianIntegrationService {
         }
       );
 
-      return {
-        suggestedExecutor: sortedExecutors[0] || undefined,
-        suggestedBackupExecutor: sortedExecutors[1] || undefined,
-        suggestedChildGuardian: sortedChildGuardians[0] || undefined,
-        suggestedBackupChildGuardian: sortedChildGuardians[1] || undefined,
-      };
+      const result: {
+        suggestedBackupChildGuardian?: Guardian;
+        suggestedBackupExecutor?: Guardian;
+        suggestedChildGuardian?: Guardian;
+        suggestedExecutor?: Guardian;
+      } = {};
+
+      if (sortedExecutors[0]) result.suggestedExecutor = sortedExecutors[0];
+      if (sortedExecutors[1])
+        result.suggestedBackupExecutor = sortedExecutors[1];
+      if (sortedChildGuardians[0])
+        result.suggestedChildGuardian = sortedChildGuardians[0];
+      if (sortedChildGuardians[1])
+        result.suggestedBackupChildGuardian = sortedChildGuardians[1];
+
+      return result;
     } catch (error) {
       console.error('Error suggesting will roles:', error);
       return {};

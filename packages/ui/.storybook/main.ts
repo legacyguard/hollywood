@@ -25,7 +25,7 @@ const config: StorybookConfig = {
       ...config.resolve.alias,
       'react-native': 'react-native-web',
     };
-    
+
     // Exclude problematic modules
     config.optimizeDeps = config.optimizeDeps || {};
     config.optimizeDeps.exclude = [
@@ -34,13 +34,13 @@ const config: StorybookConfig = {
       '@tamagui/animations-react-native',
       '@tamagui/react-native-media-driver',
     ];
-    
+
     // Add define to handle React Native globals
     config.define = {
       ...config.define,
       __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production'),
     };
-    
+
     return config;
   }
 };

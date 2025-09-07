@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card';
-import { Button } from './Button';
+import { Heart, Settings, Star } from '@tamagui/lucide-icons';
 import { Text, View } from 'tamagui';
-import { Heart, Star, Settings } from '@tamagui/lucide-icons';
+import { Button } from './Button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './Card';
 
 const meta: Meta<typeof Card> = {
   title: 'Components/Card',

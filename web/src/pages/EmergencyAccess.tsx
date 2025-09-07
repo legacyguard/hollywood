@@ -517,14 +517,14 @@ export default function FamilyShieldAccessPage() {
                           <Button size='sm' variant='outline' asChild>
                             <a href={`tel:${contact.phone}`}>
                               <Icon name={'phone'} className='w-4 h-4 mr-1' />
-                              Call
+                              {t('emergencyContacts.callButton')}
                             </a>
                           </Button>
                         )}
                         <Button size='sm' variant='outline' asChild>
                           <a href={`mailto:${contact.email}`}>
                             <Icon name={'mail'} className='w-4 h-4 mr-1' />
-                            Email
+                            {t('emergencyContacts.emailButton')}
                           </a>
                         </Button>
                       </div>
