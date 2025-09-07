@@ -29,6 +29,7 @@ import { WillWizard } from '../components/will/WillWizard';
 import type { Will } from '../types/will';
 import { willApiService } from '../services/willApiService';
 import { pdfGenerationService } from '../services/pdfGenerationService';
+import { useTranslation } from 'react-i18next';
 
 type ViewMode = 'list' | 'preview' | 'wizard';
 
@@ -41,6 +42,7 @@ interface WillManagementState {
 }
 
 export const WillManagement: React.FC = () => {
+  const { t } = useTranslation('ui/will-management');
   const [state, setState] = useState<WillManagementState>({
     wills: [],
     selectedWill: null,
@@ -67,7 +69,7 @@ export const WillManagement: React.FC = () => {
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to load wills',
+        error: error instanceof Error ? error.message : t('errors.loadFailed'),
       }));
     }
   };
@@ -86,7 +88,7 @@ export const WillManagement: React.FC = () => {
   const handleDeleteWill = async (willId: string) => {
     if (
       !window.confirm(
-        'Are you sure you want to delete this will? This action cannot be undone.'
+        t('confirmations.deleteMessage')
       )
     ) {
       return;
@@ -99,7 +101,7 @@ export const WillManagement: React.FC = () => {
       console.error('Error deleting will:', error);
       setState(prev => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Failed to delete will',
+        error: error instanceof Error ? error.message : t('errors.deleteFailed'),
       }));
     }
   };
@@ -119,7 +121,7 @@ export const WillManagement: React.FC = () => {
         ...prev,
         isLoading: false,
         error:
-          error instanceof Error ? error.message : 'Failed to regenerate will',
+          error instanceof Error ? error.message : t('errors.regenerateFailed'),
       }));
     }
   };
@@ -171,20 +173,9 @@ export const WillManagement: React.FC = () => {
         })) as import('@/types/will-templates').AISuggestion[],
         executionInstructions: {
           holographic: {
-            steps: [
-              'Write entire will by hand',
-              'Sign with full name',
-              'Date the document',
-            ],
-            requirements: [
-              'Must be handwritten',
-              'Must be signed',
-              'Must be dated',
-            ],
-            warnings: [
-              'Do not use typed text',
-              'Ensure handwriting is legible',
-            ],
+            steps: t('holographicWill.requirements.do', { returnObjects: true }),
+            requirements: t('holographicWill.requirements.mustBe', { returnObjects: true }),
+            warnings: t('holographicWill.requirements.doNot', { returnObjects: true }),
           },
         },
         legalDisclaimer:
@@ -214,13 +205,13 @@ export const WillManagement: React.FC = () => {
    */
   const getStatusBadge = (will: Will) => {
     const statusConfig = {
-      draft: { color: 'secondary', icon: Clock, text: 'Draft' },
-      in_progress: { color: 'default', icon: RefreshCw, text: 'In Progress' },
-      review: { color: 'default', icon: FileText, text: 'Under Review' },
-      completed: { color: 'default', icon: CheckCircle, text: 'Completed' },
-      notarized: { color: 'default', icon: CheckCircle, text: 'Notarized' },
-      witnessed: { color: 'default', icon: FileText, text: 'Witnessed' },
-      archived: { color: 'secondary', icon: FileText, text: 'Archived' },
+      draft: { color: 'secondary', icon: Clock, text: t('statusLabels.draft') },
+      in_progress: { color: 'default', icon: RefreshCw, text: t('statusLabels.inProgress') },
+      review: { color: 'default', icon: FileText, text: t('statusLabels.underReview') },
+      completed: { color: 'default', icon: CheckCircle, text: t('statusLabels.completed') },
+      notarized: { color: 'default', icon: CheckCircle, text: t('statusLabels.notarized') },
+      witnessed: { color: 'default', icon: FileText, text: t('statusLabels.witnessed') },
+      archived: { color: 'secondary', icon: FileText, text: t('statusLabels.archived') },
     };
 
     const config = statusConfig[will.status] || statusConfig.draft;
@@ -238,10 +229,10 @@ export const WillManagement: React.FC = () => {
    * Get completeness indicator
    */
   const getCompletenessIndicator = (score: number) => {
-    if (score >= 90) return { color: 'text-green-600', text: 'Complete' };
-    if (score >= 70) return { color: 'text-yellow-600', text: 'Good' };
-    if (score >= 50) return { color: 'text-orange-600', text: 'Needs Work' };
-    return { color: 'text-red-600', text: 'Incomplete' };
+    if (score >= 90) return { color: 'text-green-600', text: t('completeness.complete') };
+    if (score >= 70) return { color: 'text-yellow-600', text: t('completeness.good') };
+    if (score >= 50) return { color: 'text-orange-600', text: t('completeness.needsWork') };
+    return { color: 'text-red-600', text: t('completeness.incomplete') };
   };
 
   // Load wills on component mount
@@ -257,10 +248,9 @@ export const WillManagement: React.FC = () => {
       {/* Header */}
       <div className='flex justify-between items-center'>
         <div>
-          <h1 className='text-3xl font-bold'>My Wills</h1>
+          <h1 className='text-3xl font-bold'>{t('ui.pageTitle')}</h1>
           <p className='text-muted-foreground'>
-            Create and manage your legal will documents with Sofia's AI
-            assistance
+            {t('ui.pageSubtitle')}
           </p>
         </div>
         <Button
@@ -268,7 +258,7 @@ export const WillManagement: React.FC = () => {
           className='flex items-center gap-2'
         >
           <Plus className='h-4 w-4' />
-          Create New Will
+          {t('ui.createNewWill')}
         </Button>
       </div>
 
@@ -284,7 +274,7 @@ export const WillManagement: React.FC = () => {
       {state.isLoading && (
         <div className='text-center py-8'>
           <RefreshCw className='h-8 w-8 animate-spin mx-auto mb-4' />
-          <p className='text-muted-foreground'>Loading your wills...</p>
+          <p className='text-muted-foreground'>{t('ui.loadingMessage')}</p>
         </div>
       )}
 
@@ -293,10 +283,9 @@ export const WillManagement: React.FC = () => {
         <Card>
           <CardContent className='text-center py-12'>
             <FileText className='h-12 w-12 mx-auto mb-4 text-muted-foreground' />
-            <h3 className='text-lg font-semibold mb-2'>No wills created yet</h3>
+            <h3 className='text-lg font-semibold mb-2'>{t('ui.emptyStateTitle')}</h3>
             <p className='text-muted-foreground mb-4'>
-              Create your first will with Sofia's intelligent assistance. The
-              process takes about 15-30 minutes.
+              {t('ui.emptyStateDescription')}
             </p>
             <Button
               onClick={() =>
@@ -305,7 +294,7 @@ export const WillManagement: React.FC = () => {
               className='flex items-center gap-2'
             >
               <Plus className='h-4 w-4' />
-              Create Your First Will
+              {t('ui.createFirstWill')}
             </Button>
           </CardContent>
         </Card>
@@ -342,8 +331,7 @@ export const WillManagement: React.FC = () => {
                         </span>
 
                         <span>
-                          Updated:{' '}
-                          {new Date(will.updated_at).toLocaleDateString()}
+                          {t('ui.updatedLabel', { date: new Date(will.updated_at).toLocaleDateString() })}
                         </span>
                       </div>
                     </div>
@@ -385,7 +373,7 @@ export const WillManagement: React.FC = () => {
                     {will.beneficiaries && will.beneficiaries.length > 0 && (
                       <div>
                         <p className='text-sm font-medium mb-1'>
-                          Beneficiaries:
+                          {t('ui.beneficiariesLabel')}
                         </p>
                         <div className='flex flex-wrap gap-2'>
                           {will.beneficiaries
@@ -398,7 +386,7 @@ export const WillManagement: React.FC = () => {
                             ))}
                           {will.beneficiaries.length > 3 && (
                             <Badge variant='outline'>
-                              +{will.beneficiaries.length - 3} more
+                              {t('ui.moreLabel', { count: will.beneficiaries.length - 3 })}
                             </Badge>
                           )}
                         </div>
@@ -411,9 +399,10 @@ export const WillManagement: React.FC = () => {
                         <Alert>
                           <AlertCircle className='h-4 w-4' />
                           <AlertDescription>
-                            {will.validation_errors.length} validation issue
-                            {will.validation_errors.length !== 1 ? 's' : ''}{' '}
-                            found. Regenerate your will to fix these issues.
+                            {t('ui.validationIssues', { 
+                              count: will.validation_errors.length,
+                              plural: will.validation_errors.length !== 1 ? 's' : ''
+                            })}
                           </AlertDescription>
                         </Alert>
                       )}
@@ -421,9 +410,10 @@ export const WillManagement: React.FC = () => {
                     {/* AI Suggestions */}
                     {will.ai_suggestions && will.ai_suggestions.length > 0 && (
                       <div className='text-sm text-muted-foreground'>
-                        Sofia has {will.ai_suggestions.length} suggestion
-                        {will.ai_suggestions.length !== 1 ? 's' : ''} to improve
-                        your will.
+                        {t('ui.aiSuggestions', {
+                          count: will.ai_suggestions.length,
+                          plural: will.ai_suggestions.length !== 1 ? 's' : ''
+                        })}
                       </div>
                     )}
                   </div>
@@ -437,29 +427,26 @@ export const WillManagement: React.FC = () => {
       {/* Help Section */}
       <Card>
         <CardHeader>
-          <CardTitle className='text-lg'>Need Help?</CardTitle>
+          <CardTitle className='text-lg'>{t('help.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-4 text-sm'>
             <div>
-              <h4 className='font-medium mb-1'>Creating Your Will</h4>
+              <h4 className='font-medium mb-1'>{t('help.creating.title')}</h4>
               <p className='text-muted-foreground'>
-                Sofia guides you through the process step-by-step with AI
-                assistance.
+                {t('help.creating.description')}
               </p>
             </div>
             <div>
-              <h4 className='font-medium mb-1'>Legal Compliance</h4>
+              <h4 className='font-medium mb-1'>{t('help.compliance.title')}</h4>
               <p className='text-muted-foreground'>
-                All templates are designed to comply with local inheritance
-                laws.
+                {t('help.compliance.description')}
               </p>
             </div>
             <div>
-              <h4 className='font-medium mb-1'>Professional Review</h4>
+              <h4 className='font-medium mb-1'>{t('help.review.title')}</h4>
               <p className='text-muted-foreground'>
-                Consider having your will reviewed by a qualified attorney in
-                your jurisdiction.
+                {t('help.review.description')}
               </p>
             </div>
           </div>

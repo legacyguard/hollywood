@@ -11,6 +11,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
 
 interface FamilyShieldAccessData {
   activation_date: string;
@@ -45,6 +46,7 @@ interface FamilyShieldAccessData {
 }
 
 export default function FamilyShieldAccessPage() {
+  const { t } = useTranslation('ui/emergency-access');
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const createSupabaseClient = useSupabaseWithClerk();
@@ -80,11 +82,11 @@ export default function FamilyShieldAccessPage() {
       );
 
       if (error) {
-        throw new Error(error.message || 'Verification failed');
+        throw new Error(error.message || t('errors.verificationFailed'));
       }
 
       if (!data?.data) {
-        throw new Error('No access data returned');
+        throw new Error(t('errors.noAccessData'));
       }
 
       setAccessData(data.data);
@@ -95,8 +97,8 @@ export default function FamilyShieldAccessPage() {
       // Fallback to mock data if function call fails (development only)
       if (!data?.data) {
         const mockData: FamilyShieldAccessData = {
-          user_name: 'John Smith',
-          guardian_name: 'Jane Smith',
+          user_name: t('mockData.userName'),
+          guardian_name: t('mockData.guardianName'),
           guardian_permissions: {
             can_access_health_docs: true,
             can_access_financial_docs: true,
@@ -116,14 +118,14 @@ export default function FamilyShieldAccessPage() {
           documents: [
             {
               id: '1',
-              title: 'Last Will and Testament',
+              title: t('mockData.documentTitle1'),
               type: 'pdf',
               category: 'legal',
               created_at: new Date().toISOString(),
             },
             {
               id: '2',
-              title: 'Bank Account Information',
+              title: t('mockData.documentTitle2'),
               type: 'pdf',
               category: 'financial',
               created_at: new Date().toISOString(),
@@ -131,18 +133,18 @@ export default function FamilyShieldAccessPage() {
           ],
           emergency_contacts: [
             {
-              name: 'Dr. Sarah Johnson',
-              relationship: 'Family Doctor',
+              name: t('mockData.doctorName'),
+              relationship: t('mockData.doctorRelationship'),
               email: 'dr.johnson@clinic.com',
               phone: '+1 (555) 123-4567',
-              can_help_with: ['Health information', 'Medical records'],
+              can_help_with: t('mockData.doctorHelp', { returnObjects: true }),
             },
             {
-              name: 'Michael Chen',
-              relationship: 'Financial Advisor',
+              name: t('mockData.advisorName'),
+              relationship: t('mockData.advisorRelationship'),
               email: 'mchen@finance.com',
               phone: '+1 (555) 987-6543',
-              can_help_with: ['Financial matters', 'Investment accounts'],
+              can_help_with: t('mockData.advisorHelp', { returnObjects: true }),
             },
           ],
         };
