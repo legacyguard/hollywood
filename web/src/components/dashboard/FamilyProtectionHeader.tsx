@@ -20,6 +20,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { calculateFamilyProtectionDays } from '@/lib/milestone-system';
 import { getFamilyImpactMessage } from '@/lib/trust-score';
+import { useTranslation } from 'react-i18next';
 
 interface FamilyProtectionHeaderProps {
   className?: string;
@@ -46,6 +47,7 @@ export function FamilyProtectionHeader({
   variant = 'full',
   className,
 }: FamilyProtectionHeaderProps) {
+  const { t } = useTranslation('ui/family-protection-header');
   const [protectionDays, setProtectionDays] = useState(0);
   const [timeOfDay, setTimeOfDay] = useState<
     'afternoon' | 'evening' | 'morning'
@@ -86,12 +88,7 @@ export function FamilyProtectionHeader({
   }, []);
 
   const getGreeting = () => {
-    const greetings = {
-      morning: '🌅 Good morning',
-      afternoon: '☀️ Good afternoon',
-      evening: '🌙 Good evening',
-    };
-    return greetings[timeOfDay];
+    return t(`greetings.${timeOfDay}`);
   };
 
   const getProtectionLevelColor = () => {
@@ -113,15 +110,20 @@ export function FamilyProtectionHeader({
     const totalProtected = familyMembersCount + emergencyContactsCount;
 
     if (protectionDays === 0) {
-      return "Ready to start protecting your family's future?";
+      return t('protectionMessages.ready');
     } else if (protectionDays === 1) {
-      return `Your first day of family protection - what a beautiful beginning! 🌱`;
+      return t('protectionMessages.firstDay');
     } else if (protectionDays < 7) {
-      return `${protectionDays} days of growing protection for ${totalProtected || 'your'} ${totalProtected === 1 ? 'person' : 'loved ones'} 🌿`;
+      const peopleLabel = totalProtected === 1 ? t('peopleLabels.person') : t('peopleLabels.lovedOnes');
+      return t('protectionMessages.growing', {
+        days: protectionDays,
+        totalProtected: totalProtected || t('peopleLabels.your'),
+        peopleLabel
+      });
     } else if (protectionDays < 30) {
-      return `${protectionDays} days of strong family protection - you're building something lasting! 🌳`;
+      return t('protectionMessages.strong', { days: protectionDays });
     } else {
-      return `${protectionDays} days of comprehensive family security - your legacy is flourishing! 🌺`;
+      return t('protectionMessages.comprehensive', { days: protectionDays });
     }
   };
 
@@ -144,7 +146,7 @@ export function FamilyProtectionHeader({
           {animatedDays}
         </motion.span>
         <span className='text-sm text-gray-600 font-normal'>
-          {protectionDays === 1 ? 'day' : 'days'}
+          {protectionDays === 1 ? t('stats.dayOfProtection').split(' ')[0] : t('stats.daysOfProtection').split(' ')[0]}
         </span>
       </motion.div>
     );
@@ -168,7 +170,7 @@ export function FamilyProtectionHeader({
         {getDaysDisplay() && (
           <div className='text-right'>
             {getDaysDisplay()}
-            <p className='text-xs text-gray-500'>protected</p>
+            <p className='text-xs text-gray-500'>{t('stats.protected')}</p>
           </div>
         )}
       </div>
@@ -194,12 +196,12 @@ export function FamilyProtectionHeader({
             <div className='flex items-center gap-4 text-sm'>
               <div className='flex items-center gap-1'>
                 <Shield className='h-4 w-4 text-blue-600' />
-                <span>{documents.length} documents</span>
+                <span>{documents.length} {t('stats.documents')}</span>
               </div>
               <div className='flex items-center gap-1'>
                 <Users className='h-4 w-4 text-green-600' />
                 <span>
-                  {familyMembersCount + emergencyContactsCount} protected
+                  {familyMembersCount + emergencyContactsCount} {t('stats.protected')}
                 </span>
               </div>
             </div>
@@ -214,7 +216,7 @@ export function FamilyProtectionHeader({
                   `bg-gradient-to-r ${getProtectionLevelColor()}`
                 )}
               >
-                {trustScore}/100 Trust Score
+                {t('trustScoreBadge', { score: trustScore })}
               </Badge>
             )}
           </div>
@@ -263,7 +265,7 @@ export function FamilyProtectionHeader({
                 </div>
                 <div>
                   {getDaysDisplay()}
-                  <p className='text-blue-100 text-sm'>days of protection</p>
+                  <p className='text-blue-100 text-sm'>{t('stats.daysOfProtection')}</p>
                 </div>
               </div>
             )}
@@ -275,7 +277,7 @@ export function FamilyProtectionHeader({
               </div>
               <div>
                 <div className='text-2xl font-bold'>{documents.length}</div>
-                <p className='text-blue-100 text-sm'>documents secured</p>
+                <p className='text-blue-100 text-sm'>{t('stats.documentsSecured')}</p>
               </div>
             </div>
 
@@ -288,7 +290,7 @@ export function FamilyProtectionHeader({
                 <div className='text-2xl font-bold'>
                   {familyMembersCount + emergencyContactsCount}
                 </div>
-                <p className='text-blue-100 text-sm'>people protected</p>
+                <p className='text-blue-100 text-sm'>{t('stats.peopleProtected')}</p>
               </div>
             </div>
 
@@ -300,7 +302,7 @@ export function FamilyProtectionHeader({
                 </div>
                 <div>
                   <div className='text-2xl font-bold'>{trustScore}</div>
-                  <p className='text-blue-100 text-sm'>trust score</p>
+                  <p className='text-blue-100 text-sm'>{t('stats.trustScore')}</p>
                 </div>
               </div>
             )}
@@ -321,7 +323,7 @@ export function FamilyProtectionHeader({
                 className='bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm'
               >
                 <Clock className='h-4 w-4 mr-2' />
-                View Progress
+                {t('buttons.viewProgress')}
               </Button>
             )}
 
@@ -334,7 +336,7 @@ export function FamilyProtectionHeader({
                   className='bg-emerald-500/20 border-emerald-300/30 text-emerald-100 hover:bg-emerald-500/30'
                 >
                   <Users className='h-4 w-4 mr-2' />
-                  Protect Your First Family Member
+                  {t('buttons.protectFirstFamilyMember')}
                 </Button>
               )}
           </motion.div>

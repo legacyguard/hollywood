@@ -27,6 +27,7 @@ import {
   useBreakpoint,
 } from '@/lib/performance/mobile-optimization';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface MobileAnalyticsDashboardProps {
   onNavigate?: (section: string) => void;
@@ -36,6 +37,7 @@ interface MobileAnalyticsDashboardProps {
 export const MobileAnalyticsDashboard: React.FC<
   MobileAnalyticsDashboardProps
 > = ({ userId: _userId, onNavigate }) => {
+  const { t } = useTranslation('ui/mobile-analytics-dashboard');
   const { isSmall } = useBreakpoint();
   const [_selectedTab, _setSelectedTab] = useState('overview');
 
@@ -52,32 +54,32 @@ export const MobileAnalyticsDashboard: React.FC<
   const quickActions = [
     {
       id: 'upload',
-      title: 'Upload Document',
-      description: 'Add new family document',
+      title: t('quickActions.upload.title'),
+      description: t('quickActions.upload.description'),
       icon: FileText,
       color: 'bg-blue-500',
       action: () => onNavigate?.('upload'),
     },
     {
       id: 'invite',
-      title: 'Invite Family',
-      description: 'Add family member',
+      title: t('quickActions.invite.title'),
+      description: t('quickActions.invite.description'),
       icon: Users,
       color: 'bg-green-500',
       action: () => onNavigate?.('invite'),
     },
     {
       id: 'review',
-      title: 'Get Review',
-      description: 'Professional review',
+      title: t('quickActions.review.title'),
+      description: t('quickActions.review.description'),
       icon: Shield,
       color: 'bg-purple-500',
       action: () => onNavigate?.('review'),
     },
     {
       id: 'calendar',
-      title: 'View Calendar',
-      description: 'Important dates',
+      title: t('quickActions.calendar.title'),
+      description: t('quickActions.calendar.description'),
       icon: Calendar,
       color: 'bg-orange-500',
       action: () => onNavigate?.('calendar'),
@@ -88,20 +90,20 @@ export const MobileAnalyticsDashboard: React.FC<
     {
       id: 1,
       type: 'upload',
-      message: 'Will document uploaded',
-      time: '2 hours ago',
+      message: t('recentActivity.messages.willUploaded'),
+      time: t('recentActivity.timeAgo.hoursAgo', { count: 2 }),
     },
     {
       id: 2,
       type: 'review',
-      message: 'Professional review completed',
-      time: '1 day ago',
+      message: t('recentActivity.messages.reviewCompleted'),
+      time: t('recentActivity.timeAgo.dayAgo', { count: 1 }),
     },
     {
       id: 3,
       type: 'milestone',
-      message: 'Family protection milestone reached',
-      time: '3 days ago',
+      message: t('recentActivity.messages.milestoneReached'),
+      time: t('recentActivity.timeAgo.daysAgo', { count: 3 }),
     },
   ];
 
@@ -117,15 +119,15 @@ export const MobileAnalyticsDashboard: React.FC<
         <div className='flex items-center justify-between'>
           <div>
             <h1 className='text-lg font-bold text-gray-900'>
-              Family Protection
+              {t('header.title')}
             </h1>
-            <p className='text-sm text-gray-600'>Dashboard Overview</p>
+            <p className='text-sm text-gray-600'>{t('header.subtitle')}</p>
           </div>
           <div className='text-right'>
             <div className='text-2xl font-bold text-blue-600'>
               {metrics.protectionScore}
             </div>
-            <div className='text-xs text-gray-500'>Protection Score</div>
+            <div className='text-xs text-gray-500'>{t('header.protectionScore')}</div>
           </div>
         </div>
       </div>
@@ -153,7 +155,7 @@ export const MobileAnalyticsDashboard: React.FC<
                       {metrics.completionPercentage}%
                     </div>
                     <div className='text-xs text-gray-600 truncate'>
-                      Progress
+                      {t('metrics.progress')}
                     </div>
                   </div>
                 </div>
@@ -181,7 +183,7 @@ export const MobileAnalyticsDashboard: React.FC<
                       {metrics.familyMembers}
                     </div>
                     <div className='text-xs text-gray-600 truncate'>
-                      Members
+                      {t('metrics.members')}
                     </div>
                   </div>
                 </div>
@@ -209,7 +211,7 @@ export const MobileAnalyticsDashboard: React.FC<
                       {metrics.documentsSecured}
                     </div>
                     <div className='text-xs text-gray-600 truncate'>
-                      Documents
+                      {t('metrics.documents')}
                     </div>
                   </div>
                 </div>
@@ -237,7 +239,7 @@ export const MobileAnalyticsDashboard: React.FC<
                       {metrics.streakDays}
                     </div>
                     <div className='text-xs text-gray-600 truncate'>
-                      Day Streak
+                      {t('metrics.dayStreak')}
                     </div>
                   </div>
                 </div>
@@ -253,18 +255,18 @@ export const MobileAnalyticsDashboard: React.FC<
               <div className='flex items-center space-x-2'>
                 <Shield className='h-5 w-5 text-blue-600' />
                 <span className='font-medium text-gray-900'>
-                  Family Protection
+                  {t('familyProtection.title')}
                 </span>
               </div>
               <div className='flex items-center space-x-1'>
                 <TrendingUp className='h-4 w-4 text-green-500' />
-                <span className='text-sm text-green-500'>+12%</span>
+                <span className='text-sm text-green-500'>{t('familyProtection.trendUp')}</span>
               </div>
             </div>
             <Progress value={metrics.protectionScore} className='h-3 mb-2' />
             <div className='flex justify-between text-sm text-gray-600'>
               <span>{metrics.protectionScore}/100</span>
-              <span>{metrics.activeRisks} risks to address</span>
+              <span>{t('metrics.risksToAddress', { count: metrics.activeRisks })}</span>
             </div>
           </CardContent>
         </Card>
@@ -274,7 +276,7 @@ export const MobileAnalyticsDashboard: React.FC<
           <CardHeader className='pb-3'>
             <CardTitle className='text-base flex items-center space-x-2'>
               <Activity className='h-5 w-5' />
-              <span>Quick Actions</span>
+              <span>{t('quickActions.title')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className='p-4 pt-0'>
@@ -321,7 +323,7 @@ export const MobileAnalyticsDashboard: React.FC<
             <CardTitle className='text-base flex items-center justify-between'>
               <div className='flex items-center space-x-2'>
                 <BarChart3 className='h-5 w-5' />
-                <span>Recent Activity</span>
+                <span>{t('recentActivity.title')}</span>
               </div>
               <Button
                 variant='ghost'
@@ -329,7 +331,7 @@ export const MobileAnalyticsDashboard: React.FC<
                 {...mobileOptimized.button('sm')}
                 onClick={() => onNavigate?.('activity')}
               >
-                View All
+                {t('recentActivity.viewAll')}
                 <ChevronRight className='h-4 w-4 ml-1' />
               </Button>
             </CardTitle>

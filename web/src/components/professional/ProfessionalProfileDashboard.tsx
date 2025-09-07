@@ -44,6 +44,7 @@ import type {
   ProfessionalPartnership,
   ProfessionalReviewer,
 } from '@/types/professional';
+import { useTranslation } from 'react-i18next';
 
 interface ProfessionalProfileDashboardProps {
   className?: string;
@@ -62,6 +63,7 @@ export function ProfessionalProfileDashboard({
   onUpdatePartnership,
   className,
 }: ProfessionalProfileDashboardProps) {
+  const { t } = useTranslation('ui/professional-profile-dashboard');
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState(reviewer);
   const [stats, setStats] = useState({
@@ -219,12 +221,12 @@ export function ProfessionalProfileDashboard({
                     {isEditing ? (
                       <>
                         <Save className='h-4 w-4 mr-2' />
-                        Save
+                        {t('buttons.save')}
                       </>
                     ) : (
                       <>
                         <Edit3 className='h-4 w-4 mr-2' />
-                        Edit
+                        {t('buttons.edit')}
                       </>
                     )}
                   </Button>
@@ -240,11 +242,10 @@ export function ProfessionalProfileDashboard({
         <Alert className='border-yellow-200 bg-yellow-50'>
           <AlertCircle className='h-4 w-4 text-yellow-600' />
           <AlertTitle className='text-yellow-800'>
-            Complete Your Profile
+            {t('profileCompleteness.title')}
           </AlertTitle>
           <AlertDescription className='text-yellow-700'>
-            Your profile is {profileCompleteness}% complete. Complete it to
-            attract more clients.
+            {t('profileCompleteness.description', { percent: profileCompleteness })}
             <Progress value={profileCompleteness} className='mt-2 h-2' />
           </AlertDescription>
         </Alert>
@@ -256,7 +257,7 @@ export function ProfessionalProfileDashboard({
           <CardContent className='p-4'>
             <div className='flex items-center justify-between'>
               <div>
-                <p className='text-sm text-muted-foreground'>Total Reviews</p>
+                <p className='text-sm text-muted-foreground'>{t('stats.totalReviews')}</p>
                 <p className='text-2xl font-bold'>{stats.totalReviews}</p>
               </div>
               <FileText className='h-8 w-8 text-blue-600' />
@@ -268,7 +269,7 @@ export function ProfessionalProfileDashboard({
           <CardContent className='p-4'>
             <div className='flex items-center justify-between'>
               <div>
-                <p className='text-sm text-muted-foreground'>Average Rating</p>
+                <p className='text-sm text-muted-foreground'>{t('stats.averageRating')}</p>
                 <div className='flex items-center gap-1'>
                   <p className='text-2xl font-bold'>{stats.averageRating}</p>
                   <Star className='h-5 w-5 text-yellow-500 fill-current' />
@@ -283,7 +284,7 @@ export function ProfessionalProfileDashboard({
           <CardContent className='p-4'>
             <div className='flex items-center justify-between'>
               <div>
-                <p className='text-sm text-muted-foreground'>Completion Rate</p>
+                <p className='text-sm text-muted-foreground'>{t('stats.completionRate')}</p>
                 <p className='text-2xl font-bold'>
                   {Math.round(stats.completionRate)}%
                 </p>
@@ -298,7 +299,7 @@ export function ProfessionalProfileDashboard({
             <div className='flex items-center justify-between'>
               <div>
                 <p className='text-sm text-muted-foreground'>
-                  Avg. Review Time
+                  {t('stats.averageReviewTime')}
                 </p>
                 <p className='text-2xl font-bold'>{stats.averageTime}h</p>
               </div>
@@ -311,7 +312,7 @@ export function ProfessionalProfileDashboard({
           <CardContent className='p-4'>
             <div className='flex items-center justify-between'>
               <div>
-                <p className='text-sm text-muted-foreground'>Earnings</p>
+                <p className='text-sm text-muted-foreground'>{t('stats.earnings')}</p>
                 <p className='text-2xl font-bold'>
                   ${stats.earnings.toLocaleString()}
                 </p>
@@ -325,10 +326,10 @@ export function ProfessionalProfileDashboard({
       {/* Main Content Tabs */}
       <Tabs defaultValue='profile' className='space-y-6'>
         <TabsList className='grid w-full grid-cols-4'>
-          <TabsTrigger value='profile'>Profile</TabsTrigger>
-          <TabsTrigger value='credentials'>Credentials</TabsTrigger>
-          <TabsTrigger value='reviews'>Reviews</TabsTrigger>
-          <TabsTrigger value='settings'>Settings</TabsTrigger>
+          <TabsTrigger value='profile'>{t('tabs.profile')}</TabsTrigger>
+          <TabsTrigger value='credentials'>{t('tabs.credentials')}</TabsTrigger>
+          <TabsTrigger value='reviews'>{t('tabs.reviews')}</TabsTrigger>
+          <TabsTrigger value='settings'>{t('tabs.settings')}</TabsTrigger>
         </TabsList>
 
         {/* Profile Tab */}
@@ -338,7 +339,7 @@ export function ProfessionalProfileDashboard({
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <User className='h-5 w-5' />
-                  Personal Information
+                  {t('personalInfo.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-4'>
@@ -346,7 +347,7 @@ export function ProfessionalProfileDashboard({
                   <>
                     <div className='grid grid-cols-2 gap-4'>
                       <div className='space-y-2'>
-                        <Label htmlFor='full_name'>Full Name</Label>
+                        <Label htmlFor='full_name'>{t('personalInfo.labels.fullName')}</Label>
                         <Input
                           id='full_name'
                           value={editedProfile.full_name}
@@ -359,7 +360,7 @@ export function ProfessionalProfileDashboard({
                         />
                       </div>
                       <div className='space-y-2'>
-                        <Label htmlFor='professional_title'>Title</Label>
+                        <Label htmlFor='professional_title'>{t('personalInfo.labels.title')}</Label>
                         <Input
                           id='professional_title'
                           value={editedProfile.professional_title}
@@ -373,7 +374,7 @@ export function ProfessionalProfileDashboard({
                       </div>
                     </div>
                     <div className='space-y-2'>
-                      <Label htmlFor='law_firm_name'>Law Firm</Label>
+                      <Label htmlFor='law_firm_name'>{t('personalInfo.labels.lawFirm')}</Label>
                       <Input
                         id='law_firm_name'
                         value={editedProfile.law_firm_name || ''}
@@ -386,7 +387,7 @@ export function ProfessionalProfileDashboard({
                       />
                     </div>
                     <div className='space-y-2'>
-                      <Label htmlFor='bio'>Professional Bio</Label>
+                      <Label htmlFor='bio'>{t('personalInfo.labels.professionalBio')}</Label>
                       <Textarea
                         id='bio'
                         value={editedProfile.bio || ''}
@@ -408,20 +409,20 @@ export function ProfessionalProfileDashboard({
                     </div>
                     {reviewer.bio && (
                       <div>
-                        <h4 className='font-medium mb-2'>Bio</h4>
+                        <h4 className='font-medium mb-2'>{t('personalInfo.labels.bio')}</h4>
                         <p className='text-muted-foreground'>{reviewer.bio}</p>
                       </div>
                     )}
                     <div className='flex items-center gap-2'>
                       <Briefcase className='h-4 w-4 text-muted-foreground' />
                       <span>
-                        {reviewer.experience_years} years of experience
+                        {t('personalInfo.experience', { years: reviewer.experience_years })}
                       </span>
                     </div>
                     {reviewer.hourly_rate && (
                       <div className='flex items-center gap-2'>
                         <DollarSign className='h-4 w-4 text-muted-foreground' />
-                        <span>${reviewer.hourly_rate}/hour</span>
+                        <span>{t('personalInfo.hourlyRate', { rate: reviewer.hourly_rate })}</span>
                       </div>
                     )}
                   </div>
@@ -433,7 +434,7 @@ export function ProfessionalProfileDashboard({
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <Award className='h-5 w-5' />
-                  Specializations
+                  {t('specializations.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -450,7 +451,7 @@ export function ProfessionalProfileDashboard({
                 </div>
                 {reviewer.specializations?.length === 0 && (
                   <p className='text-muted-foreground'>
-                    No specializations added yet
+                    {t('specializations.noSpecializations')}
                   </p>
                 )}
               </CardContent>
@@ -464,19 +465,19 @@ export function ProfessionalProfileDashboard({
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Shield className='h-5 w-5' />
-                Professional Credentials
+                {t('credentials.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className='space-y-6'>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <div>
-                  <Label className='text-base font-medium'>Bar Number</Label>
+                  <Label className='text-base font-medium'>{t('credentials.labels.barNumber')}</Label>
                   <p className='text-muted-foreground'>{reviewer.bar_number}</p>
                 </div>
 
                 <div>
                   <Label className='text-base font-medium'>
-                    Verification Status
+                    {t('credentials.labels.verificationStatus')}
                   </Label>
                   <div className='flex items-center gap-2 mt-1'>
                     {getVerificationIcon(reviewer.verification_status)}
@@ -491,7 +492,7 @@ export function ProfessionalProfileDashboard({
 
               <div>
                 <Label className='text-base font-medium mb-3 block'>
-                  Licensed States
+                  {t('credentials.labels.licensedStates')}
                 </Label>
                 <div className='flex flex-wrap gap-2'>
                   {reviewer.licensed_states?.map(state => (
@@ -506,11 +507,10 @@ export function ProfessionalProfileDashboard({
                 <Alert className='border-yellow-200 bg-yellow-50'>
                   <Clock className='h-4 w-4 text-yellow-600' />
                   <AlertTitle className='text-yellow-800'>
-                    Verification In Progress
+                    {t('credentials.verification.title')}
                   </AlertTitle>
                   <AlertDescription className='text-yellow-700'>
-                    Your credentials are being verified. This process typically
-                    takes 3-5 business days.
+                    {t('credentials.verification.description')}
                   </AlertDescription>
                 </Alert>
               )}
@@ -524,7 +524,7 @@ export function ProfessionalProfileDashboard({
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <MessageSquare className='h-5 w-5' />
-                Recent Reviews
+                {t('reviews.title')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -550,13 +550,11 @@ export function ProfessionalProfileDashboard({
                         </Badge>
                       </div>
                       <div className='text-sm text-muted-foreground'>
-                        Requested:{' '}
-                        {new Date(review.requested_at).toLocaleDateString()}
+                        {t('reviews.requested')} {new Date(review.requested_at).toLocaleDateString()}
                         {review.completed_at && (
                           <>
                             {' '}
-                            • Completed:{' '}
-                            {new Date(review.completed_at).toLocaleDateString()}
+                            • {t('reviews.completed')} {new Date(review.completed_at).toLocaleDateString()}
                           </>
                         )}
                       </div>
@@ -566,7 +564,7 @@ export function ProfessionalProfileDashboard({
               ) : (
                 <div className='text-center py-8 text-muted-foreground'>
                   <FileText className='h-12 w-12 mx-auto mb-4 opacity-50' />
-                  <p>No reviews yet</p>
+                  <p>{t('reviews.noReviews')}</p>
                 </div>
               )}
             </CardContent>
@@ -580,17 +578,17 @@ export function ProfessionalProfileDashboard({
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <Users className='h-5 w-5' />
-                  Partnership Settings
+                  {t('partnershipSettings.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-4'>
                 <div className='flex items-center justify-between'>
                   <div>
                     <Label className='text-base font-medium'>
-                      Auto-assign Reviews
+                      {t('partnershipSettings.autoAssign.title')}
                     </Label>
                     <p className='text-sm text-muted-foreground'>
-                      Automatically accept suitable review requests
+                      {t('partnershipSettings.autoAssign.description')}
                     </p>
                   </div>
                   <Switch
@@ -605,7 +603,7 @@ export function ProfessionalProfileDashboard({
 
                 <div className='grid grid-cols-2 gap-4'>
                   <div className='space-y-2'>
-                    <Label htmlFor='max_reviews'>Max Concurrent Reviews</Label>
+                    <Label htmlFor='max_reviews'>{t('partnershipSettings.labels.maxConcurrentReviews')}</Label>
                     <Input
                       id='max_reviews'
                       type='number'
@@ -621,7 +619,7 @@ export function ProfessionalProfileDashboard({
                   </div>
 
                   <div className='space-y-2'>
-                    <Label htmlFor='min_fee'>Minimum Review Fee</Label>
+                    <Label htmlFor='min_fee'>{t('partnershipSettings.labels.minimumReviewFee')}</Label>
                     <Input
                       id='min_fee'
                       type='number'

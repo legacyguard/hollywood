@@ -341,8 +341,15 @@ jobs:
       - name: Notify deployment
         if: always()
         run: |
-          echo "Staging deployment completed"
-          echo "Status: ${{ job.status }}"
+          echo "## Staging Deployment Complete 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deployed by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** Staging" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL:** staging.legacyguard.cz" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
   # ============================================
   # Deploy to Production
@@ -394,12 +401,12 @@ jobs:
             --environment tests/postman/production-env.json
 
       - name: Create release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ github.run_number }}
-          release_name: Release v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
           body: |
             ## Changes in this release
             - Commit: ${{ github.sha }}
@@ -414,8 +421,15 @@ jobs:
       - name: Notify deployment
         if: always()
         run: |
-          echo "Production deployment completed - v${{ github.run_number }}"
-          echo "Status: ${{ job.status }}"
+          echo "## Production Deployment Complete 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deployed by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** Production" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL:** https://legacyguard.cz" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
   # ============================================
   # Rollback Production (Manual Trigger)
