@@ -537,16 +537,16 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                 name='users'
                 className='w-8 h-8 mx-auto mb-3 text-indigo-600'
               />
-              <h3 className='font-semibold mb-2'>Emergency Contacts</h3>
+              <h3 className='font-semibold mb-2'>{t('quick.contacts.title')}</h3>
               <p className='text-sm text-muted-foreground mb-4'>
-                {emergency_contacts.length} contacts available
+                {t('quick.contacts.count', { count: emergency_contacts.length })}
               </p>
               <Button
                 variant='outline'
                 size='sm'
                 onClick={() => setSelectedCategory('contacts')}
               >
-                View Contacts
+                {t('quick.contacts.button')}
               </Button>
             </Card>
 
@@ -555,16 +555,16 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                 name='clock'
                 className='w-8 h-8 mx-auto mb-3 text-purple-600'
               />
-              <h3 className='font-semibold mb-2'>Time Capsules</h3>
+              <h3 className='font-semibold mb-2'>{t('quick.timeCapsules.title')}</h3>
               <p className='text-sm text-muted-foreground mb-4'>
-                {time_capsules.length} messages available
+                {t('quick.timeCapsules.count', { count: time_capsules.length })}
               </p>
               <Button
                 variant='outline'
                 size='sm'
                 onClick={() => setSelectedCategory('personal')}
               >
-                View Messages
+                {t('quick.timeCapsules.button')}
               </Button>
             </Card>
 
@@ -573,16 +573,16 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                 name='documents'
                 className='w-8 h-8 mx-auto mb-3 text-green-600'
               />
-              <h3 className='font-semibold mb-2'>Important Resources</h3>
+              <h3 className='font-semibold mb-2'>{t('quick.resources.title')}</h3>
               <p className='text-sm text-muted-foreground mb-4'>
-                {available_resources.length} items available
+                {t('quick.resources.count', { count: available_resources.length })}
               </p>
               <Button
                 variant='outline'
                 size='sm'
                 onClick={() => setSelectedCategory('all')}
               >
-                Browse All
+                {t('quick.resources.button')}
               </Button>
             </Card>
           </div>
@@ -665,7 +665,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
               <Card className='p-6'>
                 <h3 className='font-semibold mb-6 flex items-center gap-2'>
                   <Icon name='users' className='w-5 h-5' />
-                  Emergency Contacts
+                  {t('sections.emergencyContacts.title')}
                 </h3>
 
                 <div className='grid md:grid-cols-2 gap-4'>
@@ -715,7 +715,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                         )}
                         <div className='flex items-center gap-2 mt-2'>
                           <Badge variant='outline' className='text-xs'>
-                            Priority {contact.priority}
+                            {t('contacts.priority', { priority: contact.priority })}
                           </Badge>
                         </div>
                       </div>
@@ -749,7 +749,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                     {entry.related_documents.length > 0 && (
                       <div className='mt-4 pt-4 border-t'>
                         <p className='text-sm font-medium mb-2'>
-                          Related Documents:
+                          {t('guidance.relatedDocumentsTitle')}
                         </p>
                         <div className='flex flex-wrap gap-2'>
                           {entry.related_documents.map((docId, idx) => (
@@ -758,7 +758,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                               variant='outline'
                               className='text-xs'
                             >
-                              Document #{docId.slice(-6)}
+                              {t('guidance.documentLabel', { id: docId.slice(-6) })}
                             </Badge>
                           ))}
                         </div>
