@@ -20,6 +20,7 @@ import {
 import { showMilestoneRecognition } from './milestoneUtils';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface PathOfSerenityProps {
   className?: string;
@@ -36,6 +37,7 @@ interface UserStats {
 export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
   className = '',
 }) => {
+  const { t } = useTranslation('ui/path-of-serenity');
   const [milestones, setMilestones] =
     useState<SerenityMilestone[]>(SERENITY_MILESTONES);
   const [nextChallenge, setNextChallenge] =
@@ -121,7 +123,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
           if (result.newlyUnlocked.length > 1) {
             setTimeout(() => {
               toast.success(
-                `🌟 You unlocked ${result.newlyUnlocked.length} milestones in your Garden of Legacy!`
+                t('toast.milestonesUnlocked', { count: result.newlyUnlocked.length })
               );
             }, 1000);
           }
@@ -135,7 +137,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
         const message = generateSerenityMessage(result.milestones);
         setSerenityMessage(message);
       } catch (error) {
-        console.error('Error loading user stats:', error);
+        console.error(t('errors.loadingStats'), error);
       } finally {
         setIsLoading(false);
       }
@@ -148,7 +150,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
   const handleChallengeClick = () => {
     if (nextChallenge) {
       navigate(nextChallenge.navigationTarget);
-      toast.success('Challenge started! Sofia will guide you step by step.');
+      toast.success(t('challenge.startedToast'));
       celebrate('challenge_started');
     }
   };
@@ -164,7 +166,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
           <div className='flex items-center gap-3'>
             <Icon name='loader' className='w-6 h-6 animate-spin text-primary' />
             <span className='text-lg text-muted-foreground'>
-              Growing your Garden of Legacy...
+              {t('loading')}
             </span>
           </div>
         </div>
@@ -183,7 +185,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
             <div className='flex items-center justify-center gap-2'>
               <Icon name='sparkles' className='w-6 h-6 text-green-600' />
               <h2 className='text-2xl font-bold text-green-900 dark:text-green-100'>
-                Garden of Your Legacy
+                {t('title')}
               </h2>
               <Icon name='sparkles' className='w-6 h-6 text-green-600' />
             </div>
@@ -194,7 +196,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
               <div className='flex items-center justify-center gap-2 text-sm text-green-600'>
                 <Icon name='checkCircle' className='w-4 h-4' />
                 <span>
-                  Milestones achieved: {unlockedCount} of {milestones.length}
+                  {t('milestones.achieved', { count: unlockedCount, total: milestones.length })}
                 </span>
               </div>
             )}
@@ -423,8 +425,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
               <div className='flex-grow space-y-3'>
                 <div>
                   <h3 className='text-lg font-semibold text-amber-900 dark:text-amber-100'>
-                    Your next {nextChallenge.estimatedTime}-minute journey to
-                    peace
+                    {t('challenge.title', { minutes: nextChallenge.estimatedTime })}
                   </h3>
                   <h4 className='text-xl font-bold text-amber-800 dark:text-amber-200 mt-1'>
                     {nextChallenge.title}
@@ -439,11 +440,11 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                     className='bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2 rounded-lg shadow-md'
                   >
                     <Icon name='arrowRight' className='w-4 h-4 mr-2' />
-                    Start {nextChallenge.estimatedTime}-minute challenge
+                    {t('challenge.startButton', { minutes: nextChallenge.estimatedTime })}
                   </Button>
                   <div className='text-xs text-amber-600 dark:text-amber-300 flex items-center gap-1'>
                     <Icon name='sparkles' className='w-3 h-3' />
-                    Sofia will guide you step by step
+                    {t('challenge.guidance')}
                   </div>
                 </div>
               </div>
@@ -502,8 +503,8 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                     }`}
                   >
                     {selectedMilestone.isUnlocked
-                      ? 'Unlocked'
-                      : 'Awaiting unlock'}
+                      ? t('milestones.unlocked')
+                      : t('milestones.awaitingUnlock')}
                   </div>
                 </div>
 
@@ -529,7 +530,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                   variant='outline'
                   className='mt-4'
                 >
-                  Close
+                  {t('modal.close')}
                 </Button>
               </div>
             </motion.div>

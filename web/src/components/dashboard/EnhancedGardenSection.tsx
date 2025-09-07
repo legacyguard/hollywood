@@ -11,6 +11,7 @@ import { AnimationSystem } from '@/lib/animation-system';
 import { showMilestoneRecognition } from '@/components/dashboard/milestoneUtils';
 import type { PersonalityMode } from '@/lib/sofia-types';
 import type { SerenityMilestone } from '@/lib/path-of-serenity';
+import { useTranslation } from 'react-i18next';
 
 // Icons
 import {
@@ -43,6 +44,7 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
   personalityMode,
   className = '',
 }) => {
+  const { t } = useTranslation('ui/enhanced-garden-section');
   const navigate = useNavigate();
   const personalityManager = usePersonalityManager();
   const {
@@ -104,33 +106,33 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
     switch (effectiveMode) {
       case 'empathetic':
         return {
-          title: '💚 Your Garden of Love',
-          subtitle: 'Watch your loving protection bloom and grow',
+          title: t('personalities.empathetic.title'),
+          subtitle: t('personalities.empathetic.subtitle'),
           icon: Heart,
           bgGradient: 'from-green-50 to-emerald-50',
           borderColor: 'border-emerald-200',
           accentColor: 'text-emerald-600',
-          progressLabel: 'Love & Protection Growing',
+          progressLabel: t('personalities.empathetic.progressLabel'),
         };
       case 'pragmatic':
         return {
-          title: '🛡️ Protection System Status',
-          subtitle: 'Monitor security metrics and system performance',
+          title: t('personalities.pragmatic.title'),
+          subtitle: t('personalities.pragmatic.subtitle'),
           icon: Shield,
           bgGradient: 'from-blue-50 to-slate-50',
           borderColor: 'border-blue-200',
           accentColor: 'text-blue-600',
-          progressLabel: 'System Efficiency',
+          progressLabel: t('personalities.pragmatic.progressLabel'),
         };
       default:
         return {
-          title: '🌟 Your Legacy Garden',
-          subtitle: 'Track your comprehensive legacy protection journey',
+          title: t('personalities.default.title'),
+          subtitle: t('personalities.default.subtitle'),
           icon: Sparkles,
           bgGradient: 'from-purple-50 to-pink-50',
           borderColor: 'border-purple-200',
           accentColor: 'text-purple-600',
-          progressLabel: 'Legacy Progress',
+          progressLabel: t('personalities.default.progressLabel'),
         };
     }
   };
@@ -148,15 +150,15 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
       actions.push({
         label:
           effectiveMode === 'empathetic'
-            ? 'Add Precious Documents'
-            : 'Upload Documents',
+            ? t('actions.documents.empathetic.label')
+            : t('actions.documents.default.label'),
         icon: TrendingUp,
         onClick: () => navigate('/vault'),
         color: 'text-blue-600',
         description:
           effectiveMode === 'empathetic'
-            ? 'Preserve what matters most'
-            : 'Secure important files',
+            ? t('actions.documents.empathetic.description')
+            : t('actions.documents.default.description'),
       });
     }
 
@@ -164,35 +166,35 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
       actions.push({
         label:
           effectiveMode === 'empathetic'
-            ? 'Invite Trusted Friends'
-            : 'Add Guardians',
+            ? t('actions.guardians.empathetic.label')
+            : t('actions.guardians.default.label'),
         icon: effectiveMode === 'empathetic' ? Heart : Shield,
         onClick: () => navigate('/guardians'),
         color:
           effectiveMode === 'empathetic' ? 'text-pink-500' : 'text-green-600',
         description:
           effectiveMode === 'empathetic'
-            ? 'Share the care with loved ones'
-            : 'Enhance security redundancy',
+            ? t('actions.guardians.empathetic.description')
+            : t('actions.guardians.default.description'),
       });
     }
 
     if (gardenProgress.completedMilestones < 3) {
       actions.push({
-        label: 'Complete Milestones',
+        label: t('actions.milestones.label'),
         icon: Target,
         onClick: () => navigate('/legacy'),
         color: 'text-purple-600',
-        description: 'Achieve your next protection goals',
+        description: t('actions.milestones.description'),
       });
     }
 
     actions.push({
-      label: 'Garden Settings',
+      label: t('actions.settings.label'),
       icon: Settings,
       onClick: () => navigate('/settings'),
       color: 'text-gray-600',
-      description: 'Customize your garden experience',
+      description: t('actions.settings.description'),
     });
 
     return actions.slice(0, 3); // Limit to 3 actions
@@ -208,10 +210,10 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
         <div className='text-center py-8'>
           <TreePine className='w-12 h-12 text-gray-400 mx-auto mb-4' />
           <h3 className='text-lg font-medium text-gray-600 mb-2'>
-            Garden Unavailable
+            {t('error.title')}
           </h3>
           <p className='text-sm text-muted-foreground'>
-            Unable to load your legacy garden. Please try again later.
+            {t('error.message')}
           </p>
         </div>
       </div>
@@ -264,7 +266,7 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
                   }
                 : {})}
             >
-              View Details
+              {t('buttons.viewDetails')}
               <ExternalLink className='w-3 h-3' />
             </motion.button>
           </div>
@@ -310,19 +312,19 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
                 <div className='font-semibold text-gray-800'>
                   {gardenProgress.documentsCount}
                 </div>
-                <div>Documents</div>
+                <div>{t('stats.documents')}</div>
               </div>
               <div className='text-center'>
                 <div className='font-semibold text-gray-800'>
                   {gardenProgress.guardiansCount}
                 </div>
-                <div>Guardians</div>
+                <div>{t('stats.guardians')}</div>
               </div>
               <div className='text-center'>
                 <div className='font-semibold text-gray-800'>
                   {gardenProgress.completedMilestones}
                 </div>
-                <div>Milestones</div>
+                <div>{t('stats.milestones')}</div>
               </div>
             </div>
           </div>
@@ -366,10 +368,10 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
           <div className='bg-white/60 backdrop-blur-sm rounded-lg p-4'>
             <h4 className='text-sm font-medium text-gray-700 mb-3'>
               {effectiveMode === 'empathetic'
-                ? 'Suggested Acts of Love'
+                ? t('personalities.empathetic.quickActionsTitle')
                 : effectiveMode === 'pragmatic'
-                  ? 'Recommended Actions'
-                  : 'Quick Actions'}
+                  ? t('personalities.pragmatic.quickActionsTitle')
+                  : t('personalities.default.quickActionsTitle')}
             </h4>
 
             <div className='space-y-2'>
@@ -428,7 +430,7 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
                   <Sparkles className='w-6 h-6 text-green-600' />
                 </div>
                 <h3 className='text-lg font-semibold text-gray-800 mb-2'>
-                  Milestone Achieved!
+                  {t('modal.milestoneAchieved')}
                 </h3>
                 <p className='text-sm text-gray-600 mb-4'>
                   {lastViewedMilestone}
@@ -440,7 +442,7 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
                   }}
                   className='w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors'
                 >
-                  View in Legacy Garden
+                  {t('buttons.viewInLegacyGarden')}
                 </button>
               </div>
             </motion.div>

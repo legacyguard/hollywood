@@ -43,7 +43,7 @@ jobs:
           npm audit fix --audit-level=moderate || true
 
       - name: Run Snyk Security Scan
-        if: ${{ secrets.SNYK_TOKEN != '' }}
+        if: ${{ github.secrets.SNYK_TOKEN != '' }}
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -109,7 +109,7 @@ jobs:
           npx bundlesize
 
       - name: SonarCloud Scan
-        if: ${{ secrets.SONAR_TOKEN != '' }}
+        if: ${{ github.secrets.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -287,9 +287,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, test-e2e]
     if: github.ref == 'refs/heads/develop'
-    environment:
-      name: staging
-      url: https://staging.legacyguard.cz
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -316,13 +313,10 @@ jobs:
             --environment tests/postman/staging-env.json
 
       - name: Notify deployment
-        if: ${{ secrets.SLACK_WEBHOOK != '' }}
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          text: 'Staging deployment completed'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-        continue-on-error: true
+        if: always()
+        run: |
+          echo "Staging deployment completed"
+          echo "Status: ${{ job.status }}"
 
   # ============================================
   # Deploy to Production
@@ -359,7 +353,7 @@ jobs:
           vercel-args: '--prod'
 
       - name: Purge CDN cache
-        if: ${{ secrets.CLOUDFLARE_ZONE_ID != '' && secrets.CLOUDFLARE_API_TOKEN != '' }}
+        if: ${{ github.secrets.CLOUDFLARE_ZONE_ID != '' && github.secrets.CLOUDFLARE_API_TOKEN != '' }}
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
@@ -392,13 +386,10 @@ jobs:
           prerelease: false
 
       - name: Notify deployment
-        if: ${{ secrets.SLACK_WEBHOOK != '' }}
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          text: 'Production deployment completed - v${{ github.run_number }}'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-        continue-on-error: true
+        if: always()
+        run: |
+          echo "Production deployment completed - v${{ github.run_number }}"
+          echo "Status: ${{ job.status }}"
 
   # ============================================
   # Rollback Production (Manual Trigger)
@@ -419,10 +410,7 @@ jobs:
           echo "Rolling back to previous deployment..."
 
       - name: Notify rollback
-        if: ${{ secrets.SLACK_WEBHOOK != '' }}
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          text: 'Production rollback initiated'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-        continue-on-error: true
+        if: always()
+        run: |
+          echo "Production rollback initiated"
+          echo "Status: ${{ job.status }}"
