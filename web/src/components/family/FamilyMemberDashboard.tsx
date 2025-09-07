@@ -47,6 +47,7 @@ import {
   adaptDbFamilyStatsToApp,
 } from '@/lib/type-adapters';
 import { FamilyInvitationFlow } from './FamilyInvitationFlow';
+import { useTranslation } from 'react-i18next';
 
 interface FamilyMemberDashboardProps {
   userId: string;
@@ -71,6 +72,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
   const [filter, setFilter] = useState<
     'active' | 'all' | 'emergency' | 'pending'
   >('all');
+  const { t } = useTranslation('ui/family-member-dashboard');
 
   const loadFamilyData = useCallback(async () => {
     try {
@@ -212,7 +214,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>
-                Family Members
+                {t('protectionOverview.totalMembers')}
               </CardTitle>
               <Users className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
@@ -221,7 +223,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
                 {protectionStatus.totalMembers}
               </div>
               <p className='text-xs text-muted-foreground'>
-                {protectionStatus.activeMembers} active
+                {t('protectionOverview.activeText', { count: protectionStatus.activeMembers })}
               </p>
             </CardContent>
           </Card>
@@ -229,7 +231,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>
-                Protection Level
+                {t('protectionOverview.protectionLevel')}
               </CardTitle>
               <Shield className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
@@ -247,7 +249,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>
-                Documents Shared
+                {t('protectionOverview.documentsShared')}
               </CardTitle>
               <FileText className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
@@ -256,7 +258,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
                 {protectionStatus.documentsShared}
               </div>
               <p className='text-xs text-muted-foreground'>
-                Across family members
+                {t('protectionOverview.documentsSharedText')}
               </p>
             </CardContent>
           </Card>
@@ -264,7 +266,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>
-                Emergency Ready
+                {t('protectionOverview.emergencyReady')}
               </CardTitle>
               <AlertTriangle className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
@@ -276,9 +278,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
                   <AlertTriangle className='h-5 w-5 text-yellow-500 mr-2' />
                 )}
                 <span className='text-sm font-medium'>
-                  {protectionStatus.emergencyContactsSet
-                    ? 'Ready'
-                    : 'Setup needed'}
+                  {t(`protectionOverview.emergencyReady_${protectionStatus.emergencyContactsSet}`)}
                 </span>
               </div>
             </CardContent>
@@ -292,7 +292,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
               <Star className='h-5 w-5 text-yellow-500' />
-              Family Strengths
+              {t('strengthsCard.title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -311,7 +311,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
               <AlertTriangle className='h-5 w-5 text-blue-500' />
-              Recommendations
+              {t('recommendationsCard.title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -333,15 +333,14 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
         <CardHeader>
           <div className='flex items-center justify-between'>
             <div>
-              <CardTitle>Family Members</CardTitle>
+              <CardTitle>{t('membersSection.title')}</CardTitle>
               <CardDescription>
-                Manage your family circle and their access to important
-                documents
+                {t('membersSection.description')}
               </CardDescription>
             </div>
             <Button onClick={() => setShowInviteFlow(true)} className='gap-2'>
               <UserPlus className='h-4 w-4' />
-              Invite Family Member
+              {t('membersSection.inviteButton')}
             </Button>
           </div>
         </CardHeader>
@@ -349,15 +348,15 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
           {/* Filter Tabs */}
           <div className='flex gap-2 mb-6'>
             {[
-              { key: 'all', label: 'All Members', count: members.length },
+              { key: 'all', label: t('filters.all'), count: members.length },
               {
                 key: 'active',
-                label: 'Active',
+                label: t('filters.active'),
                 count: members.filter(m => m.status === 'active').length,
               },
               {
                 key: 'pending',
-                label: 'Pending',
+                label: t('filters.pending'),
                 count: members.filter(
                   m =>
                     m.status === 'invited' ||
@@ -366,7 +365,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
               },
               {
                 key: 'emergency',
-                label: 'Emergency',
+                label: t('filters.emergency'),
                 count: members.filter(m => m.role === 'emergency_contact')
                   .length,
               },

@@ -1,5 +1,6 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
@@ -35,73 +36,68 @@ import type {
   ManualEntryType,
 } from '@/types/guardian';
 
-const ENTRY_TYPES: {
-  color: string;
-  description: string;
-  icon: string;
-  label: string;
-  value: ManualEntryType;
-}[] = [
+const getEntryTypes = (t: any) => [
   {
     value: 'important_contacts',
-    label: 'Important Contacts',
-    description: 'Key people your family should contact',
+    label: t('entryTypes.important_contacts.label'),
+    description: t('entryTypes.important_contacts.description'),
     icon: 'phone',
     color: 'blue',
   },
   {
     value: 'financial_access',
-    label: 'Financial Access',
-    description: 'Bank accounts, passwords, and financial information',
+    label: t('entryTypes.financial_access.label'),
+    description: t('entryTypes.financial_access.description'),
     icon: 'credit-card',
     color: 'green',
   },
   {
     value: 'property_management',
-    label: 'Property Management',
-    description: 'What to do with house, car, and other assets',
+    label: t('entryTypes.property_management.label'),
+    description: t('entryTypes.property_management.description'),
     icon: 'home',
     color: 'purple',
   },
   {
     value: 'funeral_wishes',
-    label: 'Final Wishes',
-    description: 'Your preferences for funeral and memorial',
+    label: t('entryTypes.funeral_wishes.label'),
+    description: t('entryTypes.funeral_wishes.description'),
     icon: 'heart',
     color: 'pink',
   },
   {
     value: 'document_locations',
-    label: 'Document Locations',
-    description: 'Where to find important papers and documents',
+    label: t('entryTypes.document_locations.label'),
+    description: t('entryTypes.document_locations.description'),
     icon: 'file-text',
     color: 'amber',
   },
   {
     value: 'child_care_instructions',
-    label: 'Child Care Instructions',
-    description: 'Specific guidance for caring for your children',
+    label: t('entryTypes.child_care_instructions.label'),
+    description: t('entryTypes.child_care_instructions.description'),
     icon: 'baby',
     color: 'cyan',
   },
   {
     value: 'emergency_procedure',
-    label: 'Emergency Procedures',
-    description: 'Step-by-step emergency response instructions',
+    label: t('entryTypes.emergency_procedure.label'),
+    description: t('entryTypes.emergency_procedure.description'),
     icon: 'alert-triangle',
     color: 'red',
   },
   {
     value: 'custom_instruction',
-    label: 'Custom Instructions',
-    description: 'Any other important guidance for your family',
+    label: t('entryTypes.custom_instruction.label'),
+    description: t('entryTypes.custom_instruction.description'),
     icon: 'edit',
     color: 'gray',
   },
-];
+] as const;
 
 export default function SurvivorManualPage() {
-  usePageTitle('Family Guidance Manual');
+  const { t } = useTranslation('pages/survivor-manual');
+  usePageTitle(t('pageTitle'));
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
 
@@ -143,8 +139,8 @@ export default function SurvivorManualPage() {
         initialEntries.push({
           user_id: userId!,
           entry_type: 'important_contacts',
-          title: 'Emergency Contacts',
-          content: `Key people to contact in case of emergency:\n\n${contactsList}`,
+          title: t('templates.emergencyContacts.title'),
+          content: `${t('templates.emergencyContacts.content')}\n\n${contactsList}`,
           is_completed: false,
           priority: 1,
           tags: ['contacts', 'guardians'],
@@ -157,9 +153,8 @@ export default function SurvivorManualPage() {
       initialEntries.push({
         user_id: userId!,
         entry_type: 'financial_access',
-        title: 'Bank Account Access',
-        content:
-          'Location of financial documents:\n\n• Bank statements: [Location]\n• Online banking passwords: [Secure location]\n• Financial advisor contact: [Name and phone]\n• Investment accounts: [Details]',
+        title: t('templates.bankAccess.title'),
+        content: t('templates.bankAccess.content'),
         is_completed: false,
         priority: 2,
         tags: ['finances', 'banks'],
@@ -171,9 +166,8 @@ export default function SurvivorManualPage() {
       initialEntries.push({
         user_id: userId!,
         entry_type: 'document_locations',
-        title: 'Important Document Locations',
-        content:
-          'Where to find crucial documents:\n\n• Will and testament: [Location]\n• Insurance policies: [Location]\n• Property deeds: [Location]\n• Birth certificates: [Location]\n• Passport and ID: [Location]',
+        title: t('templates.documentLocations.title'),
+        content: t('templates.documentLocations.content'),
         is_completed: false,
         priority: 3,
         tags: ['documents', 'legal'],
@@ -197,7 +191,7 @@ export default function SurvivorManualPage() {
         }));
         setEntries(mappedEntries as FamilyGuidanceEntry[]);
         toast.success(
-          'Initial Family Guidance Manual created! Please review and customize the entries.'
+          t('messages.initialManualCreated')
         );
       } catch (error) {
         console.error('Error generating initial entries:', error);
@@ -222,7 +216,7 @@ export default function SurvivorManualPage() {
 
     // Validation
     if (!formData.title.trim() || !formData.content.trim()) {
-      toast.error('Title and content are required');
+      toast.error(t('validation.titleAndContentRequired'));
       return;
     }
 
@@ -344,11 +338,11 @@ export default function SurvivorManualPage() {
       } as FamilyGuidanceEntry;
       setEntries(prev => prev.map(e => (e.id === entry.id ? mappedData : e)));
       toast.success(
-        `Entry marked as ${data.is_completed ? 'completed' : 'incomplete'}`
+        data.is_completed ? t('messages.entryMarkedCompleted') : t('messages.entryMarkedIncomplete')
       );
     } catch (error) {
       console.error('Error updating completion:', error);
-      toast.error('Failed to update entry');
+      toast.error(t('messages.failedToUpdate'));
     }
   };
 
@@ -389,7 +383,7 @@ export default function SurvivorManualPage() {
         <div className='min-h-screen bg-background flex items-center justify-center'>
           <Icon name='loader' className='w-8 h-8 animate-spin text-primary' />
           <span className='ml-3 text-muted-foreground'>
-            Loading Family Guidance Manual...
+            {t('loading')}
           </span>
         </div>
       </DashboardLayout>
@@ -410,7 +404,7 @@ export default function SurvivorManualPage() {
                       <Icon name='file-text' className='w-6 h-6 text-primary' />
                     </div>
                     <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground'>
-                      Family Guidance Manual
+                      {t('header.title')}
                     </h1>
                   </div>
                 </FadeIn>
@@ -419,15 +413,13 @@ export default function SurvivorManualPage() {
                     className='text-lg leading-relaxed max-w-3xl mb-4'
                     style={{ color: 'hsl(var(--muted-text))' }}
                   >
-                    A step-by-step guide for your loved ones. Sofia is helping
-                    you create a comprehensive manual that will give your family
-                    clear directions when they need them most.
+                    {t('header.description')}
                   </p>
                   <div className='flex items-center gap-4'>
                     <div className='flex items-center gap-2'>
                       <div className='w-4 h-4 bg-primary rounded-full'></div>
                       <span className='text-sm text-muted-foreground'>
-                        {completionPercentage}% Complete
+                        {t('header.completionStatus', { percentage: completionPercentage })}
                       </span>
                     </div>
                     <div className='flex items-center gap-2'>
@@ -436,8 +428,10 @@ export default function SurvivorManualPage() {
                         className='w-4 h-4 text-green-600'
                       />
                       <span className='text-sm text-muted-foreground'>
-                        {entries.filter(e => e.is_completed).length} of{' '}
-                        {entries.length} entries completed
+                        {t('header.entriesCompleted', { 
+                          completed: entries.filter(e => e.is_completed).length,
+                          total: entries.length
+                        })}
                       </span>
                     </div>
                   </div>
@@ -452,21 +446,21 @@ export default function SurvivorManualPage() {
                       onClick={() => setEditingEntry(null)}
                     >
                       <Icon name='plus' className='w-5 h-5 mr-2' />
-                      Add Entry
+                      {t('buttons.addEntry')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className='sm:max-w-[700px]'>
                     <DialogHeader>
                       <DialogTitle>
                         {editingEntry
-                          ? 'Edit Manual Entry'
-                          : 'Add New Manual Entry'}
+                          ? t('dialog.editTitle')
+                          : t('dialog.addTitle')}
                       </DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmit} className='space-y-6'>
                       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                         <div className='space-y-2'>
-                          <Label htmlFor='entry_type'>Category</Label>
+                          <Label htmlFor='entry_type'>{t('dialog.category')}</Label>
                           <Select
                             value={formData.entry_type}
                             onValueChange={value =>
@@ -480,7 +474,7 @@ export default function SurvivorManualPage() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {ENTRY_TYPES.map(type => (
+                              {getEntryTypes(t).map(type => (
                                 <SelectItem key={type.value} value={type.value}>
                                   <div className='flex items-center gap-2'>
                                     <Icon
@@ -496,7 +490,7 @@ export default function SurvivorManualPage() {
                         </div>
                         <div className='space-y-2'>
                           <Label htmlFor='priority'>
-                            Priority (1 = highest)
+                            {t('dialog.priority')}
                           </Label>
                           <Input
                             id='priority'
@@ -515,27 +509,27 @@ export default function SurvivorManualPage() {
                       </div>
 
                       <div className='space-y-2'>
-                        <Label htmlFor='title'>Title *</Label>
+                        <Label htmlFor='title'>{t('dialog.title')}</Label>
                         <Input
                           id='title'
                           value={formData.title}
                           onChange={e =>
                             handleInputChange('title', e.target.value)
                           }
-                          placeholder='e.g., Contact the family lawyer'
+                          placeholder={t('dialog.titlePlaceholder')}
                           required
                         />
                       </div>
 
                       <div className='space-y-2'>
-                        <Label htmlFor='content'>Instructions *</Label>
+                        <Label htmlFor='content'>{t('dialog.instructions')}</Label>
                         <Textarea
                           id='content'
                           value={formData.content}
                           onChange={e =>
                             handleInputChange('content', e.target.value)
                           }
-                          placeholder='Provide detailed, step-by-step instructions...'
+                          placeholder={t('dialog.instructionsPlaceholder')}
                           rows={6}
                           required
                         />
@@ -547,7 +541,7 @@ export default function SurvivorManualPage() {
                           variant='outline'
                           onClick={resetForm}
                         >
-                          Cancel
+                          {t('buttons.cancel')}
                         </Button>
                         <Button type='submit' disabled={isSubmitting}>
                           {isSubmitting ? (
@@ -556,12 +550,12 @@ export default function SurvivorManualPage() {
                                 name='loader'
                                 className='w-4 h-4 mr-2 animate-spin'
                               />
-                              {editingEntry ? 'Updating...' : 'Adding...'}
+                              {editingEntry ? t('buttons.updatingEntry') : t('buttons.addingEntry')}
                             </>
                           ) : (
                             <>
                               <Icon name='check' className='w-4 h-4 mr-2' />
-                              {editingEntry ? 'Update Entry' : 'Add Entry'}
+                              {editingEntry ? t('buttons.updateEntry') : t('buttons.addEntry')}
                             </>
                           )}
                         </Button>
@@ -583,16 +577,14 @@ export default function SurvivorManualPage() {
                   <Icon name='file-text' className='w-8 h-8 text-primary' />
                 </div>
                 <h3 className='text-2xl font-bold mb-4'>
-                  Creating Your Family Guidance Manual
+                  {t('emptyState.title')}
                 </h3>
                 <p className='text-muted-foreground mb-6 max-w-2xl mx-auto'>
-                  Sofia is preparing your personalized manual based on your
-                  guardians and documents. This will give your family clear,
-                  step-by-step guidance when they need it most.
+                  {t('emptyState.description')}
                 </p>
                 <Button onClick={() => setIsDialogOpen(true)}>
                   <Icon name='plus' className='w-4 h-4 mr-2' />
-                  Start Creating Manual
+                  {t('buttons.startCreating')}
                 </Button>
               </Card>
             </FadeIn>
@@ -602,7 +594,7 @@ export default function SurvivorManualPage() {
               <FadeIn duration={0.5} delay={0.8}>
                 <Card className='p-6'>
                   <div className='flex items-center justify-between mb-4'>
-                    <h3 className='text-xl font-semibold'>Manual Progress</h3>
+                    <h3 className='text-xl font-semibold'>{t('progress.title')}</h3>
                     <span className='text-2xl font-bold text-primary'>
                       {completionPercentage}%
                     </span>
@@ -615,14 +607,14 @@ export default function SurvivorManualPage() {
                   </div>
                   <p className='text-sm text-muted-foreground'>
                     {completionPercentage === 100
-                      ? 'Congratulations! Your survival manual is complete. Your family will have clear guidance when they need it.'
-                      : `Complete ${entries.filter(e => !e.is_completed).length} more entries to finish your manual.`}
+                      ? t('progress.complete')
+                      : t('progress.incomplete', { remaining: entries.filter(e => !e.is_completed).length })}
                   </p>
                 </Card>
               </FadeIn>
 
               {/* Entries by Category */}
-              {ENTRY_TYPES.map((typeConfig, typeIndex) => {
+              {getEntryTypes(t).map((typeConfig, typeIndex) => {
                 const typeEntries = entriesByType[typeConfig.value] || [];
                 if (typeEntries.length === 0) return null;
 
@@ -651,8 +643,10 @@ export default function SurvivorManualPage() {
                           </p>
                         </div>
                         <Badge variant='secondary' className='ml-auto'>
-                          {typeEntries.filter(e => e.is_completed).length} of{' '}
-                          {typeEntries.length} complete
+                          {t('entries.completeStatus', {
+                            completed: typeEntries.filter(e => e.is_completed).length,
+                            total: typeEntries.length
+                          })}
                         </Badge>
                       </div>
 
@@ -715,7 +709,7 @@ export default function SurvivorManualPage() {
                                     name='sparkles'
                                     className='w-3 h-3 mr-1'
                                   />
-                                  Auto-generated by Sofia
+                                  {t('entries.autoGenerated')}
                                 </Badge>
                               </div>
                             )}

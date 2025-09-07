@@ -8,6 +8,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -75,6 +76,7 @@ interface InsightsDashboardProps {
 export default function InsightsDashboard({
   className,
 }: InsightsDashboardProps) {
+  const { t } = useTranslation('ui/insights-dashboard');
   const [dashboardData, setDashboardData] =
     useState<InsightsDashboardData | null>(null);
   const [recommendations, setRecommendations] = useState<
@@ -109,8 +111,8 @@ export default function InsightsDashboard({
   }, [loadDashboardData]);
 
   const formatBytes = (bytes: number): string => {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 Bytes';
+    const sizes = [t('units.bytes'), t('units.kb'), t('units.mb'), t('units.gb')];
+    if (bytes === 0) return `0 ${t('units.bytes')}`;
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return `${Math.round((bytes / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
   };
@@ -204,15 +206,15 @@ export default function InsightsDashboard({
       <div className='flex items-center justify-between'>
         <div>
           <h2 className='text-2xl font-bold tracking-tight'>
-            Document Insights
+            {t('title')}
           </h2>
           <p className='text-muted-foreground'>
-            Analytics and intelligence for your document management
+            {t('description')}
           </p>
         </div>
         <div className='flex items-center space-x-2'>
           <span className='text-sm text-muted-foreground'>
-            Last updated: {lastRefresh.toLocaleTimeString()}
+            {t('labels.lastUpdated', { time: lastRefresh.toLocaleTimeString() })}
           </span>
           <Button
             variant='outline'
@@ -223,11 +225,11 @@ export default function InsightsDashboard({
             <RefreshCw
               className={cn('h-4 w-4 mr-2', isRefreshing && 'animate-spin')}
             />
-            Refresh
+            {t('buttons.refresh')}
           </Button>
           <Button variant='outline' size='sm' onClick={() => exportData('csv')}>
             <Download className='h-4 w-4 mr-2' />
-            Export
+            {t('buttons.export')}
           </Button>
         </div>
       </div>
@@ -237,7 +239,7 @@ export default function InsightsDashboard({
         <Card>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <CardTitle className='text-sm font-medium'>
-              Total Documents
+              {t('metrics.totalDocuments')}
             </CardTitle>
             <FileText className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
@@ -257,7 +259,7 @@ export default function InsightsDashboard({
 
         <Card>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Storage Used</CardTitle>
+            <CardTitle className='text-sm font-medium'>{t('metrics.storageUsed')}</CardTitle>
             <HardDrive className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
@@ -277,7 +279,7 @@ export default function InsightsDashboard({
         <Card>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <CardTitle className='text-sm font-medium'>
-              Security Score
+              {t('metrics.securityScore')}
             </CardTitle>
             <Shield className='h-4 w-4 text-muted-foreground' />
           </CardHeader>

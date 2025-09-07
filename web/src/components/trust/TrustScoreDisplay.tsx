@@ -27,6 +27,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useABTest } from '@/lib/ab-testing/ab-testing-system';
 import { useTrustScoreTracking } from '@/hooks/useConversionTracking';
+import { useTranslation } from 'react-i18next';
 
 interface TrustScoreDisplayProps {
   className?: string;
@@ -46,30 +47,30 @@ interface TrustBoostSuggestion {
   urgent?: boolean;
 }
 
-const TRUST_BOOST_SUGGESTIONS: TrustBoostSuggestion[] = [
+const getTrustBoostSuggestions = (t: (key: string, options?: any) => string): TrustBoostSuggestion[] => [
   {
-    action: 'Add Emergency Contacts',
+    action: t('boosts.addEmergencyContacts.action'),
     boost: 10,
-    description: 'Help your family access important information',
+    description: t('boosts.addEmergencyContacts.description'),
     icon: Shield,
   },
   {
-    action: 'Professional Review',
+    action: t('boosts.professionalReview.action'),
     boost: 25,
-    description: 'Get your documents reviewed by licensed attorneys',
+    description: t('boosts.professionalReview.description'),
     icon: Award,
     urgent: true,
   },
   {
-    action: 'Upload Estate Documents',
+    action: t('boosts.uploadEstateDocuments.action'),
     boost: 15,
-    description: 'Secure and organize all your important documents',
+    description: t('boosts.uploadEstateDocuments.description'),
     icon: Lock,
   },
   {
-    action: 'Complete Will Wizard',
+    action: t('boosts.completeWillWizard.action'),
     boost: 20,
-    description: 'Create legally sound will with our guided process',
+    description: t('boosts.completeWillWizard.description'),
     icon: CheckCircle,
     urgent: true,
   },
@@ -84,6 +85,7 @@ export function TrustScoreDisplay({
   className,
   userId,
 }: TrustScoreDisplayProps) {
+  const { t } = useTranslation('ui/trust-score-display');
   const { variant, trackConversion, isVariant } = useABTest(
     'trust_score_display_v1',
     userId
@@ -116,7 +118,7 @@ export function TrustScoreDisplay({
 
   const percentage = Math.min((trustScore / maxScore) * 100, 100);
   const trustLevel = getTrustLevel(percentage);
-  const nextBoosts = TRUST_BOOST_SUGGESTIONS.filter(_boost => percentage < 80);
+  const nextBoosts = getTrustBoostSuggestions(t).filter(_boost => percentage < 80);
 
   // Don't show trust score in control variant
   if (isVariant('control')) {

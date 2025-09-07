@@ -38,6 +38,7 @@ import {
   Users,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface FamilyMember {
   avatar?: string;
@@ -132,6 +133,7 @@ interface FamilyDocumentCoEditingProps {
 export const FamilyDocumentCoEditing: React.FC<
   FamilyDocumentCoEditingProps
 > = ({ familyMembers = [], onDocumentCreated, existingDocuments = [] }) => {
+  const { t } = useTranslation('ui/family-document-coediting');
   const [documents, setDocuments] =
     useState<SharedDocument[]>(existingDocuments);
   const [activeDocument, setActiveDocument] = useState<null | SharedDocument>(
@@ -188,7 +190,7 @@ export const FamilyDocumentCoEditing: React.FC<
   const createNewDocument = () => {
     const newDocument: SharedDocument = {
       id: `doc-${Date.now()}`,
-      title: 'New Family Document',
+      title: t('sidebar.newDocument'),
       content: '',
       type: 'other',
       ownerId: currentUserId,
@@ -383,7 +385,7 @@ export const FamilyDocumentCoEditing: React.FC<
                     })
                   }
                   className='text-xl font-bold border-0 p-0 h-auto'
-                  placeholder='Document Title'
+                  placeholder={t('document.titlePlaceholder')}
                 />
                 <div className='flex items-center gap-2 mt-2'>
                   <Badge className={getStatusColor(activeDocument.status)}>
@@ -419,7 +421,7 @@ export const FamilyDocumentCoEditing: React.FC<
                     ) : (
                       <Unlock className='h-3 w-3' />
                     )}
-                    {activeDocument.isLocked ? 'Locked' : 'Unlocked'}
+                    {activeDocument.isLocked ? t('document.locked') : t('document.unlocked')}
                   </Button>
                 </div>
               </div>
@@ -473,7 +475,7 @@ export const FamilyDocumentCoEditing: React.FC<
                     ref={textareaRef}
                     value={activeDocument.content}
                     onChange={e => handleContentChange(e.target.value)}
-                    placeholder='Start writing your document...'
+                    placeholder={t('document.contentPlaceholder')}
                     className='min-h-96 resize-none font-mono text-sm'
                     disabled={
                       activeDocument.isLocked &&
@@ -560,7 +562,7 @@ export const FamilyDocumentCoEditing: React.FC<
                             onValueChange={value => addCollaborator(value)}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder='Add a collaborator' />
+                              <SelectValue placeholder={t('collaborators.addPlaceholder')} />
                             </SelectTrigger>
                             <SelectContent>
                               {collaborators
@@ -648,7 +650,7 @@ export const FamilyDocumentCoEditing: React.FC<
                       size='sm'
                       variant='outline'
                       onClick={() => {
-                        const text = prompt('Add a comment:');
+                        const text = prompt(t('comments.addComment'));
                         if (text) addComment(text, 0);
                       }}
                       className='gap-2'

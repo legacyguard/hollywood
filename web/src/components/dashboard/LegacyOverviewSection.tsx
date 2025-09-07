@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { useNavigate } from 'react-router-dom';
 import { useDocumentFilter } from '@/contexts/DocumentFilterContext';
+import { useTranslation } from 'react-i18next';
 
 interface BundleCard {
   category:
@@ -51,6 +52,7 @@ const categoryColors = {
 export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({
   className,
 }) => {
+  const { t } = useTranslation('ui/legacy-overview-section');
   const navigate = useNavigate();
   const { setFilter } = useDocumentFilter();
 
@@ -58,16 +60,16 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({
   const bundleCards: BundleCard[] = [
     {
       id: '1',
-      name: 'Vehicle: Honda Civic',
+      name: t('bundles.vehicle.name', { vehicle: 'Honda Civic' }),
       category: 'vehicle',
-      primaryEntity: 'Honda Civic 2019',
+      primaryEntity: t('bundles.vehicle.primaryEntity', { vehicle: 'Honda Civic', year: '2019' }),
       documentCount: 4,
       lastUpdated: '2025-01-20',
       isRecent: true,
     },
     {
       id: '2',
-      name: 'Property: Family Home',
+      name: t('bundles.property.name'),
       category: 'property',
       primaryEntity: '123 Main Street',
       documentCount: 3,

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import { CountrySelector } from './CountrySelector';
+import { EnhancedCountrySelector } from './EnhancedCountrySelector';
 import { type WillType, WillTypeSelector } from './WillTypeSelector';
 import { type WillData, WillWizard } from './WillWizard';
 import { IntelligentWillDraftGenerator } from './IntelligentWillDraftGenerator';
@@ -27,7 +27,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
   );
   const [draftData, setDraftData] = useState<null | WillData>(null);
 
-  const handleCountryConfirmed = () => {
+  const handleSelectionConfirmed = () => {
     setCurrentStep('will_type');
   };
 
@@ -91,7 +91,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
         switch (currentStep) {
           case 'country':
             return (
-              <CountrySelector onCountryConfirmed={handleCountryConfirmed} />
+              <EnhancedCountrySelector onSelectionConfirmed={handleSelectionConfirmed} />
             );
 
           case 'will_type':

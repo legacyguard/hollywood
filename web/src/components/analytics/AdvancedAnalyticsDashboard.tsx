@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -62,6 +63,7 @@ export const AdvancedAnalyticsDashboard: React.FC<
   compactMode: _compactMode = false,
   familyId: _familyId,
 }) => {
+  const { t } = useTranslation('ui/advanced-analytics-dashboard');
   const [showSmartInsights, setShowSmartInsights] = useState(true);
   const [_selectedTimeframe, _setSelectedTimeframe] = useState<
     '1y' | '7d' | '30d' | '90d'
@@ -88,10 +90,9 @@ export const AdvancedAnalyticsDashboard: React.FC<
       id: 'critical-healthcare',
       type: 'warning',
       priority: 'critical',
-      title: 'Healthcare Directives Needed',
-      message:
-        'Your family lacks critical healthcare decision-making documents. This could cause delays in emergency situations.',
-      action: 'Create Healthcare Proxy',
+      title: t('smartInsights.insights.healthcareDirectives.title'),
+      message: t('smartInsights.insights.healthcareDirectives.message'),
+      action: t('smartInsights.insights.healthcareDirectives.action'),
       confidence: 95,
       category: 'protection',
       generated: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
@@ -100,10 +101,9 @@ export const AdvancedAnalyticsDashboard: React.FC<
       id: 'streak-opportunity',
       type: 'opportunity',
       priority: 'medium',
-      title: 'Streak Milestone Approaching',
-      message:
-        "You're 3 days away from achieving a 10-day completion streak. One quick task today will keep you on track.",
-      action: 'View Quick Tasks',
+      title: t('smartInsights.insights.streakOpportunity.title'),
+      message: t('smartInsights.insights.streakOpportunity.message'),
+      action: t('smartInsights.insights.streakOpportunity.action'),
       confidence: 88,
       category: 'progress',
       generated: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
@@ -112,10 +112,9 @@ export const AdvancedAnalyticsDashboard: React.FC<
       id: 'family-collaboration',
       type: 'recommendation',
       priority: 'high',
-      title: 'Involve Family Members',
-      message:
-        'Based on your progress, now would be a good time to invite family members to review and discuss your legacy plan.',
-      action: 'Invite Family',
+      title: t('smartInsights.insights.familyCollaboration.title'),
+      message: t('smartInsights.insights.familyCollaboration.message'),
+      action: t('smartInsights.insights.familyCollaboration.action'),
       confidence: 82,
       category: 'family',
       generated: new Date(Date.now() - 1000 * 60 * 60 * 6), // 6 hours ago
@@ -124,9 +123,8 @@ export const AdvancedAnalyticsDashboard: React.FC<
       id: 'achievement-unlocked',
       type: 'celebration',
       priority: 'low',
-      title: 'Milestone Achieved!',
-      message:
-        "Congratulations! You've completed 65% of your legacy planning journey. Your family is significantly more protected.",
+      title: t('smartInsights.insights.achievementUnlocked.title'),
+      message: t('smartInsights.insights.achievementUnlocked.message'),
       confidence: 100,
       category: 'progress',
       generated: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
@@ -189,9 +187,9 @@ export const AdvancedAnalyticsDashboard: React.FC<
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffDays > 0) return `${diffDays}d ago`;
-    if (diffHours > 0) return `${diffHours}h ago`;
-    return 'Just now';
+    if (diffDays > 0) return t('timeAgo.daysAgo', { days: diffDays });
+    if (diffHours > 0) return t('timeAgo.hoursAgo', { hours: diffHours });
+    return t('timeAgo.justNow');
   };
 
   return (
@@ -200,10 +198,10 @@ export const AdvancedAnalyticsDashboard: React.FC<
       <div className='flex items-center justify-between'>
         <div>
           <h1 className='text-3xl font-bold text-gray-900'>
-            AI-Powered Analytics Dashboard
+            {t('header.title')}
           </h1>
           <p className='text-gray-600'>
-            Comprehensive insights into your family's legacy planning progress
+            {t('header.description')}
           </p>
         </div>
         <div className='flex gap-2'>
@@ -217,7 +215,7 @@ export const AdvancedAnalyticsDashboard: React.FC<
             ) : (
               <Eye className='h-4 w-4' />
             )}
-            {showSmartInsights ? 'Hide Insights' : 'Show Insights'}
+            {showSmartInsights ? t('buttons.hideInsights') : t('buttons.showInsights')}
           </Button>
         </div>
       </div>
@@ -228,12 +226,12 @@ export const AdvancedAnalyticsDashboard: React.FC<
           <CardContent className='p-4'>
             <div className='flex items-center gap-2 mb-2'>
               <Shield className='h-4 w-4 text-blue-600' />
-              <span className='text-sm font-medium'>Protection</span>
+              <span className='text-sm font-medium'>{t('metrics.protection.title')}</span>
             </div>
             <div className='text-2xl font-bold text-blue-600'>
               {metrics.protectionScore}
             </div>
-            <p className='text-xs text-gray-500'>Security Score</p>
+            <p className='text-xs text-gray-500'>{t('metrics.protection.label')}</p>
           </CardContent>
         </Card>
 
@@ -241,12 +239,12 @@ export const AdvancedAnalyticsDashboard: React.FC<
           <CardContent className='p-4'>
             <div className='flex items-center gap-2 mb-2'>
               <Target className='h-4 w-4 text-green-600' />
-              <span className='text-sm font-medium'>Completion</span>
+              <span className='text-sm font-medium'>{t('metrics.completion.title')}</span>
             </div>
             <div className='text-2xl font-bold text-green-600'>
               {metrics.completionPercentage}%
             </div>
-            <p className='text-xs text-gray-500'>Progress</p>
+            <p className='text-xs text-gray-500'>{t('metrics.completion.label')}</p>
           </CardContent>
         </Card>
 
@@ -254,12 +252,12 @@ export const AdvancedAnalyticsDashboard: React.FC<
           <CardContent className='p-4'>
             <div className='flex items-center gap-2 mb-2'>
               <AlertTriangle className='h-4 w-4 text-red-600' />
-              <span className='text-sm font-medium'>Risks</span>
+              <span className='text-sm font-medium'>{t('metrics.risks.title')}</span>
             </div>
             <div className='text-2xl font-bold text-red-600'>
               {metrics.activeRisks}
             </div>
-            <p className='text-xs text-gray-500'>Active</p>
+            <p className='text-xs text-gray-500'>{t('metrics.risks.label')}</p>
           </CardContent>
         </Card>
 
@@ -267,12 +265,12 @@ export const AdvancedAnalyticsDashboard: React.FC<
           <CardContent className='p-4'>
             <div className='flex items-center gap-2 mb-2'>
               <Award className='h-4 w-4 text-purple-600' />
-              <span className='text-sm font-medium'>Achievements</span>
+              <span className='text-sm font-medium'>{t('metrics.achievements.title')}</span>
             </div>
             <div className='text-2xl font-bold text-purple-600'>
               {metrics.achievementCount}
             </div>
-            <p className='text-xs text-gray-500'>Earned</p>
+            <p className='text-xs text-gray-500'>{t('metrics.achievements.label')}</p>
           </CardContent>
         </Card>
 
@@ -280,12 +278,12 @@ export const AdvancedAnalyticsDashboard: React.FC<
           <CardContent className='p-4'>
             <div className='flex items-center gap-2 mb-2'>
               <Clock className='h-4 w-4 text-yellow-600' />
-              <span className='text-sm font-medium'>Time</span>
+              <span className='text-sm font-medium'>{t('metrics.time.title')}</span>
             </div>
             <div className='text-2xl font-bold text-yellow-600'>
               {metrics.timeInvested}
             </div>
-            <p className='text-xs text-gray-500'>Invested</p>
+            <p className='text-xs text-gray-500'>{t('metrics.time.label')}</p>
           </CardContent>
         </Card>
 
@@ -293,12 +291,12 @@ export const AdvancedAnalyticsDashboard: React.FC<
           <CardContent className='p-4'>
             <div className='flex items-center gap-2 mb-2'>
               <Star className='h-4 w-4 text-orange-600' />
-              <span className='text-sm font-medium'>Streak</span>
+              <span className='text-sm font-medium'>{t('metrics.streak.title')}</span>
             </div>
             <div className='text-2xl font-bold text-orange-600'>
               {metrics.streakDays}
             </div>
-            <p className='text-xs text-gray-500'>Days</p>
+            <p className='text-xs text-gray-500'>{t('metrics.streak.label')}</p>
           </CardContent>
         </Card>
 
@@ -306,12 +304,12 @@ export const AdvancedAnalyticsDashboard: React.FC<
           <CardContent className='p-4'>
             <div className='flex items-center gap-2 mb-2'>
               <Users className='h-4 w-4 text-indigo-600' />
-              <span className='text-sm font-medium'>Family</span>
+              <span className='text-sm font-medium'>{t('metrics.family.title')}</span>
             </div>
             <div className='text-2xl font-bold text-indigo-600'>
               {metrics.familyMembers}
             </div>
-            <p className='text-xs text-gray-500'>Members</p>
+            <p className='text-xs text-gray-500'>{t('metrics.family.label')}</p>
           </CardContent>
         </Card>
 
@@ -319,12 +317,12 @@ export const AdvancedAnalyticsDashboard: React.FC<
           <CardContent className='p-4'>
             <div className='flex items-center gap-2 mb-2'>
               <CheckCircle className='h-4 w-4 text-teal-600' />
-              <span className='text-sm font-medium'>Documents</span>
+              <span className='text-sm font-medium'>{t('metrics.documents.title')}</span>
             </div>
             <div className='text-2xl font-bold text-teal-600'>
               {metrics.documentsSecured}
             </div>
-            <p className='text-xs text-gray-500'>Secured</p>
+            <p className='text-xs text-gray-500'>{t('metrics.documents.label')}</p>
           </CardContent>
         </Card>
       </div>
@@ -336,9 +334,9 @@ export const AdvancedAnalyticsDashboard: React.FC<
             <div className='flex items-center justify-between'>
               <CardTitle className='flex items-center gap-2'>
                 <Brain className='h-5 w-5 text-blue-600' />
-                AI-Powered Smart Insights
+                {t('smartInsights.title')}
                 <Badge variant='secondary' className='text-xs'>
-                  Powered by LegacyGuard AI
+                  {t('smartInsights.poweredBy')}
                 </Badge>
               </CardTitle>
               <div className='flex items-center gap-2'>
@@ -348,7 +346,7 @@ export const AdvancedAnalyticsDashboard: React.FC<
                       i => i.priority === 'critical' || i.priority === 'high'
                     ).length
                   }{' '}
-                  urgent
+                  {t('smartInsights.urgent')}
                 </Badge>
                 <Button
                   size='sm'
@@ -380,7 +378,7 @@ export const AdvancedAnalyticsDashboard: React.FC<
                       <Badge
                         className={getPriorityBadgeColor(insight.priority)}
                       >
-                        {insight.priority}
+                        {t(`priority.${insight.priority}`)}
                       </Badge>
                       <span className='text-xs text-gray-500'>
                         {formatTimeAgo(insight.generated)}
@@ -392,7 +390,7 @@ export const AdvancedAnalyticsDashboard: React.FC<
                   </p>
                   <div className='flex items-center justify-between'>
                     <div className='text-xs text-gray-500'>
-                      Confidence: {insight?.confidence}%
+                      {t('smartInsights.confidence', { percentage: insight?.confidence })}
                     </div>
                     {insight.action && (
                       <Button
@@ -423,15 +421,15 @@ export const AdvancedAnalyticsDashboard: React.FC<
         <TabsList className='grid w-full grid-cols-3'>
           <TabsTrigger value='overview' className='gap-2'>
             <BarChart3 className='h-4 w-4' />
-            Overview
+            {t('tabs.overview')}
           </TabsTrigger>
           <TabsTrigger value='protection' className='gap-2'>
             <Shield className='h-4 w-4' />
-            Protection Analytics
+            {t('tabs.protection')}
           </TabsTrigger>
           <TabsTrigger value='progress' className='gap-2'>
             <Target className='h-4 w-4' />
-            Progress Tracking
+            {t('tabs.progress')}
           </TabsTrigger>
         </TabsList>
 
@@ -442,13 +440,13 @@ export const AdvancedAnalyticsDashboard: React.FC<
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <TrendingUp className='h-5 w-5 text-green-600' />
-                  Progress Trends
+                  {t('overview.progressTrends.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className='space-y-4'>
                   <div className='flex items-center justify-between'>
-                    <span className='text-sm'>This Week</span>
+                    <span className='text-sm'>{t('overview.progressTrends.thisWeek')}</span>
                     <div className='flex items-center gap-2'>
                       <div className='text-sm font-medium text-green-600'>
                         +12%
@@ -457,7 +455,7 @@ export const AdvancedAnalyticsDashboard: React.FC<
                     </div>
                   </div>
                   <div className='flex items-center justify-between'>
-                    <span className='text-sm'>This Month</span>
+                    <span className='text-sm'>{t('overview.progressTrends.thisMonth')}</span>
                     <div className='flex items-center gap-2'>
                       <div className='text-sm font-medium text-green-600'>
                         +28%
@@ -466,7 +464,7 @@ export const AdvancedAnalyticsDashboard: React.FC<
                     </div>
                   </div>
                   <div className='flex items-center justify-between'>
-                    <span className='text-sm'>Family Protection</span>
+                    <span className='text-sm'>{t('overview.progressTrends.familyProtection')}</span>
                     <div className='flex items-center gap-2'>
                       <div className='text-sm font-medium text-blue-600'>
                         78/100
@@ -482,7 +480,7 @@ export const AdvancedAnalyticsDashboard: React.FC<
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <Activity className='h-5 w-5 text-blue-600' />
-                  Recent Activity
+                  {t('overview.recentActivity.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -491,27 +489,27 @@ export const AdvancedAnalyticsDashboard: React.FC<
                     <CheckCircle className='h-4 w-4 text-green-600' />
                     <div className='flex-1'>
                       <div className='text-sm font-medium'>
-                        Healthcare Proxy completed
+                        {t('overview.recentActivity.items.healthcareProxyCompleted')}
                       </div>
-                      <div className='text-xs text-gray-500'>2 hours ago</div>
+                      <div className='text-xs text-gray-500'>{t('timeAgo.hoursAgoSingle')}</div>
                     </div>
                   </div>
                   <div className='flex items-center gap-3'>
                     <Clock className='h-4 w-4 text-yellow-600' />
                     <div className='flex-1'>
                       <div className='text-sm font-medium'>
-                        Asset inventory started
+                        {t('overview.recentActivity.items.assetInventoryStarted')}
                       </div>
-                      <div className='text-xs text-gray-500'>Yesterday</div>
+                      <div className='text-xs text-gray-500'>{t('timeAgo.yesterday')}</div>
                     </div>
                   </div>
                   <div className='flex items-center gap-3'>
                     <Award className='h-4 w-4 text-purple-600' />
                     <div className='flex-1'>
                       <div className='text-sm font-medium'>
-                        Achievement unlocked
+                        {t('overview.recentActivity.items.achievementUnlocked')}
                       </div>
-                      <div className='text-xs text-gray-500'>3 days ago</div>
+                      <div className='text-xs text-gray-500'>{t('timeAgo.daysAgoThree')}</div>
                     </div>
                   </div>
                 </div>

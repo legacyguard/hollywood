@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FAMILY_PLANS, type FamilyPlan } from '@/types/family';
+import { useTranslation } from 'react-i18next';
 
 interface FamilyPlanUpgradeProps {
   currentMemberCount: number;
@@ -62,6 +63,7 @@ export function FamilyPlanUpgrade({
   isOpen: controlledOpen,
   onOpenChange: controlledOnOpenChange,
 }: FamilyPlanUpgradeProps) {
+  const { t } = useTranslation('ui/family-plan-upgrade');
   const [internalOpen, setInternalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<
     'family' | 'free' | 'premium'
@@ -101,8 +103,8 @@ export function FamilyPlanUpgrade({
         key: 'maxMembers',
         label:
           plan.maxMembers === -1
-            ? 'Unlimited family members'
-            : `Up to ${plan.maxMembers} family members`,
+            ? t('features.unlimitedMembers')
+            : t('features.maxMembers', { count: plan.maxMembers }),
         enabled: true,
       },
       ...Object.entries(plan.features).map(([key, enabled]) => ({
@@ -174,7 +176,7 @@ export function FamilyPlanUpgrade({
             <div className='absolute -top-3 left-1/2 transform -translate-x-1/2'>
               <Badge className='bg-blue-600 text-white px-3 py-1 shadow-lg'>
                 <Star className='h-3 w-3 mr-1' />
-                Most Popular
+                {t('plans.mostPopular')}
               </Badge>
             </div>
           )}
@@ -430,8 +432,8 @@ export function FamilyPlanUpgrade({
                   <>
                     <Crown className='h-4 w-4' />
                     {FAMILY_PLANS[selectedPlan].trialDays
-                      ? 'Start Free Trial'
-                      : 'Upgrade Now'}
+                      ? t('buttons.startTrial')
+                      : t('buttons.upgradeNow')}
                   </>
                 )}
               </Button>

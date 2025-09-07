@@ -1,47 +1,44 @@
 
 // src/components/landing/SecurityPromiseSection.tsx
 
+import { useTranslation } from 'react-i18next';
 import { BadgeCheck, KeyRound, ShieldCheck, Timer } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const features = [
+const getFeatures = (t: any) => [
   {
     icon: <ShieldCheck className='h-10 w-10 text-yellow-400' />,
-    title: 'Fortress-Level Protection',
-    description:
-      'Secure your account with the highest level of protection, including biometrics and hardware keys. You decide how strong the lock is.',
+    title: t('features.0.title'),
+    description: t('features.0.description'),
   },
   {
     icon: <KeyRound className='h-10 w-10 text-yellow-400' />,
-    title: 'Only You Hold the Key',
-    description:
-      'Your information is encrypted on your device before it ever reaches us. Not even we can see it. Your privacy is mathematically guaranteed.',
+    title: t('features.1.title'),
+    description: t('features.1.description'),
   },
   {
     icon: <BadgeCheck className='h-10 w-10 text-yellow-400' />,
-    title: 'An Unbreakable Seal of Trust',
-    description:
-      'Every critical action is recorded in a secure, unchangeable audit log. This creates a verifiable history for ultimate peace of mind.',
+    title: t('features.2.title'),
+    description: t('features.2.description'),
   },
   {
     icon: <Timer className='h-10 w-10 text-yellow-400' />,
-    title: 'Share with Absolute Control',
-    description:
-      'When you share information, you are in complete control. Set time limits, track access, and know exactly who sees what, and when.',
+    title: t('features.3.title'),
+    description: t('features.3.description'),
   },
 ];
 
 export const SecurityPromiseSection = () => {
+  const { t } = useTranslation('landing/security-promise');
+  const features = getFeatures(t);
   return (
     <section className='py-20 bg-slate-900/50'>
       <div className='container mx-auto px-6 text-center'>
         <h2 className='text-4xl font-bold text-white mb-4'>
-          Our Security Promise to Your Family
+          {t('title')}
         </h2>
         <p className='text-lg text-slate-300 mb-12 max-w-3xl mx-auto'>
-          Your sanctuary is sacred. So is your privacy. We've built LegacyGuard
-          on a foundation of world-class security principles to protect what
-          matters most.
+          {t('subtitle')}
         </p>
 
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
@@ -66,8 +63,7 @@ export const SecurityPromiseSection = () => {
             to='/security-deep-dive'
             className='text-slate-300 hover:text-yellow-400 transition-colors'
           >
-            Curious about the technical details? Read our full security
-            documentation →
+            {t('learnMore.text')} {t('learnMore.arrow')}
           </Link>
         </div>
       </div>

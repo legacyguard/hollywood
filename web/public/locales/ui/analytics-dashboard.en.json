@@ -1,0 +1,38 @@
+{
+  "header": {
+    "title": "Analytics Dashboard",
+    "subtitle": "Monitor your business metrics and system health"
+  },
+  "dateRange": {
+    "7d": "7 Days",
+    "30d": "30 Days", 
+    "90d": "90 Days"
+  },
+  "metrics": {
+    "totalUsers": "Total Users",
+    "mrr": "MRR",
+    "churnRate": "Churn Rate",
+    "newSubscriptions": "New Subscriptions"
+  },
+  "charts": {
+    "revenueTrend": "Revenue Trend",
+    "userGrowth": "User Growth",
+    "planDistribution": "Plan Distribution",
+    "systemHealth": "System Health"
+  },
+  "plans": {
+    "free": "Free",
+    "essential": "Essential", 
+    "premium": "Premium",
+    "family": "Family"
+  },
+  "health": {
+    "status": "Status",
+    "responseTime": "Response Time",
+    "errorRate": "Error Rate",
+    "healthy": "Healthy",
+    "degraded": "Degraded",
+    "down": "Down"
+  },
+  "loading": "Loading analytics data..."
+}

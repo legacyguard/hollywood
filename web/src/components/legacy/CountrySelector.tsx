@@ -6,12 +6,44 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import {
   type CountryCode,
+  type LanguageCode,
+  type JurisdictionCode,
   useLocalization,
+  SUPPORTED_COMBINATIONS,
 } from '@/contexts/LocalizationContext';
 
 interface CountrySelectorProps {
   onCountryConfirmed: () => void;
+  showStepByStep?: boolean;
 }
+
+type SelectionStep = 'language' | 'jurisdiction' | 'confirmation';
+
+const SUPPORTED_LANGUAGES = [
+  { code: 'sk' as LanguageCode, name: 'Slovenčina', flag: '🇸🇰', nativeName: 'Slovenčina' },
+  { code: 'cs' as LanguageCode, name: 'Czech', flag: '🇨🇿', nativeName: 'Čeština' },
+  { code: 'en' as LanguageCode, name: 'English', flag: '🇬🇧', nativeName: 'English' },
+  { code: 'de' as LanguageCode, name: 'German', flag: '🇩🇪', nativeName: 'Deutsch' },
+];
+
+const SUPPORTED_JURISDICTIONS = [
+  {
+    code: 'SK' as JurisdictionCode,
+    name: 'Slovakia',
+    flag: '🇸🇰',
+    description: 'Slovak legal framework',
+    currency: 'EUR',
+    legalBasis: '§ 476-478 Slovak Civil Code',
+  },
+  {
+    code: 'CZ' as JurisdictionCode,
+    name: 'Czech Republic',
+    flag: '🇨🇿',
+    description: 'Czech legal framework', 
+    currency: 'CZK',
+    legalBasis: '§ 1540-1542 Czech Civil Code',
+  },
+];
 
 const SUPPORTED_COUNTRIES = [
   {
@@ -39,20 +71,55 @@ const SUPPORTED_COUNTRIES = [
 
 export const CountrySelector: React.FC<CountrySelectorProps> = ({
   onCountryConfirmed,
+  showStepByStep = false,
 }) => {
-  const { countryCode, jurisdiction, setCountryCode, isLoading } =
-    useLocalization();
+  const {
+    countryCode,
+    jurisdiction,
+    languageCode,
+    jurisdictionCode,
+    setCountryCode,
+    setLanguageCode,
+    setJurisdictionCode,
+    isLoading,
+  } = useLocalization();
+  
+  const [currentStep, setCurrentStep] = React.useState<SelectionStep>('language');
+  const [selectedLanguage, setSelectedLanguage] = React.useState<LanguageCode>(languageCode);
+  const [selectedJurisdiction, setSelectedJurisdiction] = React.useState<JurisdictionCode>(jurisdictionCode);
   const [showCountryList, setShowCountryList] = React.useState(false);
 
   const currentCountry = SUPPORTED_COUNTRIES.find(c => c.code === countryCode);
+  const currentLanguage = SUPPORTED_LANGUAGES.find(l => l.code === selectedLanguage);
+  const currentJurisdictionData = SUPPORTED_JURISDICTIONS.find(j => j.code === selectedJurisdiction);
 
   const handleCountryChange = (newCountryCode: CountryCode) => {
     setCountryCode(newCountryCode);
     setShowCountryList(false);
   };
 
-  const handleConfirmCountry = () => {
+  const handleLanguageSelect = (language: LanguageCode) => {
+    setSelectedLanguage(language);
+    setLanguageCode(language);
+    setCurrentStep('jurisdiction');
+  };
+
+  const handleJurisdictionSelect = (jurisdiction: JurisdictionCode) => {
+    setSelectedJurisdiction(jurisdiction);
+    setJurisdictionCode(jurisdiction);
+    setCurrentStep('confirmation');
+  };
+
+  const handleConfirmSelection = () => {
     onCountryConfirmed();
+  };
+
+  const handleBackToLanguage = () => {
+    setCurrentStep('language');
+  };
+
+  const handleBackToJurisdiction = () => {
+    setCurrentStep('jurisdiction');
   };
 
   if (isLoading) {
@@ -69,6 +136,261 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
     );
   }
 
+  // Step-by-step selection interface
+  if (showStepByStep) {
+    // Language Selection Step
+    if (currentStep === 'language') {
+      return (
+        <div className='min-h-screen bg-background'>
+          <div className='max-w-4xl mx-auto px-6 py-16'>
+            <FadeIn duration={0.6}>
+              <div className='text-center mb-12'>
+                <Icon
+                  name={'globe' as any}
+                  className='w-12 h-12 text-primary mx-auto mb-6'
+                />
+                <h1 className='text-3xl font-bold mb-4'>Choose Your Language</h1>
+                <p className='text-lg text-muted-foreground'>
+                  Select the language for your will interface
+                </p>
+                <div className='flex justify-center mt-6'>
+                  <div className='flex items-center space-x-2 text-sm text-muted-foreground'>
+                    <div className='w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold'>1</div>
+                    <span className='font-semibold'>Language</span>
+                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <div className='w-6 h-6 rounded-full border-2 border-muted text-xs flex items-center justify-center'>2</div>
+                    <span>Jurisdiction</span>
+                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <div className='w-6 h-6 rounded-full border-2 border-muted text-xs flex items-center justify-center'>3</div>
+                    <span>Confirm</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className='grid md:grid-cols-2 gap-6 max-w-3xl mx-auto'>
+                {SUPPORTED_LANGUAGES.map((language, index) => (
+                  <FadeIn key={language.code} duration={0.4} delay={0.1 * index}>
+                    <Card
+                      className={`p-6 cursor-pointer transition-all hover:shadow-lg hover:scale-105 ${
+                        language.code === selectedLanguage
+                          ? 'border-primary bg-primary/5'
+                          : ''
+                      }`}
+                      onClick={() => handleLanguageSelect(language.code)}
+                    >
+                      <div className='text-center'>
+                        <div className='text-4xl mb-4'>{language.flag}</div>
+                        <h3 className='text-xl font-semibold mb-2'>
+                          {language.nativeName}
+                        </h3>
+                        <p className='text-sm text-muted-foreground'>
+                          {language.name}
+                        </p>
+                        {language.code === selectedLanguage && (
+                          <div className='mt-4'>
+                            <Icon
+                              name={'check-circle' as any}
+                              className='w-5 h-5 text-green-600 mx-auto'
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  </FadeIn>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      );
+    }
+
+    // Jurisdiction Selection Step
+    if (currentStep === 'jurisdiction') {
+      return (
+        <div className='min-h-screen bg-background'>
+          <div className='max-w-4xl mx-auto px-6 py-16'>
+            <FadeIn duration={0.6}>
+              <div className='text-center mb-12'>
+                <Icon
+                  name={'balance-scale' as any}
+                  className='w-12 h-12 text-primary mx-auto mb-6'
+                />
+                <h1 className='text-3xl font-bold mb-4'>Choose Legal Jurisdiction</h1>
+                <p className='text-lg text-muted-foreground'>
+                  Select the legal framework that applies to your will
+                </p>
+                <div className='flex justify-center mt-6'>
+                  <div className='flex items-center space-x-2 text-sm text-muted-foreground'>
+                    <div className='w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center'>
+                      <Icon name={'check' as any} className='w-3 h-3' />
+                    </div>
+                    <span>Language</span>
+                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <div className='w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold'>2</div>
+                    <span className='font-semibold'>Jurisdiction</span>
+                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <div className='w-6 h-6 rounded-full border-2 border-muted text-xs flex items-center justify-center'>3</div>
+                    <span>Confirm</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className='grid md:grid-cols-2 gap-6 max-w-4xl mx-auto'>
+                {SUPPORTED_JURISDICTIONS.map((jurisdiction, index) => (
+                  <FadeIn key={jurisdiction.code} duration={0.4} delay={0.1 * index}>
+                    <Card
+                      className={`p-6 cursor-pointer transition-all hover:shadow-lg hover:scale-105 ${
+                        jurisdiction.code === selectedJurisdiction
+                          ? 'border-primary bg-primary/5'
+                          : ''
+                      }`}
+                      onClick={() => handleJurisdictionSelect(jurisdiction.code)}
+                    >
+                      <div className='text-center'>
+                        <div className='text-4xl mb-4'>{jurisdiction.flag}</div>
+                        <h3 className='text-xl font-semibold mb-2'>
+                          {jurisdiction.name}
+                        </h3>
+                        <p className='text-sm text-muted-foreground mb-4'>
+                          {jurisdiction.description}
+                        </p>
+                        <div className='text-xs space-y-1'>
+                          <div className='text-primary font-medium'>
+                            Currency: {jurisdiction.currency}
+                          </div>
+                          <div className='text-muted-foreground'>
+                            {jurisdiction.legalBasis}
+                          </div>
+                        </div>
+                        {jurisdiction.code === selectedJurisdiction && (
+                          <div className='mt-4'>
+                            <Icon
+                              name={'check-circle' as any}
+                              className='w-5 h-5 text-green-600 mx-auto'
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  </FadeIn>
+                ))}
+              </div>
+
+              <div className='text-center mt-8'>
+                <Button
+                  onClick={handleBackToLanguage}
+                  variant='outline'
+                >
+                  <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
+                  Back to Language
+                </Button>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      );
+    }
+
+    // Confirmation Step
+    if (currentStep === 'confirmation') {
+      const currentCombination = SUPPORTED_COMBINATIONS.find(
+        c => c.language === selectedLanguage && c.jurisdiction === selectedJurisdiction
+      );
+
+      return (
+        <div className='min-h-screen bg-background'>
+          <div className='max-w-4xl mx-auto px-6 py-16'>
+            <FadeIn duration={0.8}>
+              <div className='text-center mb-12'>
+                <Icon
+                  name={'shield-check' as any}
+                  className='w-16 h-16 text-primary mx-auto mb-6'
+                />
+                <h1 className='text-4xl font-bold mb-6'>Confirm Your Selection</h1>
+                <div className='flex justify-center mt-6'>
+                  <div className='flex items-center space-x-2 text-sm text-muted-foreground'>
+                    <div className='w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center'>
+                      <Icon name={'check' as any} className='w-3 h-3' />
+                    </div>
+                    <span>Language</span>
+                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <div className='w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center'>
+                      <Icon name={'check' as any} className='w-3 h-3' />
+                    </div>
+                    <span>Jurisdiction</span>
+                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <div className='w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold'>3</div>
+                    <span className='font-semibold'>Confirm</span>
+                  </div>
+                </div>
+              </div>
+
+              <Card className='p-8 max-w-2xl mx-auto'>
+                <div className='text-center mb-8'>
+                  <div className='flex items-center justify-center gap-4 mb-6'>
+                    <div className='text-4xl'>{currentLanguage?.flag}</div>
+                    <div className='text-2xl'>+</div>
+                    <div className='text-4xl'>{currentJurisdictionData?.flag}</div>
+                  </div>
+                  <h2 className='text-2xl font-semibold mb-4'>
+                    {currentCombination?.label}
+                  </h2>
+                  <div className='space-y-2 text-muted-foreground'>
+                    <p><strong>Interface Language:</strong> {currentLanguage?.nativeName}</p>
+                    <p><strong>Legal Jurisdiction:</strong> {currentJurisdictionData?.name}</p>
+                    <p><strong>Currency:</strong> {currentJurisdictionData?.currency}</p>
+                  </div>
+                </div>
+
+                <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+                  <Button
+                    onClick={handleConfirmSelection}
+                    className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
+                    size='lg'
+                  >
+                    <Icon name={'check' as any} className='w-5 h-5 mr-2' />
+                    Start Creating Will
+                  </Button>
+
+                  <Button
+                    onClick={handleBackToJurisdiction}
+                    variant='outline'
+                    size='lg'
+                    className='px-8'
+                  >
+                    <Icon name={'arrow-left' as any} className='w-5 h-5 mr-2' />
+                    Back
+                  </Button>
+                </div>
+
+                <div className='mt-8 p-4 bg-muted/30 rounded-lg'>
+                  <div className='flex items-start gap-3'>
+                    <Icon
+                      name={'info' as any}
+                      className='w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5'
+                    />
+                    <div>
+                      <h4 className='font-semibold text-sm mb-1'>
+                        Your selection ensures legal compliance
+                      </h4>
+                      <p className='text-sm text-muted-foreground'>
+                        The interface will be in {currentLanguage?.nativeName}, and your will
+                        will comply with {currentJurisdictionData?.name} legal requirements
+                        ({currentJurisdictionData?.legalBasis}).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </FadeIn>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  // Legacy country list selection (for backward compatibility)
   if (showCountryList) {
     return (
       <div className='min-h-screen bg-background'>
@@ -136,6 +458,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
     );
   }
 
+  // Default legacy confirmation screen
   return (
     <div className='min-h-screen bg-background'>
       <div className='max-w-4xl mx-auto px-6 py-16'>
@@ -162,7 +485,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
 
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
               <Button
-                onClick={handleConfirmCountry}
+                onClick={handleConfirmSelection}
                 className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
                 size='lg'
               >

@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon, type IconName } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
+import { useTranslation } from 'react-i18next';
 
 interface AttentionItem {
   actionText: string;
@@ -23,15 +24,17 @@ interface AttentionSectionProps {
 export const AttentionSection: React.FC<AttentionSectionProps> = ({
   className,
 }) => {
+  const { t } = useTranslation('ui/attention-section');
+  
   // Mock data - in real implementation, this would come from API/hooks
   const attentionItems: AttentionItem[] = [
     {
       id: '1',
       type: 'expiration',
-      title: 'Your passport expires in 28 days',
-      description: 'Consider checking renewal options',
+      title: t('items.passportExpiring.title', { days: 28 }),
+      description: t('items.passportExpiring.description'),
       icon: 'calendar',
-      actionText: 'View Details',
+      actionText: t('items.passportExpiring.actionText'),
       onAction: () => {
         // Show passport details
       },
@@ -40,10 +43,10 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
     {
       id: '2',
       type: 'guardian',
-      title: 'You invited Jane Smith as a guardian',
-      description: "She hasn't joined your circle of trust yet",
+      title: t('items.guardianPending.title', { name: 'Jane Smith' }),
+      description: t('items.guardianPending.description'),
       icon: 'user-plus',
-      actionText: 'Send Reminder',
+      actionText: t('items.guardianPending.actionText'),
       onAction: () => {
         // Send reminder to guardian
       },
@@ -52,10 +55,10 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
     {
       id: '3',
       type: 'sofia_suggestion',
-      title: 'Sofia suggests linking 2 new documents',
-      description: 'To the "Home Mortgage" bundle we can add related documents',
+      title: t('items.sofiaSuggestion.title', { count: 2 }),
+      description: t('items.sofiaSuggestion.description', { bundle: 'Home Mortgage' }),
       icon: 'sparkles',
-      actionText: 'View Suggestion',
+      actionText: t('items.sofiaSuggestion.actionText'),
       onAction: () => {
         // Show Sofia suggestion
       },

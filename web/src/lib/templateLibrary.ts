@@ -41,9 +41,13 @@ class TemplateLibraryImpl implements TemplateLibrary {
   private async loadTemplates() {
     // Czech Republic templates
     await this.loadTemplate('CZ', 'holographic', 'cs');
+    await this.loadTemplate('CZ', 'witnessed', 'cs');
+    await this.loadTemplate('CZ', 'notarial', 'cs');
 
     // Slovakia templates
     await this.loadTemplate('SK', 'holographic', 'sk');
+    await this.loadTemplate('SK', 'witnessed', 'sk');
+    await this.loadTemplate('SK', 'notarial', 'sk');
 
     // Future templates will be loaded here as they're added
   }

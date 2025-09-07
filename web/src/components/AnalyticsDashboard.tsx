@@ -29,6 +29,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { supabase } from '@hollywood/shared';
+import { useTranslation } from 'react-i18next';
 
 interface MetricCard {
   change: number;
@@ -65,6 +66,7 @@ export const AnalyticsDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [currentMetrics, setCurrentMetrics] = useState<MetricCard[]>([]);
+  const { t } = useTranslation('ui/analytics-dashboard');
 
   const loadAnalytics = useCallback(async () => {
     try {
@@ -123,7 +125,7 @@ export const AnalyticsDashboard: React.FC = () => {
 
     const metrics: MetricCard[] = [
       {
-        title: 'Total Users',
+        title: t('metrics.totalUsers'),
         value: (latest?.total_users || 0).toLocaleString(),
         change:
           (((latest?.total_users || 0) - (previous?.total_users || 0)) /
@@ -133,21 +135,21 @@ export const AnalyticsDashboard: React.FC = () => {
         color: '#667eea',
       },
       {
-        title: 'MRR',
+        title: t('metrics.mrr'),
         value: `$${(latest?.mrr || 0).toLocaleString()}`,
         change: (((latest?.mrr || 0) - (previous?.mrr || 0)) / ((previous?.mrr || 1))) * 100,
         icon: <DollarSign className='w-6 h-6' />,
         color: '#48bb78',
       },
       {
-        title: 'Churn Rate',
+        title: t('metrics.churnRate'),
         value: `${(latest?.churn_rate || 0).toFixed(1)}%`,
         change: (latest?.churn_rate || 0) - (previous?.churn_rate || 0),
         icon: <Activity className='w-6 h-6' />,
         color: (latest?.churn_rate || 0) > 5 ? '#f56565' : '#48bb78',
       },
       {
-        title: 'New Subscriptions',
+        title: t('metrics.newSubscriptions'),
         value: latest?.new_subscriptions || 0,
         change:
           (((latest?.new_subscriptions || 0) - (previous?.new_subscriptions || 0)) /
@@ -170,22 +172,22 @@ export const AnalyticsDashboard: React.FC = () => {
     metrics.length > 0
       ? [
           {
-            name: 'Free',
+            name: t('plans.free'),
             value: metrics[metrics.length - 1]?.free_users || 0,
             color: '#cbd5e0',
           },
           {
-            name: 'Essential',
+            name: t('plans.essential'),
             value: metrics[metrics.length - 1]?.essential_users || 0,
             color: '#4299e1',
           },
           {
-            name: 'Family',
+            name: t('plans.family'),
             value: metrics[metrics.length - 1]?.family_users || 0,
             color: '#48bb78',
           },
           {
-            name: 'Premium',
+            name: t('plans.premium'),
             value: metrics[metrics.length - 1]?.premium_users || 0,
             color: '#667eea',
           },
@@ -219,10 +221,10 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Header */}
         <div className='mb-8'>
           <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>
-            Analytics Dashboard
+            {t('header.title')}
           </h1>
           <p className='text-gray-600 dark:text-gray-400 mt-2'>
-            Monitor your business metrics and system health
+            {t('header.subtitle')}
           </p>
         </div>
 
@@ -238,11 +240,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
-              {range === '7d'
-                ? '7 Days'
-                : range === '30d'
-                  ? '30 Days'
-                  : '90 Days'}
+              {t(`dateRange.${range}`)}
             </button>
           ))}
         </div>
@@ -289,7 +287,7 @@ export const AnalyticsDashboard: React.FC = () => {
           {/* Revenue Chart */}
           <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
             <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
-              Revenue Trend
+              {t('charts.revenueTrend')}
             </h3>
             <ResponsiveContainer width='100%' height={300}>
               <AreaChart data={metrics}>
@@ -322,7 +320,7 @@ export const AnalyticsDashboard: React.FC = () => {
           {/* User Growth Chart */}
           <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
             <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
-              User Growth
+              {t('charts.userGrowth')}
             </h3>
             <ResponsiveContainer width='100%' height={300}>
               <LineChart data={metrics}>
@@ -370,7 +368,7 @@ export const AnalyticsDashboard: React.FC = () => {
           {/* Plan Distribution */}
           <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
             <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
-              Plan Distribution
+              {t('charts.planDistribution')}
             </h3>
             <ResponsiveContainer width='100%' height={300}>
               <PieChart>
@@ -396,7 +394,7 @@ export const AnalyticsDashboard: React.FC = () => {
           {/* Churn Rate */}
           <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
             <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
-              Churn Rate
+              {t('metrics.churnRate')}
             </h3>
             <ResponsiveContainer width='100%' height={300}>
               <BarChart data={metrics}>
@@ -428,7 +426,7 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* System Health */}
         <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
           <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
-            System Health
+            {t('charts.systemHealth')}
           </h3>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {systemHealth.map(service => (

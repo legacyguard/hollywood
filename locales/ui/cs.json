@@ -39,6 +39,37 @@
     "tooLong": "Příliš dlouhé",
     "invalidEmail": "Neplatná emailová adresa"
   },
+  "dashboard": {
+    "header": {
+      "title": "Rodinný Štít",
+      "titleWithName": "Rodinný Štít, {{name}}",
+      "subtitle": {
+        "adaptive": "Přehled všeho, co chrání vaši rodinu",
+        "empathetic": "Láskyplný přehled ochrany a péče o vaši rodinu",
+        "pragmatic": "Stav systému a metriky ochrany rodiny"
+      },
+      "actions": {
+        "secureNewInformation": "Zabezpečit nové informace"
+      }
+    },
+    "metrics": {
+      "title": {
+        "adaptive": "Váš odkaz na první pohled",
+        "empathetic": "💫 Kruh lásky vaší rodiny",
+        "pragmatic": "📈 Metriky výkonu systému"
+      },
+      "subtitle": {
+        "empathetic": "Každé číslo představuje péči a ochranu"
+      },
+      "documentsProtected": "Chráněné dokumenty",
+      "familyMembers": "Členové rodiny",
+      "guardians": "Opatrovníci",
+      "daysProtected": "Dny ochrany",
+      "labels": {
+        "active": "Aktivní"
+      }
+    }
+  },
   "auth": {
     "signIn": "Přihlásit se",
     "signOut": "Odhlásit se",

@@ -4,6 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import { Icon } from '@/components/ui/icon-library';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface ChecklistItem {
   description: string;
@@ -20,32 +21,29 @@ interface LegacyChecklistProps {
   onItemClick?: (item: ChecklistItem) => void;
 }
 
-const checklistItems: ChecklistItem[] = [
+const getChecklistItems = (t: (key: string) => string): ChecklistItem[] => [
   // TODAY pillar items
   {
     key: 'setup-vault',
     icon: 'shield',
-    title: 'Setup your secure vault',
-    description:
-      'Create your encrypted document storage with client-side security.',
+    title: t('items.setup-vault.title'),
+    description: t('items.setup-vault.description'),
     isCompleted: true,
     pillar: 'today',
   },
   {
     key: 'upload-documents',
     icon: 'upload',
-    title: 'Upload important documents',
-    description:
-      'Add your essential documents like IDs, insurance, and legal papers.',
+    title: t('items.upload-documents.title'),
+    description: t('items.upload-documents.description'),
     isCompleted: true,
     pillar: 'today',
   },
   {
     key: 'add-guardians',
     icon: 'users',
-    title: 'Add trusted guardians',
-    description:
-      'Invite family members or friends who can access your documents if needed.',
+    title: t('items.add-guardians.title'),
+    description: t('items.add-guardians.description'),
     isCompleted: false,
     isActive: true,
     pillar: 'tomorrow',
@@ -54,17 +52,16 @@ const checklistItems: ChecklistItem[] = [
   {
     key: 'set-permissions',
     icon: 'key',
-    title: 'Set guardian permissions',
-    description:
-      'Define what each guardian can access and when they can access it.',
+    title: t('items.set-permissions.title'),
+    description: t('items.set-permissions.description'),
     isCompleted: false,
     pillar: 'tomorrow',
   },
   {
     key: 'emergency-contacts',
     icon: 'phone',
-    title: 'Add emergency contacts',
-    description: 'Set up emergency contact information for your guardians.',
+    title: t('items.emergency-contacts.title'),
+    description: t('items.emergency-contacts.description'),
     isCompleted: false,
     pillar: 'tomorrow',
   },
@@ -72,16 +69,16 @@ const checklistItems: ChecklistItem[] = [
   {
     key: 'create-legacy',
     icon: 'heart',
-    title: 'Create legacy messages',
-    description: 'Record video messages and letters for your loved ones.',
+    title: t('items.create-legacy.title'),
+    description: t('items.create-legacy.description'),
     isCompleted: false,
     pillar: 'forever',
   },
   {
     key: 'schedule-reviews',
     icon: 'calendar',
-    title: 'Schedule regular reviews',
-    description: 'Set up reminders to keep your legacy plan updated.',
+    title: t('items.schedule-reviews.title'),
+    description: t('items.schedule-reviews.description'),
     isCompleted: false,
     pillar: 'forever',
   },
@@ -91,6 +88,8 @@ export function LegacyChecklist({
   className,
   onItemClick,
 }: LegacyChecklistProps) {
+  const { t } = useTranslation('ui/legacy-checklist');
+  const checklistItems = getChecklistItems(t);
   const completedItems = checklistItems.filter(item => item.isCompleted).length;
   const totalItems = checklistItems.length;
   const progressPercentage = Math.round((completedItems / totalItems) * 100);
@@ -124,7 +123,7 @@ export function LegacyChecklist({
         <div className='flex-1'>
           <div className='flex items-center justify-between mb-2'>
             <h3 className='font-semibold text-lg'>
-              Guardian of Memories Progress
+              {t('header.title')}
             </h3>
             <span className='text-sm font-medium text-muted-foreground'>
               {completedItems}/{totalItems} completed

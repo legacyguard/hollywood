@@ -41,6 +41,7 @@ import {
   RELATIONSHIP_LABELS,
   type RelationshipType,
 } from '@/types/family';
+import { useTranslation } from 'react-i18next';
 
 interface FamilyInvitationFlowProps {
   className?: string;
@@ -78,34 +79,35 @@ export function FamilyInvitationFlow({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
+  const { t } = useTranslation('ui/family-invitation-flow');
 
   const steps: { description: string; key: InvitationStep; title: string }[] = [
     {
       key: 'relationship',
-      title: 'Choose Relationship',
-      description: 'Who are you inviting?',
+      title: t('steps.relationship.title'),
+      description: t('steps.relationship.description'),
     },
     {
       key: 'details',
-      title: 'Contact Details',
-      description: 'How can we reach them?',
+      title: t('steps.details.title'),
+      description: t('steps.details.description'),
     },
     {
       key: 'message',
-      title: 'Personal Message',
-      description: 'Add a heartfelt note',
+      title: t('steps.message.title'),
+      description: t('steps.message.description'),
     },
     {
       key: 'review',
-      title: 'Review & Send',
-      description: 'Double-check everything',
+      title: t('steps.review.title'),
+      description: t('steps.review.description'),
     },
     {
       key: 'sending',
-      title: 'Sending...',
-      description: 'Preparing invitation',
+      title: t('steps.sending.title'),
+      description: t('steps.sending.description'),
     },
-    { key: 'complete', title: 'Invitation Sent!', description: 'Success!' },
+    { key: 'complete', title: t('steps.complete.title'), description: t('steps.complete.description') },
   ];
 
   const getCurrentStepIndex = () => steps.findIndex(s => s.key === currentStep);
@@ -140,7 +142,7 @@ export function FamilyInvitationFlow({
       // Fix: Ensure the second argument is a string (likely an email or similar identifier), not an object.
       // If invitationData.email is the intended identifier, use it here.
       if (!invitationData.email) {
-        throw new Error('Email is required to send an invitation.');
+        throw new Error(t('errors.emailRequired'));
       }
       const invitation = await familyService.sendInvitation(userId, {
         email: invitationData.email!,
@@ -153,7 +155,7 @@ export function FamilyInvitationFlow({
       onComplete(invitation);
     } catch (error) {
       setError(
-        error instanceof Error ? error.message : 'Failed to send invitation'
+        error instanceof Error ? error.message : t('errors.sendFailed')
       );
       setCurrentStep('review');
     } finally {

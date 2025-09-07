@@ -39,6 +39,37 @@
     "tooLong": "Zu lang",
     "invalidEmail": "Ungültige E-Mail-Adresse"
   },
+  "dashboard": {
+    "header": {
+      "title": "Familienschutz",
+      "titleWithName": "Familienschutz, {{name}}",
+      "subtitle": {
+        "adaptive": "Übersicht über alles, was Ihre Familie schützt",
+        "empathetic": "Ein liebevoller Überblick über Schutz und Fürsorge Ihrer Familie",
+        "pragmatic": "Systemstatus und Familienschutz-Metriken"
+      },
+      "actions": {
+        "secureNewInformation": "Neue Informationen sichern"
+      }
+    },
+    "metrics": {
+      "title": {
+        "adaptive": "Ihr Vermächtnis auf einen Blick",
+        "empathetic": "💫 Der Kreis der Liebe Ihrer Familie",
+        "pragmatic": "📈 Systemleistungsmetriken"
+      },
+      "subtitle": {
+        "empathetic": "Jede Zahl steht für Fürsorge und Schutz"
+      },
+      "documentsProtected": "Geschützte Dokumente",
+      "familyMembers": "Familienmitglieder",
+      "guardians": "Vormund",
+      "daysProtected": "Tage geschützt",
+      "labels": {
+        "active": "Aktiv"
+      }
+    }
+  },
   "auth": {
     "signIn": "Anmelden",
     "signOut": "Abmelden",

@@ -5,6 +5,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@clerk/clerk-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export function BackupRestore() {
+  const { t } = useTranslation('ui/backup-restore');
   const { userId } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -58,17 +60,17 @@ export function BackupRestore() {
 
   const handleExport = async () => {
     if (!userId) {
-      toast.error('You must be logged in to export data');
+      toast.error(t('errors.loginRequired'));
       return;
     }
 
     if (encryptBackup && !exportPassword) {
-      toast.error('Please enter a password to encrypt your backup');
+      toast.error(t('errors.passwordRequired'));
       return;
     }
 
     if (encryptBackup && exportPassword.length < 8) {
-      toast.error('Password must be at least 8 characters long');
+      toast.error(t('errors.passwordTooShort'));
       return;
     }
 
@@ -85,7 +87,7 @@ export function BackupRestore() {
       setLastBackupDate(new Date(now).toLocaleDateString());
     } catch (error) {
       console.error('Export error:', error);
-      toast.error('Failed to export data');
+      toast.error(t('errors.exportFailed'));
     } finally {
       setIsExporting(false);
     }
@@ -97,13 +99,13 @@ export function BackupRestore() {
 
     // Validate file type
     if (!file.name.endsWith('.json')) {
-      toast.error('Please select a valid backup file (.json)');
+      toast.error(t('errors.invalidFileType'));
       return;
     }
 
     // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
-      toast.error('Backup file is too large (max 10MB)');
+      toast.error(t('errors.fileTooLarge'));
       return;
     }
 
@@ -116,13 +118,13 @@ export function BackupRestore() {
         const content = JSON.parse(e.target?.result as string);
         if (content.encrypted) {
           setShowImportPassword(true);
-          toast.info('This backup is encrypted. Please enter the password.');
+          toast.info(t('messages.encrypted'));
         } else {
           // Directly import if not encrypted
           handleImport(file);
         }
       } catch (error) {
-        toast.error('Invalid backup file format');
+        toast.error(t('errors.invalidFormat'));
       }
     };
     reader.readAsText(file);
@@ -130,7 +132,7 @@ export function BackupRestore() {
 
   const handleImport = async (file?: File, password?: string) => {
     if (!userId) {
-      toast.error('You must be logged in to import data');
+      toast.error(t('errors.importLoginRequired'));
       return;
     }
 
@@ -146,7 +148,7 @@ export function BackupRestore() {
       );
     } catch (error) {
       console.error('Import error:', error);
-      toast.error('Failed to import data');
+      toast.error(t('errors.importFailed'));
     } finally {
       setIsImporting(false);
       setSelectedFile(null);
@@ -176,7 +178,7 @@ export function BackupRestore() {
       }, 1500);
     } catch (error) {
       console.error('Clear data error:', error);
-      toast.error('Failed to clear data');
+      toast.error(t('errors.clearDataFailed'));
     }
   };
 
@@ -189,15 +191,15 @@ export function BackupRestore() {
             <div>
               <h2 className='text-2xl font-bold flex items-center gap-3'>
                 <Icon name='database' className='w-7 h-7 text-primary' />
-                Backup & Restore
+                {t('title')}
               </h2>
               <p className='text-muted-foreground mt-2'>
-                Safeguard your data with regular backups
+                {t('description')}
               </p>
             </div>
             {lastBackupDate && (
               <div className='text-sm text-muted-foreground text-right'>
-                <p>Last backup</p>
+                <p>{t('lastBackup')}</p>
                 <p className='font-medium'>{lastBackupDate}</p>
               </div>
             )}
@@ -210,16 +212,13 @@ export function BackupRestore() {
                 <Icon name='download' className='w-6 h-6 text-primary' />
               </div>
               <div className='flex-1'>
-                <h3 className='font-semibold mb-2'>Export Your Data</h3>
+                <h3 className='font-semibold mb-2'>{t('export.title')}</h3>
                 <p className='text-sm text-muted-foreground mb-4'>
-                  Download a complete backup of all your data including
-                  documents, settings, and preferences. You can optionally
-                  encrypt your backup with a password for enhanced security.
+                  {t('export.description')}
                 </p>
                 {backupSize && (
                   <p className='text-xs text-muted-foreground mb-4'>
-                    Estimated backup size:{' '}
-                    <span className='font-medium'>{backupSize}</span>
+                    {t('export.estimatedSize', { size: backupSize })}
                   </p>
                 )}
 
@@ -237,14 +236,14 @@ export function BackupRestore() {
                       htmlFor='encrypt-backup'
                       className='text-sm font-medium'
                     >
-                      Encrypt backup with password
+                      {t('export.encryptOption')}
                     </Label>
                   </div>
 
                   {encryptBackup && (
                     <div className='space-y-2'>
                       <Label htmlFor='export-password' className='text-sm'>
-                        Backup Password
+                        {t('export.passwordLabel')}
                       </Label>
                       <div className='relative'>
                         <Input
@@ -252,7 +251,7 @@ export function BackupRestore() {
                           type={showExportPassword ? 'text' : 'password'}
                           value={exportPassword}
                           onChange={e => setExportPassword(e.target.value)}
-                          placeholder='Enter a strong password'
+                          placeholder={t('export.passwordPlaceholder')}
                           className='pr-10'
                         />
                         <button
@@ -269,8 +268,7 @@ export function BackupRestore() {
                         </button>
                       </div>
                       <p className='text-xs text-muted-foreground'>
-                        ⚠️ Remember this password! You'll need it to restore
-                        your backup.
+                        {t('export.passwordWarning')}
                       </p>
                     </div>
                   )}
@@ -287,12 +285,12 @@ export function BackupRestore() {
                         name='upload'
                         className='w-4 h-4 mr-2 animate-pulse'
                       />
-                      Preparing Export...
+                      {t('export.preparing')}
                     </>
                   ) : (
                     <>
                       <Icon name='download' className='w-4 h-4 mr-2' />
-                      Export Data
+                      {t('export.button')}
                     </>
                   )}
                 </Button>
@@ -307,11 +305,9 @@ export function BackupRestore() {
                 <Icon name='upload' className='w-6 h-6 text-blue-600' />
               </div>
               <div className='flex-1'>
-                <h3 className='font-semibold mb-2'>Restore From Backup</h3>
+                <h3 className='font-semibold mb-2'>{t('import.title')}</h3>
                 <p className='text-sm text-muted-foreground mb-4'>
-                  Restore your data from a previously exported backup file. This
-                  will merge the backup data with your existing data, avoiding
-                  duplicates where possible.
+                  {t('import.description')}
                 </p>
                 {/* Password input for encrypted backups */}
                 {showImportPassword && (
@@ -321,7 +317,7 @@ export function BackupRestore() {
                         htmlFor='import-password'
                         className='text-sm font-medium'
                       >
-                        Backup Password Required
+                        {t('import.passwordRequired')}
                       </Label>
                       <div className='relative'>
                         <Input
@@ -329,7 +325,7 @@ export function BackupRestore() {
                           type='password'
                           value={importPassword}
                           onChange={e => setImportPassword(e.target.value)}
-                          placeholder='Enter backup password'
+                          placeholder={t('import.passwordPlaceholder')}
                           className='pr-10'
                           onKeyDown={e => {
                             if (e.key === 'Enter' && importPassword) {
@@ -347,7 +343,7 @@ export function BackupRestore() {
                           disabled={!importPassword || isImporting}
                         >
                           <Icon name='unlock' className='w-4 h-4 mr-2' />
-                          Decrypt & Import
+                          {t('import.decryptButton')}
                         </Button>
                         <Button
                           size='sm'
@@ -358,7 +354,7 @@ export function BackupRestore() {
                             setSelectedFile(null);
                           }}
                         >
-                          Cancel
+                          {t('import.cancel')}
                         </Button>
                       </div>
                     </div>
@@ -388,19 +384,19 @@ export function BackupRestore() {
                               name='upload'
                               className='w-4 h-4 mr-2 animate-pulse'
                             />
-                            Importing...
+                            {t('import.importing')}
                           </>
                         ) : (
                           <>
                             <Icon name='upload' className='w-4 h-4 mr-2' />
-                            Choose Backup File
+                            {t('import.button')}
                           </>
                         )}
                       </span>
                     </Button>
                   </label>
                   <span className='text-xs text-muted-foreground'>
-                    Max file size: 10MB
+                    {t('import.maxFileSize')}
                   </span>
                 </div>
               </div>
@@ -416,30 +412,15 @@ export function BackupRestore() {
               />
               <div className='text-sm space-y-2'>
                 <p className='font-medium text-blue-900 dark:text-blue-100'>
-                  Important Information
+                  {t('info.title')}
                 </p>
                 <ul className='space-y-1 text-blue-800 dark:text-blue-200'>
-                  <li className='flex items-start gap-2'>
-                    <span className='text-blue-600 mt-1'>•</span>
-                    <span>
-                      Backups contain sensitive data. Store them securely and
-                      never share them publicly.
-                    </span>
-                  </li>
-                  <li className='flex items-start gap-2'>
-                    <span className='text-blue-600 mt-1'>•</span>
-                    <span>
-                      Regular backups are recommended, especially before major
-                      changes.
-                    </span>
-                  </li>
-                  <li className='flex items-start gap-2'>
-                    <span className='text-blue-600 mt-1'>•</span>
-                    <span>
-                      Imported data will be merged with existing data to avoid
-                      duplicates.
-                    </span>
-                  </li>
+                  {t('info.points', { returnObjects: true }).map((point: string, index: number) => (
+                    <li key={index} className='flex items-start gap-2'>
+                      <span className='text-blue-600 mt-1'>•</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -448,7 +429,7 @@ export function BackupRestore() {
           {/* Danger Zone */}
           <div className='border-t border-card-border pt-6'>
             <h3 className='text-lg font-semibold mb-4 text-status-error'>
-              Danger Zone
+              {t('dangerZone.title')}
             </h3>
             <div className='p-4 border-2 border-status-error/20 rounded-lg bg-status-error/5'>
               <div className='flex items-start gap-4'>
@@ -457,10 +438,9 @@ export function BackupRestore() {
                   className='w-6 h-6 text-status-error flex-shrink-0 mt-1'
                 />
                 <div className='flex-1'>
-                  <h4 className='font-medium mb-2'>Clear All Data</h4>
+                  <h4 className='font-medium mb-2'>{t('dangerZone.clearTitle')}</h4>
                   <p className='text-sm text-muted-foreground mb-4'>
-                    Permanently delete all your local data. This action cannot
-                    be undone. Make sure you have a backup before proceeding.
+                    {t('dangerZone.clearDescription')}
                   </p>
                   <Button
                     variant='destructive'
@@ -468,7 +448,7 @@ export function BackupRestore() {
                     disabled={isExporting || isImporting}
                   >
                     <Icon name='trash' className='w-4 h-4 mr-2' />
-                    Clear All Data
+                    {t('dangerZone.clearButton')}
                   </Button>
                 </div>
               </div>
@@ -485,30 +465,30 @@ export function BackupRestore() {
                   name='triangle-exclamation'
                   className='w-5 h-5 text-status-error'
                 />
-                Clear All Data?
+                {t('dialog.confirmTitle')}
               </AlertDialogTitle>
               <AlertDialogDescription className='space-y-3'>
                 <p>
-                  This will permanently delete ALL your local data including:
+                  {t('dialog.confirmDescription')}
                 </p>
                 <ul className='list-disc list-inside space-y-1 text-sm'>
-                  <li>Documents and files metadata</li>
-                  <li>Personal information and settings</li>
-                  <li>Saved preferences and progress</li>
+                  {t('dialog.confirmItems', { returnObjects: true }).map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                  ))}
                 </ul>
                 <p className='font-medium text-status-error'>
-                  This action cannot be undone!
+                  {t('dialog.confirmWarning')}
                 </p>
-                <p>Make sure you have exported a backup before proceeding.</p>
+                <p>{t('dialog.confirmBackupReminder')}</p>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>{t('dialog.cancelButton')}</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleClearData}
                 className='bg-status-error hover:bg-status-error/90'
               >
-                Yes, Clear All Data
+                {t('dialog.confirmButton')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

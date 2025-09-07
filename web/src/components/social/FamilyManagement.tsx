@@ -8,6 +8,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -91,6 +92,7 @@ interface FamilyManagementProps {
 }
 
 export default function FamilyManagement({ className }: FamilyManagementProps) {
+  const { t } = useTranslation('ui/family-management');
   const [families, setFamilies] = useState<FamilyGroup[]>([]);
   const [selectedFamily, setSelectedFamily] = useState<FamilyGroup | null>(
     null
@@ -132,7 +134,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to load family groups',
+        description: t('messages.loadFamiliesError'),
         variant: 'destructive',
       });
     } finally {
@@ -151,7 +153,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to load family members',
+        description: t('messages.loadMembersError'),
         variant: 'destructive',
       });
     }
@@ -168,7 +170,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to load family activities',
+        description: t('messages.loadActivitiesError'),
         variant: 'destructive',
       });
     }
@@ -336,12 +338,12 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
                     await loadFamilyMemberTypes();
                     toast({
                       title: 'Success',
-                      description: 'Family member removed successfully',
+                      description: t('messages.memberRemovedSuccess'),
                     });
                   } catch (error) {
                     toast({
                       title: 'Error',
-                      description: 'Failed to remove family member',
+                      description: t('messages.memberRemoveError'),
                       variant: 'destructive',
                     });
                   }
@@ -690,7 +692,7 @@ function InviteMemberDialog({
       });
 
       toast({
-        title: 'Invitation sent',
+        title: t('messages.invitationSent'),
         description: `Invitation sent to ${email}`,
       });
 
@@ -705,7 +707,7 @@ function InviteMemberDialog({
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to send invitation',
+        description: t('messages.invitationError'),
         variant: 'destructive',
       });
     } finally {
@@ -729,7 +731,7 @@ function InviteMemberDialog({
             <Input
               id='invite-email'
               type='email'
-              placeholder='Enter email address'
+              placeholder={t('placeholders.enterEmail')}
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
@@ -766,7 +768,7 @@ function InviteMemberDialog({
             <Label htmlFor='invite-message'>Personal Message (Optional)</Label>
             <Textarea
               id='invite-message'
-              placeholder='Add a personal message to the invitation'
+              placeholder={t('placeholders.addPersonalMessage')}
               value={message}
               onChange={e => setMessage(e.target.value)}
             />
@@ -818,7 +820,7 @@ function CreateFamilyDialog({
       });
 
       toast({
-        title: 'Family created',
+        title: t('messages.familyCreated'),
         description: `${name} has been created successfully`,
       });
 
@@ -831,7 +833,7 @@ function CreateFamilyDialog({
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to create family group',
+        description: t('messages.familyCreateError'),
         variant: 'destructive',
       });
     } finally {
@@ -853,7 +855,7 @@ function CreateFamilyDialog({
           <Label htmlFor='family-name'>Family Name</Label>
           <Input
             id='family-name'
-            placeholder='Enter family name'
+            placeholder={t('placeholders.enterFamilyName')}
             value={name}
             onChange={e => setName(e.target.value)}
           />
@@ -863,7 +865,7 @@ function CreateFamilyDialog({
           <Label htmlFor='family-description'>Description (Optional)</Label>
           <Textarea
             id='family-description'
-            placeholder='Describe your family group'
+            placeholder={t('placeholders.describFamily')}
             value={description}
             onChange={e => setDescription(e.target.value)}
           />

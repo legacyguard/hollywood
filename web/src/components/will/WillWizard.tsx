@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -76,6 +77,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
   onCancel,
   initialData: _initialData,
 }) => {
+  const { t } = useTranslation('ui/will-wizard');
   const [state, setState] = useState<WizardState>({
     currentStep: 'setup',
     jurisdiction: 'CZ',
@@ -114,13 +116,13 @@ export const WillWizard: React.FC<WillWizardProps> = ({
     key: WizardStep;
     title: string;
   }[] = [
-    { key: 'setup', title: 'Setup', icon: FileText },
-    { key: 'personal', title: 'Personal Info', icon: User },
-    { key: 'family', title: 'Family', icon: Users },
-    { key: 'assets', title: 'Assets', icon: Building },
-    { key: 'beneficiaries', title: 'Beneficiaries', icon: Users },
-    { key: 'executors', title: 'Executors', icon: Scale },
-    { key: 'review', title: 'Review', icon: Eye },
+    { key: 'setup', title: t('steps.setup'), icon: FileText },
+    { key: 'personal', title: t('steps.personal'), icon: User },
+    { key: 'family', title: t('steps.family'), icon: Users },
+    { key: 'assets', title: t('steps.assets'), icon: Building },
+    { key: 'beneficiaries', title: t('steps.beneficiaries'), icon: Users },
+    { key: 'executors', title: t('steps.executors'), icon: Scale },
+    { key: 'review', title: t('steps.review'), icon: Eye },
   ];
 
   const currentStepIndex = steps.findIndex(

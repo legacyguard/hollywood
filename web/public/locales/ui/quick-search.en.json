@@ -1,0 +1,25 @@
+{
+  "title": "Quick Search",
+  "placeholder": "Search documents, guardians, or ask Sofia...",
+  "loading": "Searching...",
+  "noResults": "No results found for \"{{query}}\"",
+  "trySearching": "Try searching for documents, guardians, or features",
+  "actions": {
+    "uploadDocument": "Upload Document", 
+    "uploadDocumentSubtitle": "Secure document storage",
+    "addGuardian": "Add Guardian",
+    "addGuardianSubtitle": "Emergency contact management",
+    "dashboard": "Dashboard",
+    "dashboardSubtitle": "Your protection overview",
+    "legacyPlanning": "Legacy Planning",
+    "legacyPlanningSubtitle": "Create your legacy"
+  },
+  "sofia": {
+    "askAssistant": "Ask Sofia, your AI assistant",
+    "learnedFromDocuments": "Sofia learned from your documents"
+  },
+  "toast": {
+    "foundDocument": "Opening document: {{title}}",
+    "searchFailed": "Search failed. Please try again."
+  }
+}

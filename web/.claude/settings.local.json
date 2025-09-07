@@ -16,7 +16,8 @@
       "Bash(npm run validate-translations:*)",
       "Bash(npx ts-node:*)",
       "Bash(rg:*)",
-      "Bash(npm run typecheck:*)"
+      "Bash(npm run typecheck:*)",
+      "Bash(echo:*)"
     ],
     "deny": []
   }

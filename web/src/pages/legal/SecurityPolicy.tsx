@@ -1,96 +1,62 @@
 
+import { useTranslation } from 'react-i18next';
 import { LegalPageLayout } from '@/components/layout/LegalPageLayout';
 
 export function SecurityPolicy() {
+  const { t } = useTranslation('pages/security-policy');
+  
   return (
     <LegalPageLayout
-      title='Security Policy'
-      description='LegacyGuard Security Policy - Comprehensive overview of our security measures, encryption standards, and data protection practices.'
+      title={t('title')}
+      description={t('description')}
     >
       <section className='mb-8'>
-        <h2 className='text-2xl font-semibold mb-4'>Our Security Commitment</h2>
+        <h2 className='text-2xl font-semibold mb-4'>{t('commitment.title')}</h2>
         <p className='leading-relaxed mb-4'>
-          At LegacyGuard, security is not just a feature—it's the foundation of
-          everything we do. We understand that you're entrusting us with your
-          most sensitive and personal information, and we've built our platform
-          with bank-level security standards to protect it.
+          {t('commitment.content')}
         </p>
       </section>
 
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>
-          1. Zero-Knowledge Architecture
+          {t('zeroKnowledge.title')}
         </h2>
         <p className='leading-relaxed mb-4'>
-          Our most important security feature is our zero-knowledge
-          architecture. This means:
+          {t('zeroKnowledge.introduction')}
         </p>
         <ul className='list-disc pl-6 mb-4'>
-          <li>
-            <strong>Client-Side Encryption:</strong> All encryption and
-            decryption happens on your device, not on our servers
-          </li>
-          <li>
-            <strong>No Access:</strong> We cannot read, access, or decrypt your
-            documents, even if compelled by law
-          </li>
-          <li>
-            <strong>True Privacy:</strong> Your data remains private even from
-            LegacyGuard employees and administrators
-          </li>
-          <li>
-            <strong>End-to-End Security:</strong> Data is encrypted before it
-            leaves your device and remains encrypted in transit and storage
-          </li>
+          {t('zeroKnowledge.features', { returnObjects: true }).map((feature: any, index: number) => (
+            <li key={index}>
+              <strong>{feature.title}</strong> {feature.description}
+            </li>
+          ))}
         </ul>
       </section>
 
       <section className='mb-8'>
-        <h2 className='text-2xl font-semibold mb-4'>2. Encryption Standards</h2>
-        <h3 className='text-xl font-semibold mb-3'>2.1 Document Encryption</h3>
+        <h2 className='text-2xl font-semibold mb-4'>{t('encryption.title')}</h2>
+        <h3 className='text-xl font-semibold mb-3'>{t('encryption.documentEncryption.title')}</h3>
         <ul className='list-disc pl-6 mb-4'>
-          <li>
-            <strong>AES-256-GCM:</strong> Military-grade encryption for all
-            document content
-          </li>
-          <li>
-            <strong>RSA-4096:</strong> Asymmetric encryption for key exchange
-            and digital signatures
-          </li>
-          <li>
-            <strong>PBKDF2:</strong> Password-based key derivation with 100,000+
-            iterations
-          </li>
-          <li>
-            <strong>Argon2:</strong> Memory-hard key derivation for additional
-            security
-          </li>
+          {t('encryption.documentEncryption.standards', { returnObjects: true }).map((standard: any, index: number) => (
+            <li key={index}>
+              <strong>{standard.title}</strong> {standard.description}
+            </li>
+          ))}
         </ul>
 
-        <h3 className='text-xl font-semibold mb-3'>2.2 Key Management</h3>
+        <h3 className='text-xl font-semibold mb-3'>{t('encryption.keyManagement.title')}</h3>
         <ul className='list-disc pl-6 mb-4'>
-          <li>
-            <strong>Unique Keys:</strong> Each document gets its own encryption
-            key
-          </li>
-          <li>
-            <strong>Key Derivation:</strong> Keys are derived from your master
-            password and device-specific factors
-          </li>
-          <li>
-            <strong>Secure Storage:</strong> Keys are never stored on our
-            servers in plain text
-          </li>
-          <li>
-            <strong>Recovery Keys:</strong> Secure backup and recovery
-            mechanisms for account access
-          </li>
+          {t('encryption.keyManagement.practices', { returnObjects: true }).map((practice: any, index: number) => (
+            <li key={index}>
+              <strong>{practice.title}</strong> {practice.description}
+            </li>
+          ))}
         </ul>
       </section>
 
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>
-          3. Infrastructure Security
+          {t('infrastructure.title')}
         </h2>
         <h3 className='text-xl font-semibold mb-3'>3.1 Data Centers</h3>
         <ul className='list-disc pl-6 mb-4'>
@@ -134,7 +100,7 @@ export function SecurityPolicy() {
       </section>
 
       <section className='mb-8'>
-        <h2 className='text-2xl font-semibold mb-4'>4. Application Security</h2>
+        <h2 className='text-2xl font-semibold mb-4'>{t('applicationSecurity.title')}</h2>
         <h3 className='text-xl font-semibold mb-3'>4.1 Code Security</h3>
         <ul className='list-disc pl-6 mb-4'>
           <li>
@@ -221,9 +187,9 @@ export function SecurityPolicy() {
       </section>
 
       <section className='mb-8'>
-        <h2 className='text-2xl font-semibold mb-4'>6. Incident Response</h2>
+        <h2 className='text-2xl font-semibold mb-4'>{t('incidentResponse.title')}</h2>
         <p className='leading-relaxed mb-4'>
-          We have a comprehensive incident response plan that includes:
+          {t('incidentResponse.introduction')}
         </p>
         <ul className='list-disc pl-6 mb-4'>
           <li>
@@ -337,20 +303,18 @@ export function SecurityPolicy() {
 
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>
-          10. Contact Our Security Team
+          {t('contact.title')}
         </h2>
         <p className='leading-relaxed mb-4'>
-          If you have security concerns or want to report a security issue:
+          {t('contact.introduction')}
         </p>
         <div className='bg-muted rounded-lg p-4'>
           <p className='text-foreground'>
-            <strong>Security Team:</strong> security@legacyguard.app
+            <strong>{t('contact.securityTeam')}</strong>
             <br />
-            <strong>Bug Bounty:</strong> We welcome security researchers and
-            offer rewards for valid security findings
+            <strong>{t('contact.bugBounty')}</strong>
             <br />
-            <strong>Response Time:</strong> We aim to respond to all security
-            reports within 24 hours
+            <strong>{t('contact.responseTime')}</strong>
           </p>
         </div>
       </section>

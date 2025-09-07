@@ -4,6 +4,7 @@
  * Includes backup/restore functionality
  */
 
+import { useTranslation } from 'react-i18next';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
@@ -27,7 +28,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 
 export default function SettingsPage() {
-  usePageTitle('Settings');
+  const { t } = useTranslation('pages/settings');
+  usePageTitle(t('pageTitle'));
   const { userId } = useAuth();
   const { user } = useUser();
   const personalityManager = usePersonalityManager();
@@ -140,10 +142,10 @@ export default function SettingsPage() {
         // Continue even if Clerk update fails - local storage is still updated
       }
 
-      toast.success('Settings saved successfully');
+      toast.success(t('messages.savedSuccessfully'));
     } catch (error) {
       console.error('Error saving preferences:', error);
-      toast.error('Failed to save settings');
+      toast.error(t('messages.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -186,10 +188,10 @@ export default function SettingsPage() {
                 <div>
                   <h1 className='text-3xl font-bold flex items-center gap-3'>
                     <Icon name='settings' className='w-8 h-8 text-primary' />
-                    Settings
+                    {t('header.title')}
                   </h1>
                   <p className='text-muted-foreground mt-1'>
-                    Manage your account preferences and application settings
+                    {t('header.description')}
                   </p>
                 </div>
                 <Button
@@ -203,12 +205,12 @@ export default function SettingsPage() {
                         name='upload'
                         className='w-4 h-4 mr-2 animate-pulse'
                       />
-                      Saving...
+                      {t('buttons.saving')}
                     </>
                   ) : (
                     <>
                       <Icon name='check' className='w-4 h-4 mr-2' />
-                      Save Changes
+                      {t('buttons.saveChanges')}
                     </>
                   )}
                 </Button>
@@ -223,33 +225,33 @@ export default function SettingsPage() {
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
                 <Icon name='user' className='w-5 h-5 text-primary' />
-                Account Information
+                {t('accountInformation.title')}
               </h2>
               <div className='space-y-3 text-sm'>
                 <div className='flex justify-between py-2 border-b border-card-border'>
-                  <span className='text-muted-foreground'>Name</span>
+                  <span className='text-muted-foreground'>{t('accountInformation.name')}</span>
                   <span className='font-medium'>
-                    {user?.fullName || 'Not set'}
+                    {user?.fullName || t('accountInformation.notSet')}
                   </span>
                 </div>
                 <div className='flex justify-between py-2 border-b border-card-border'>
-                  <span className='text-muted-foreground'>Email</span>
+                  <span className='text-muted-foreground'>{t('accountInformation.email')}</span>
                   <span className='font-medium'>
-                    {user?.primaryEmailAddress?.emailAddress || 'Not set'}
+                    {user?.primaryEmailAddress?.emailAddress || t('accountInformation.notSet')}
                   </span>
                 </div>
                 <div className='flex justify-between py-2 border-b border-card-border'>
-                  <span className='text-muted-foreground'>User ID</span>
+                  <span className='text-muted-foreground'>{t('accountInformation.userId')}</span>
                   <span className='font-mono text-xs bg-muted px-2 py-1 rounded'>
                     {userId}
                   </span>
                 </div>
                 <div className='flex justify-between py-2'>
-                  <span className='text-muted-foreground'>Member Since</span>
+                  <span className='text-muted-foreground'>{t('accountInformation.memberSince')}</span>
                   <span className='font-medium'>
                     {user?.createdAt
                       ? new Date(user.createdAt).toLocaleDateString()
-                      : 'Unknown'}
+                      : t('accountInformation.unknown')}
                   </span>
                 </div>
               </div>
@@ -261,16 +263,16 @@ export default function SettingsPage() {
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
                 <Icon name='mail' className='w-5 h-5 text-primary' />
-                Notification Preferences
+                {t('notifications.title')}
               </h2>
               <div className='space-y-4'>
                 <div className='flex items-center justify-between'>
                   <div className='space-y-0.5'>
                     <Label htmlFor='email-notifications'>
-                      Email Notifications
+                      {t('notifications.email.label')}
                     </Label>
                     <p className='text-sm text-muted-foreground'>
-                      Receive important updates via email
+                      {t('notifications.email.description')}
                     </p>
                   </div>
                   <Switch
@@ -284,10 +286,10 @@ export default function SettingsPage() {
                 <div className='flex items-center justify-between'>
                   <div className='space-y-0.5'>
                     <Label htmlFor='push-notifications'>
-                      Push Notifications
+                      {t('notifications.push.label')}
                     </Label>
                     <p className='text-sm text-muted-foreground'>
-                      Get instant alerts in your browser
+                      {t('notifications.push.description')}
                     </p>
                   </div>
                   <Switch
@@ -300,9 +302,9 @@ export default function SettingsPage() {
                 </div>
                 <div className='flex items-center justify-between'>
                   <div className='space-y-0.5'>
-                    <Label htmlFor='reminders'>Task Reminders</Label>
+                    <Label htmlFor='reminders'>{t('notifications.reminders.label')}</Label>
                     <p className='text-sm text-muted-foreground'>
-                      Receive reminders for important tasks and documents
+                      {t('notifications.reminders.description')}
                     </p>
                   </div>
                   <Switch
@@ -322,14 +324,14 @@ export default function SettingsPage() {
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
                 <Icon name='protection' className='w-5 h-5 text-primary' />
-                Privacy & Security
+                {t('privacy.title')}
               </h2>
               <div className='space-y-4'>
                 <div className='flex items-center justify-between'>
                   <div className='space-y-0.5'>
-                    <Label htmlFor='analytics'>Share Analytics</Label>
+                    <Label htmlFor='analytics'>{t('privacy.analytics.label')}</Label>
                     <p className='text-sm text-muted-foreground'>
-                      Help improve the app by sharing anonymous usage data
+                      {t('privacy.analytics.description')}
                     </p>
                   </div>
                   <Switch
@@ -342,9 +344,9 @@ export default function SettingsPage() {
                 </div>
                 <div className='flex items-center justify-between'>
                   <div className='space-y-0.5'>
-                    <Label htmlFor='auto-backup'>Automatic Backups</Label>
+                    <Label htmlFor='auto-backup'>{t('privacy.autoBackup.label')}</Label>
                     <p className='text-sm text-muted-foreground'>
-                      Automatically backup your data weekly
+                      {t('privacy.autoBackup.description')}
                     </p>
                   </div>
                   <Switch
@@ -364,7 +366,7 @@ export default function SettingsPage() {
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
                 <Icon name='bot' className='w-5 h-5 text-primary' />
-                Sofia's Adaptive Personality
+                {t('sofia.title')}
               </h2>
 
               {/* Personality Insights */}
@@ -377,7 +379,7 @@ export default function SettingsPage() {
                     />
                     <div>
                       <h3 className='font-medium text-sm mb-1'>
-                        Sofia's Analysis
+                        {t('sofia.analysis')}
                       </h3>
                       <p className='text-sm text-muted-foreground'>
                         {personalityInsight}
@@ -389,10 +391,9 @@ export default function SettingsPage() {
 
               <div className='space-y-4'>
                 <div>
-                  <Label>Communication Style</Label>
+                  <Label>{t('sofia.communicationStyle.label')}</Label>
                   <p className='text-sm text-muted-foreground mb-4'>
-                    Choose how Sofia communicates with you. She learns from your
-                    interactions to provide the best experience.
+                    {t('sofia.communicationStyle.description')}
                   </p>
                   <RadioGroup
                     value={preferences.communication.style}
@@ -405,11 +406,10 @@ export default function SettingsPage() {
                       <RadioGroupItem value='default' id='style-default' />
                       <div className='flex-1'>
                         <Label htmlFor='style-default' className='font-medium'>
-                          🎯 Smart Adaptation
+                          {t('sofia.communicationStyle.options.default.title')}
                         </Label>
                         <p className='text-sm text-muted-foreground'>
-                          Sofia automatically learns your communication
-                          preferences from how you interact with the app
+                          {t('sofia.communicationStyle.options.default.description')}
                         </p>
                       </div>
                     </div>
@@ -423,11 +423,10 @@ export default function SettingsPage() {
                           htmlFor='style-empathetic'
                           className='font-medium'
                         >
-                          💝 Warm & Supportive
+                          {t('sofia.communicationStyle.options.empathetic.title')}
                         </Label>
                         <p className='text-sm text-muted-foreground'>
-                          Sofia focuses on emotions, family connections, and the
-                          meaningful aspects of your legacy planning
+                          {t('sofia.communicationStyle.options.empathetic.description')}
                         </p>
                       </div>
                     </div>
@@ -438,11 +437,10 @@ export default function SettingsPage() {
                           htmlFor='style-pragmatic'
                           className='font-medium'
                         >
-                          ⚡ Direct & Efficient
+                          {t('sofia.communicationStyle.options.pragmatic.title')}
                         </Label>
                         <p className='text-sm text-muted-foreground'>
-                          Sofia communicates with clear steps, facts, and
-                          practical guidance to help you complete tasks quickly
+                          {t('sofia.communicationStyle.options.pragmatic.description')}
                         </p>
                       </div>
                     </div>
@@ -456,11 +454,10 @@ export default function SettingsPage() {
                       className='flex items-center gap-2'
                     >
                       <Icon name='brain' className='w-4 h-4 text-primary' />
-                      Learning Mode
+                      {t('sofia.learningMode.label')}
                     </Label>
                     <p className='text-sm text-muted-foreground'>
-                      Allow Sofia to continuously learn and adapt to your
-                      communication preferences over time
+                      {t('sofia.learningMode.description')}
                     </p>
                   </div>
                   <Switch
@@ -480,7 +477,7 @@ export default function SettingsPage() {
                   <div className='space-y-3'>
                     <div className='flex justify-between items-center text-sm'>
                       <span className='text-muted-foreground'>
-                        Confidence Level:
+                        {t('sofia.confidenceLevel')}
                       </span>
                       <div className='flex items-center gap-2'>
                         <div
@@ -505,9 +502,7 @@ export default function SettingsPage() {
                           name='lightbulb'
                           className='w-3 h-3 inline mr-2'
                         />
-                        Sofia is still learning your preferences. Consider
-                        manually selecting your preferred style above for more
-                        accurate communication.
+                        {t('sofia.hint')}
                       </div>
                     )}
                   </div>
@@ -516,10 +511,11 @@ export default function SettingsPage() {
                 {preferences.communication.lastDetectionUpdate && (
                   <div className='text-xs text-muted-foreground bg-muted p-2 rounded flex items-center gap-2'>
                     <Icon name='info' className='w-3 h-3' />
-                    Last style update:{' '}
-                    {new Date(
-                      preferences.communication.lastDetectionUpdate
-                    ).toLocaleDateString()}
+                    {t('sofia.lastUpdate', {
+                      date: new Date(
+                        preferences.communication.lastDetectionUpdate
+                      ).toLocaleDateString()
+                    })}
                   </div>
                 )}
               </div>
@@ -531,14 +527,14 @@ export default function SettingsPage() {
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
                 <Icon name='settings' className='w-5 h-5 text-primary' />
-                Display Preferences
+                {t('display.title')}
               </h2>
               <div className='space-y-4'>
                 <div className='flex items-center justify-between'>
                   <div className='space-y-0.5'>
-                    <Label htmlFor='compact-mode'>Compact Mode</Label>
+                    <Label htmlFor='compact-mode'>{t('display.compactMode.label')}</Label>
                     <p className='text-sm text-muted-foreground'>
-                      Show more content with reduced spacing
+                      {t('display.compactMode.description')}
                     </p>
                   </div>
                   <Switch
@@ -551,9 +547,9 @@ export default function SettingsPage() {
                 </div>
                 <div className='flex items-center justify-between'>
                   <div className='space-y-0.5'>
-                    <Label htmlFor='show-tips'>Show Tips</Label>
+                    <Label htmlFor='show-tips'>{t('display.showTips.label')}</Label>
                     <p className='text-sm text-muted-foreground'>
-                      Display helpful tips and guidance throughout the app
+                      {t('display.showTips.description')}
                     </p>
                   </div>
                   <Switch
@@ -573,7 +569,7 @@ export default function SettingsPage() {
             <div className='space-y-6'>
               <h2 className='text-2xl font-bold flex items-center gap-3'>
                 <Icon name='shield-check' className='w-7 h-7 text-primary' />
-                Security Center
+                {t('securityCenter.title')}
               </h2>
               <SecurityDashboard />
             </div>

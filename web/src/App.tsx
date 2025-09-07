@@ -7,6 +7,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n/config';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { ClerkProvider } from '@/providers/ClerkProvider';
+import { LocalizationProvider } from '@/contexts/LocalizationContext';
 import SignInPage from '@/pages/auth/SignIn';
 import SignUpPage from '@/pages/auth/SignUp';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -52,6 +53,7 @@ import { OnboardingWrapper } from '@/components/onboarding/OnboardingWrapper';
 
 // Test Pages
 import TestNotifications from '@/pages/TestNotifications';
+import WillWizardCombinations from '@/pages/test/WillWizardCombinations';
 
 function ErrorFallback({ error }: { error: Error }) {
   return (
@@ -365,6 +367,15 @@ export default function App() {
                         <TestNotifications />
                       </DashboardLayout>
                     </ProtectedRoute>
+                  }
+                />
+                
+                <Route
+                  path='/test/will-wizard-combinations'
+                  element={
+                    <LocalizationProvider>
+                      <WillWizardCombinations />
+                    </LocalizationProvider>
                   }
                 />
 

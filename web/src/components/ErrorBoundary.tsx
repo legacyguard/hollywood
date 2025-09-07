@@ -44,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
     toast.error(
       this.props.t
         ? this.props.t(
-            'errorBoundary.toast',
+            'toast',
             "Something went wrong. We're working on fixing this issue."
           )
         : "Something went wrong. We're working on fixing this issue."
@@ -139,4 +139,4 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-export default withTranslation()(ErrorBoundary);
+export default withTranslation('ui/error-boundary')(ErrorBoundary);

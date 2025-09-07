@@ -23,6 +23,7 @@ import { RecipientStep } from './wizard-steps/RecipientStep';
 import { DeliveryStep } from './wizard-steps/DeliveryStep';
 import { RecordingStep } from './wizard-steps/RecordingStep';
 import { ReviewStep } from './wizard-steps/ReviewStep';
+import { useTranslation } from 'react-i18next';
 
 interface TimeCapsuleWizardProps {
   guardians: Guardian[];
@@ -34,26 +35,26 @@ interface TimeCapsuleWizardProps {
 const WIZARD_STEPS = [
   {
     id: 1,
-    title: 'Choose Recipient',
-    description: 'Who will receive this message?',
+    title: t('steps.recipient.title'),
+    description: t('steps.recipient.description'),
     icon: 'user-plus',
   },
   {
     id: 2,
-    title: 'Set Delivery',
-    description: 'When should it be delivered?',
+    title: t('steps.delivery.title'),
+    description: t('steps.delivery.description'),
     icon: 'calendar',
   },
   {
     id: 3,
-    title: 'Record Message',
-    description: 'Create your personal message',
+    title: t('steps.recording.title'),
+    description: t('steps.recording.description'),
     icon: 'video',
   },
   {
     id: 4,
-    title: 'Review & Seal',
-    description: 'Finalize your Time Capsule',
+    title: t('steps.review.title'),
+    description: t('steps.review.description'),
     icon: 'check-circle',
   },
 ];
@@ -64,6 +65,7 @@ export function TimeCapsuleWizard({
   guardians,
   onCapsuleCreated,
 }: TimeCapsuleWizardProps) {
+  const { t } = useTranslation('ui/time-capsule-wizard');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   const [currentStep, setCurrentStep] = useState(1);
@@ -242,7 +244,7 @@ export function TimeCapsuleWizard({
       handleClose();
     } catch (error) {
       console.error('Error creating time capsule:', error);
-      toast.error('Failed to create Time Capsule. Please try again.');
+      toast.error(t('errors.createFailed'));
     } finally {
       setIsSubmitting(false);
     }

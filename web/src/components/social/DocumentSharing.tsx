@@ -8,6 +8,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -85,6 +86,7 @@ export default function DocumentSharing({
   documentName,
   className,
 }: DocumentSharingProps) {
+  const { t } = useTranslation('ui/document-sharing');
   const [sharedByMe, setSharedByMe] = useState<DocumentShare[]>([]);
   const [sharedWithMe, setSharedWithMe] = useState<DocumentShare[]>([]);
   const [familyMembers, setFamilyMemberTypes] = useState<FamilyMemberType[]>(
@@ -123,7 +125,7 @@ export default function DocumentSharing({
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to load shared documents',
+        description: t('messages.loadError'),
         variant: 'destructive',
       });
     } finally {
@@ -158,8 +160,8 @@ export default function DocumentSharing({
       });
 
       toast({
-        title: 'Document shared',
-        description: `Shared with ${shareData.recipients.length} member(s)`,
+        title: t('messages.shareSuccess'),
+        description: t('messages.shareSuccessDetails', { count: shareData.recipients.length }),
       });
 
       setShowShareDialog(false);
@@ -167,7 +169,7 @@ export default function DocumentSharing({
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to share document',
+        description: t('messages.shareError'),
         variant: 'destructive',
       });
     }
@@ -187,16 +189,16 @@ export default function DocumentSharing({
       <div className='flex items-center justify-between'>
         <div>
           <h2 className='text-2xl font-bold tracking-tight'>
-            Document Sharing
+            {t('title')}
           </h2>
           <p className='text-muted-foreground'>
-            Share documents with family members and manage access permissions
+            {t('description')}
           </p>
         </div>
         {_documentId && (
           <Button onClick={() => setShowShareDialog(true)}>
             <Share2 className='h-4 w-4 mr-2' />
-            Share Document
+            {t('buttons.shareDocument')}
           </Button>
         )}
       </div>
@@ -209,10 +211,10 @@ export default function DocumentSharing({
       >
         <TabsList className='grid w-full grid-cols-3'>
           {_documentId && (
-            <TabsTrigger value='share'>Share Document</TabsTrigger>
+            <TabsTrigger value='share'>{t('tabs.share')}</TabsTrigger>
           )}
-          <TabsTrigger value='shared-with-me'>Shared With Me</TabsTrigger>
-          <TabsTrigger value='shared-by-me'>Shared By Me</TabsTrigger>
+          <TabsTrigger value='shared-with-me'>{t('tabs.sharedWithMe')}</TabsTrigger>
+          <TabsTrigger value='shared-by-me'>{t('tabs.sharedByMe')}</TabsTrigger>
         </TabsList>
 
         {_documentId && (

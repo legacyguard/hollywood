@@ -5,6 +5,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@clerk/clerk-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -47,6 +48,7 @@ interface ActiveSession {
 }
 
 export function SecurityDashboard() {
+  const { t } = useTranslation('ui/security-dashboard');
   const { userId } = useAuth();
   const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL!,
@@ -89,7 +91,7 @@ export function SecurityDashboard() {
       await checkKeyRotation();
     } catch (error) {
       console.error('Error loading security data:', error);
-      toast.error('Failed to load security information');
+      toast.error(t('errors.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -210,10 +212,10 @@ export function SecurityDashboard() {
   };
 
   const getScoreLabel = (score: number) => {
-    if (score >= 80) return 'Excellent';
-    if (score >= 60) return 'Good';
-    if (score >= 40) return 'Fair';
-    return 'Needs Improvement';
+    if (score >= 80) return t('securityScore.labels.excellent');
+    if (score >= 60) return t('securityScore.labels.good');
+    if (score >= 40) return t('securityScore.labels.fair');
+    return t('securityScore.labels.needsImprovement');
   };
 
   const getOperationIcon = (operation: string) => {
@@ -251,9 +253,9 @@ export function SecurityDashboard() {
         <Card className='p-6'>
           <div className='flex items-start justify-between mb-4'>
             <div>
-              <h3 className='text-xl font-semibold mb-2'>Security Score</h3>
+              <h3 className='text-xl font-semibold mb-2'>{t('securityScore.title')}</h3>
               <p className='text-muted-foreground text-sm'>
-                Your overall security posture based on multiple factors
+                {t('securityScore.description')}
               </p>
             </div>
             <div className='text-right'>
@@ -277,7 +279,7 @@ export function SecurityDashboard() {
                   name={'key' as any}
                   className='w-5 h-5 text-muted-foreground'
                 />
-                <span className='text-sm'>Password Strength</span>
+                <span className='text-sm'>{t('factors.passwordStrength.label')}</span>
               </div>
               <Badge
                 variant={
@@ -286,7 +288,7 @@ export function SecurityDashboard() {
                     : 'warning'
                 }
               >
-                {securityScore.factors.passwordStrength}/4
+                {t('factors.passwordStrength.rating', { current: securityScore.factors.passwordStrength })}
               </Badge>
             </div>
 
@@ -296,7 +298,7 @@ export function SecurityDashboard() {
                   name={'shield-check' as any}
                   className='w-5 h-5 text-muted-foreground'
                 />
-                <span className='text-sm'>Two-Factor Auth</span>
+                <span className='text-sm'>{t('factors.twoFactorAuth.label')}</span>
               </div>
               <Badge
                 variant={
@@ -306,8 +308,8 @@ export function SecurityDashboard() {
                 }
               >
                 {securityScore.factors.twoFactorEnabled
-                  ? 'Enabled'
-                  : 'Disabled'}
+                  ? t('factors.twoFactorAuth.enabled')
+                  : t('factors.twoFactorAuth.disabled')}
               </Badge>
             </div>
 
@@ -317,7 +319,7 @@ export function SecurityDashboard() {
                   name={'lock' as any}
                   className='w-5 h-5 text-muted-foreground'
                 />
-                <span className='text-sm'>Encryption</span>
+                <span className='text-sm'>{t('factors.encryption.label')}</span>
               </div>
               <Badge
                 variant={
@@ -327,8 +329,8 @@ export function SecurityDashboard() {
                 }
               >
                 {securityScore.factors.encryptionEnabled
-                  ? 'Active'
-                  : 'Inactive'}
+                  ? t('factors.encryption.active')
+                  : t('factors.encryption.inactive')}
               </Badge>
             </div>
 
@@ -338,14 +340,14 @@ export function SecurityDashboard() {
                   name={'database' as any}
                   className='w-5 h-5 text-muted-foreground'
                 />
-                <span className='text-sm'>Recent Backup</span>
+                <span className='text-sm'>{t('factors.recentBackup.label')}</span>
               </div>
               <Badge
                 variant={
                   securityScore.factors.backupRecent ? 'success' : 'warning'
                 }
               >
-                {securityScore.factors.backupRecent ? 'Up to date' : 'Outdated'}
+                {securityScore.factors.backupRecent ? t('factors.recentBackup.upToDate') : t('factors.recentBackup.outdated')}
               </Badge>
             </div>
 
@@ -355,14 +357,14 @@ export function SecurityDashboard() {
                   name={'refresh' as any}
                   className='w-5 h-5 text-muted-foreground'
                 />
-                <span className='text-sm'>Recovery Setup</span>
+                <span className='text-sm'>{t('factors.recoverySetup.label')}</span>
               </div>
               <Badge
                 variant={
                   securityScore.factors.recoverySetup ? 'success' : 'secondary'
                 }
               >
-                {securityScore.factors.recoverySetup ? 'Configured' : 'Not Set'}
+                {securityScore.factors.recoverySetup ? t('factors.recoverySetup.configured') : t('factors.recoverySetup.notSet')}
               </Badge>
             </div>
 
@@ -372,10 +374,10 @@ export function SecurityDashboard() {
                   name={'rotate' as any}
                   className='w-5 h-5 text-muted-foreground'
                 />
-                <span className='text-sm'>Key Rotation</span>
+                <span className='text-sm'>{t('factors.keyRotation.label')}</span>
               </div>
               <Badge variant={keyRotationNeeded ? 'warning' : 'success'}>
-                {keyRotationNeeded ? 'Needed' : 'Current'}
+                {keyRotationNeeded ? t('factors.keyRotation.needed') : t('factors.keyRotation.current')}
               </Badge>
             </div>
           </div>
@@ -385,7 +387,7 @@ export function SecurityDashboard() {
       {/* Active Sessions */}
       <FadeIn duration={0.5} delay={0.2}>
         <Card className='p-6'>
-          <h3 className='text-xl font-semibold mb-4'>Active Sessions</h3>
+          <h3 className='text-xl font-semibold mb-4'>{t('activeSessions.title')}</h3>
           <div className='space-y-3'>
             {activeSessions.map(session => (
               <div
@@ -406,14 +408,15 @@ export function SecurityDashboard() {
                 </div>
                 <div className='text-right'>
                   <p className='text-sm text-muted-foreground'>
-                    Active{' '}
-                    {formatDistanceToNow(new Date(session.last_active), {
-                      addSuffix: true,
+                    {t('activeSessions.active', { 
+                      timeAgo: formatDistanceToNow(new Date(session.last_active), {
+                        addSuffix: true,
+                      })
                     })}
                   </p>
                   {session.id === '1' && (
                     <Badge variant='outline' className='mt-1'>
-                      Current
+                      {t('activeSessions.current')}
                     </Badge>
                   )}
                 </div>
@@ -427,7 +430,7 @@ export function SecurityDashboard() {
       <FadeIn duration={0.5} delay={0.3}>
         <Card className='p-6'>
           <h3 className='text-xl font-semibold mb-4'>
-            Recent Security Activity
+            {t('recentActivity.title')}
           </h3>
           {auditLogs.length > 0 ? (
             <div className='space-y-2'>
@@ -447,7 +450,7 @@ export function SecurityDashboard() {
                     </div>
                     <div>
                       <p className='font-medium capitalize'>
-                        {log.operation} Operation
+                        {t('recentActivity.operation', { operation: log.operation })}
                       </p>
                       {log.failure_reason && (
                         <p className='text-sm text-red-600'>
@@ -478,7 +481,7 @@ export function SecurityDashboard() {
             </div>
           ) : (
             <p className='text-muted-foreground text-center py-8'>
-              No recent activity
+              {t('recentActivity.noActivity')}
             </p>
           )}
         </Card>
@@ -492,7 +495,7 @@ export function SecurityDashboard() {
           <Card className='p-6 border-yellow-200 dark:border-yellow-900 bg-yellow-50 dark:bg-yellow-950/20'>
             <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
               <Icon name={'info' as any} className='w-5 h-5 text-yellow-600' />
-              Security Recommendations
+              {t('recommendations.title')}
             </h3>
             <div className='space-y-3'>
               {keyRotationNeeded && (
@@ -502,13 +505,12 @@ export function SecurityDashboard() {
                     className='w-5 h-5 text-yellow-600 mt-0.5'
                   />
                   <div className='flex-1'>
-                    <p className='font-medium'>Rotate Encryption Keys</p>
+                    <p className='font-medium'>{t('recommendations.rotateKeys.title')}</p>
                     <p className='text-sm text-muted-foreground'>
-                      Your encryption keys are over 90 days old. Consider
-                      rotating them for enhanced security.
+                      {t('recommendations.rotateKeys.description')}
                     </p>
                     <Button size='sm' variant='outline' className='mt-2'>
-                      Rotate Keys Now
+                      {t('recommendations.rotateKeys.action')}
                     </Button>
                   </div>
                 </div>
@@ -522,13 +524,13 @@ export function SecurityDashboard() {
                   />
                   <div className='flex-1'>
                     <p className='font-medium'>
-                      Enable Two-Factor Authentication
+                      {t('recommendations.enable2FA.title')}
                     </p>
                     <p className='text-sm text-muted-foreground'>
-                      Add an extra layer of security to your account with 2FA.
+                      {t('recommendations.enable2FA.description')}
                     </p>
                     <Button size='sm' variant='outline' className='mt-2'>
-                      Setup 2FA
+                      {t('recommendations.enable2FA.action')}
                     </Button>
                   </div>
                 </div>
@@ -541,13 +543,12 @@ export function SecurityDashboard() {
                     className='w-5 h-5 text-yellow-600 mt-0.5'
                   />
                   <div className='flex-1'>
-                    <p className='font-medium'>Create a Recent Backup</p>
+                    <p className='font-medium'>{t('recommendations.createBackup.title')}</p>
                     <p className='text-sm text-muted-foreground'>
-                      Your last backup is over a week old. Create a new backup
-                      to protect your data.
+                      {t('recommendations.createBackup.description')}
                     </p>
                     <Button size='sm' variant='outline' className='mt-2'>
-                      Backup Now
+                      {t('recommendations.createBackup.action')}
                     </Button>
                   </div>
                 </div>

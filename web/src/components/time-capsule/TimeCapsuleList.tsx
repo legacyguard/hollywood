@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { TimeCapsule } from '@/types/timeCapsule';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 interface TimeCapsuleListProps {
   onDelete: (id: string) => void;
@@ -37,6 +38,7 @@ export function TimeCapsuleList({
   onDelete,
   onTestPreview,
 }: TimeCapsuleListProps) {
+  const { t } = useTranslation('ui/time-capsule-list');
   const [deleteConfirm, setDeleteConfirm] = useState<null | string>(null);
 
   const getInitials = (name: string): string => {
@@ -369,14 +371,14 @@ function TimeCapsuleCard({
                 <p className='text-sm font-medium text-gray-900'>
                   {capsule.delivery_condition === 'ON_DATE' &&
                   capsule.delivery_date
-                    ? 'Scheduled Delivery'
-                    : 'Family Shield Activation'}
+                    ? t('delivery.scheduled')
+                    : t('delivery.familyShieldActivation')}
                 </p>
                 <p className='text-xs text-gray-600'>
                   {capsule.delivery_condition === 'ON_DATE' &&
                   capsule.delivery_date
                     ? `Will be delivered: ${format(new Date(capsule.delivery_date), 'MMMM d, yyyy')}`
-                    : 'Will be delivered when Family Shield is activated'}
+                    : t('delivery.familyShieldDescription')}
                 </p>
               </div>
             </div>

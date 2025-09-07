@@ -343,9 +343,11 @@ export class LegalValidator {
     willType: string,
     witnessData?: any
   ): ValidationResult {
+    // Map 'witnessed' to 'alographic' for consistency
+    const mappedWillType = willType === 'witnessed' ? 'alographic' : willType;
     const requiredWitnesses =
       this.rules.witnessRequirements[
-        willType as keyof typeof this.rules.witnessRequirements
+        mappedWillType as keyof typeof this.rules.witnessRequirements
       ];
 
     if (requiredWitnesses === undefined) {

@@ -5,6 +5,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Calendar,
   ChevronRight,
@@ -85,6 +86,7 @@ export function FamilyBenefitNudges({
   variant = 'sidebar',
   className,
 }: FamilyBenefitNudgesProps) {
+  const { t } = useTranslation('ui/family-benefit-nudges');
   const [activeNudges, setActiveNudges] = useState<FamilyNudge[]>([]);
   const [daysSinceFirstDocument, setDaysSinceFirstDocument] = useState(0);
 
@@ -115,7 +117,8 @@ export function FamilyBenefitNudges({
     const nudges = generateFamilyNudges(
       conditions,
       achievedMilestones,
-      lastActionDate
+      lastActionDate,
+      t
     );
     const filteredNudges = nudges
       .filter(nudge => !dismissedNudges.includes(nudge.id))
@@ -138,7 +141,8 @@ export function FamilyBenefitNudges({
   const generateFamilyNudges = (
     conditions: MilestoneTriggerConditions,
     achieved: string[],
-    lastAction?: string
+    lastAction?: string,
+    t: any
   ): FamilyNudge[] => {
     const nudges: FamilyNudge[] = [];
     const daysSinceLastAction = lastAction
@@ -153,16 +157,13 @@ export function FamilyBenefitNudges({
         id: 'first_document_nudge',
         type: 'milestone',
         priority: 'urgent',
-        title: 'Give Your Family Peace of Mind',
-        message:
-          "Start with just one important document - it's the first step in protecting those you love most.",
-        family_benefit:
-          'Your family will know exactly where to find important information when they need it most',
-        emotional_hook:
-          'Every family deserves security. Yours is no different.',
-        action_text: 'Upload First Document',
+        title: t('nudges.first_document_nudge.title'),
+        message: t('nudges.first_document_nudge.message'),
+        family_benefit: t('nudges.first_document_nudge.family_benefit'),
+        emotional_hook: t('nudges.first_document_nudge.emotional_hook'),
+        action_text: t('nudges.first_document_nudge.action_text'),
         action_type: 'upload_document',
-        time_estimate: '2 minutes',
+        time_estimate: t('nudges.first_document_nudge.time_estimate'),
         family_impact_score: 85,
         dismissible: false,
       });
@@ -178,16 +179,13 @@ export function FamilyBenefitNudges({
         id: 'family_circle_nudge',
         type: 'family_focused',
         priority: 'high',
-        title: 'Who Can Help Your Family?',
-        message:
-          "You've secured important documents. Now give someone trusted the ability to access them in an emergency.",
-        family_benefit:
-          "Your family won't be locked out when they need help most urgently",
-        emotional_hook:
-          'In critical moments, seconds count. Give your family a lifeline.',
-        action_text: 'Add Emergency Contact',
+        title: t('nudges.family_circle_nudge.title'),
+        message: t('nudges.family_circle_nudge.message'),
+        family_benefit: t('nudges.family_circle_nudge.family_benefit'),
+        emotional_hook: t('nudges.family_circle_nudge.emotional_hook'),
+        action_text: t('nudges.family_circle_nudge.action_text'),
         action_type: 'set_emergency_contact',
-        time_estimate: '30 seconds',
+        time_estimate: t('nudges.family_circle_nudge.time_estimate'),
         family_impact_score: 75,
         dismissible: true,
       });
@@ -203,16 +201,13 @@ export function FamilyBenefitNudges({
         id: 'will_completion_nudge',
         type: 'milestone',
         priority: 'high',
-        title: 'Your Family Needs Your Guidance',
-        message:
-          'Without clear instructions, your loved ones might struggle to honor what you really wanted.',
-        family_benefit:
-          'Prevents family disputes and ensures your assets go exactly where you intended',
-        emotional_hook:
-          'Give your family the gift of knowing your wishes with absolute certainty',
-        action_text: 'Complete Your Will',
+        title: t('nudges.will_completion_nudge.title'),
+        message: t('nudges.will_completion_nudge.message'),
+        family_benefit: t('nudges.will_completion_nudge.family_benefit'),
+        emotional_hook: t('nudges.will_completion_nudge.emotional_hook'),
+        action_text: t('nudges.will_completion_nudge.action_text'),
         action_type: 'complete_will',
-        time_estimate: '15 minutes',
+        time_estimate: t('nudges.will_completion_nudge.time_estimate'),
         family_impact_score: 90,
         dismissible: true,
       });
@@ -228,15 +223,15 @@ export function FamilyBenefitNudges({
         id: 'weekly_encouragement_nudge',
         type: 'time_based',
         priority: 'medium',
-        title: "Keep Building Your Family's Foundation",
-        message: `It's been a week since your last action. Your family's protection foundation is ${Math.round((conditions.documentsCount / 10) * 100)}% complete.`,
-        family_benefit:
-          'Each document adds another layer of security for your loved ones',
-        emotional_hook:
-          'Your family is counting on you to finish what you started',
-        action_text: 'Add Another Document',
+        title: t('nudges.weekly_encouragement_nudge.title'),
+        message: t('nudges.weekly_encouragement_nudge.message', {
+          percentage: Math.round((conditions.documentsCount / 10) * 100)
+        }),
+        family_benefit: t('nudges.weekly_encouragement_nudge.family_benefit'),
+        emotional_hook: t('nudges.weekly_encouragement_nudge.emotional_hook'),
+        action_text: t('nudges.weekly_encouragement_nudge.action_text'),
         action_type: 'upload_document',
-        time_estimate: '3 minutes',
+        time_estimate: t('nudges.weekly_encouragement_nudge.time_estimate'),
         family_impact_score: 60,
         dismissible: true,
         expires_after_hours: 72,
@@ -249,15 +244,13 @@ export function FamilyBenefitNudges({
         id: 'insurance_gap_nudge',
         type: 'protection_gap',
         priority: 'medium',
-        title: 'Protect Your Family Financially',
-        message:
-          "Insurance policies ensure your family won't face financial hardship during difficult times.",
-        family_benefit:
-          'Bills, mortgage, and expenses will be covered - your family can focus on healing',
-        emotional_hook: "Don't let financial stress add to your family's grief",
-        action_text: 'Add Insurance Documents',
+        title: t('nudges.insurance_gap_nudge.title'),
+        message: t('nudges.insurance_gap_nudge.message'),
+        family_benefit: t('nudges.insurance_gap_nudge.family_benefit'),
+        emotional_hook: t('nudges.insurance_gap_nudge.emotional_hook'),
+        action_text: t('nudges.insurance_gap_nudge.action_text'),
         action_type: 'upload_document',
-        time_estimate: '5 minutes',
+        time_estimate: t('nudges.insurance_gap_nudge.time_estimate'),
         family_impact_score: 80,
         dismissible: true,
       });
@@ -272,16 +265,13 @@ export function FamilyBenefitNudges({
         id: 'foundation_celebration_nudge',
         type: 'celebration',
         priority: 'low',
-        title: "You're Building Something Beautiful! 🎉",
-        message:
-          "Five documents secured! Your family's foundation of protection is taking solid shape.",
-        family_benefit:
-          'Your family now has access to comprehensive protection across multiple areas',
-        emotional_hook:
-          'Every document you add is an act of love for your family',
-        action_text: 'Celebrate Your Progress',
+        title: t('nudges.foundation_celebration_nudge.title'),
+        message: t('nudges.foundation_celebration_nudge.message'),
+        family_benefit: t('nudges.foundation_celebration_nudge.family_benefit'),
+        emotional_hook: t('nudges.foundation_celebration_nudge.emotional_hook'),
+        action_text: t('nudges.foundation_celebration_nudge.action_text'),
         action_type: 'celebrate_milestone',
-        time_estimate: '1 minute',
+        time_estimate: t('nudges.foundation_celebration_nudge.time_estimate'),
         family_impact_score: 70,
         dismissible: true,
         expires_after_hours: 24,
@@ -293,20 +283,21 @@ export function FamilyBenefitNudges({
       conditions.daysSinceFirstDocument >= 30 &&
       conditions.daysSinceFirstDocument % 30 === 0
     ) {
+      const months = Math.floor(conditions.daysSinceFirstDocument / 30);
       nudges.push({
         id: 'monthly_checkin_nudge',
         type: 'time_based',
         priority: 'low',
-        title: `${Math.floor(conditions.daysSinceFirstDocument / 30)} Month${conditions.daysSinceFirstDocument >= 60 ? 's' : ''} of Family Protection! 📅`,
-        message:
-          'Your family has enjoyed continuous protection. Time to review and strengthen it further.',
-        family_benefit:
-          "Regular reviews ensure your family's protection stays current and comprehensive",
-        emotional_hook:
-          'Your commitment to family protection is admirable - keep it growing',
-        action_text: 'Review Protection',
+        title: t('nudges.monthly_checkin_nudge.title', {
+          months,
+          plural: conditions.daysSinceFirstDocument >= 60 ? 's' : ''
+        }),
+        message: t('nudges.monthly_checkin_nudge.message'),
+        family_benefit: t('nudges.monthly_checkin_nudge.family_benefit'),
+        emotional_hook: t('nudges.monthly_checkin_nudge.emotional_hook'),
+        action_text: t('nudges.monthly_checkin_nudge.action_text'),
         action_type: 'review_protection',
-        time_estimate: '10 minutes',
+        time_estimate: t('nudges.monthly_checkin_nudge.time_estimate'),
         family_impact_score: 65,
         dismissible: true,
         expires_after_hours: 168,
@@ -415,7 +406,7 @@ export function FamilyBenefitNudges({
                 </p>
 
                 <div className='bg-white/70 rounded-md p-2 border border-current/10'>
-                  <p className='text-xs font-medium mb-1'>Family Benefit:</p>
+                  <p className='text-xs font-medium mb-1'>{t('ui.familyBenefitLabel')}</p>
                   <p className='text-xs text-gray-600 leading-tight'>
                     {nudge.family_benefit}
                   </p>
@@ -425,7 +416,7 @@ export function FamilyBenefitNudges({
                   <div className='flex items-center gap-3 text-xs text-gray-500'>
                     <span>{nudge.time_estimate}</span>
                     <Badge variant='outline' className='text-xs px-1 py-0 h-4'>
-                      Impact: {nudge.family_impact_score}/100
+                      {t('ui.impactLabel', { score: nudge.family_impact_score })}
                     </Badge>
                   </div>
 

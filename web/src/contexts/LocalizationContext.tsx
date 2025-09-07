@@ -8,12 +8,14 @@ import React, {
 } from 'react';
 
 export type CountryCode = 'cz' | 'en' | 'sk';
-export type LanguageCode = 'cs' | 'en' | 'sk';
+export type LanguageCode = 'cs' | 'de' | 'en' | 'sk';
+export type JurisdictionCode = 'CZ' | 'SK';
 
 interface LocalizationState {
   countryCode: CountryCode;
   currency: string;
   jurisdiction: string;
+  jurisdictionCode: JurisdictionCode;
   languageCode: LanguageCode;
 }
 
@@ -21,6 +23,7 @@ interface LocalizationContextType extends LocalizationState {
   isLoading: boolean;
   setCountryCode: (code: CountryCode) => void;
   setLanguageCode: (code: LanguageCode) => void;
+  setJurisdictionCode: (code: JurisdictionCode) => void;
 }
 
 const LocalizationContext = createContext<LocalizationContextType | undefined>(
@@ -36,21 +39,36 @@ const COUNTRY_MAPPINGS: Record<CountryCode, LocalizationState> = {
     countryCode: 'sk',
     languageCode: 'sk',
     jurisdiction: 'Slovakia',
+    jurisdictionCode: 'SK',
     currency: 'EUR',
   },
   cz: {
     countryCode: 'cz',
     languageCode: 'cs',
     jurisdiction: 'Czech Republic',
+    jurisdictionCode: 'CZ',
     currency: 'CZK',
   },
   en: {
     countryCode: 'en',
     languageCode: 'en',
     jurisdiction: 'General (English)',
+    jurisdictionCode: 'SK', // Default to SK for international users
     currency: 'USD',
   },
 };
+
+// Supported language-jurisdiction combinations for will generation
+export const SUPPORTED_COMBINATIONS = [
+  { language: 'sk', jurisdiction: 'SK', label: 'Slovenčina (Slovensko)' },
+  { language: 'cs', jurisdiction: 'SK', label: 'Čeština (Slovensko)' },
+  { language: 'en', jurisdiction: 'SK', label: 'English (Slovakia)' },
+  { language: 'de', jurisdiction: 'SK', label: 'Deutsch (Slowakei)' },
+  { language: 'sk', jurisdiction: 'CZ', label: 'Slovenčina (Česko)' },
+  { language: 'cs', jurisdiction: 'CZ', label: 'Čeština (Česko)' },
+  { language: 'en', jurisdiction: 'CZ', label: 'English (Czech Republic)' },
+  { language: 'de', jurisdiction: 'CZ', label: 'Deutsch (Tschechien)' },
+];
 
 const detectCountryFromDomain = (): CountryCode => {
   if (typeof window === 'undefined') return 'en';
@@ -149,12 +167,44 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({
 
   const setLanguageCode = (code: LanguageCode) => {
     setState(prev => ({ ...prev, languageCode: code }));
+    localStorage.setItem('legacyguard-language', code);
   };
+
+  const setJurisdictionCode = (code: JurisdictionCode) => {
+    setState(prev => ({
+      ...prev,
+      jurisdictionCode: code,
+      jurisdiction: code === 'SK' ? 'Slovakia' : 'Czech Republic',
+      currency: code === 'SK' ? 'EUR' : 'CZK',
+    }));
+    localStorage.setItem('legacyguard-jurisdiction', code);
+  };
+
+  // Load saved preferences
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('legacyguard-language') as LanguageCode;
+      const savedJurisdiction = localStorage.getItem('legacyguard-jurisdiction') as JurisdictionCode;
+      
+      if (savedLanguage && ['cs', 'de', 'en', 'sk'].includes(savedLanguage)) {
+        setState(prev => ({ ...prev, languageCode: savedLanguage }));
+      }
+      if (savedJurisdiction && ['CZ', 'SK'].includes(savedJurisdiction)) {
+        setState(prev => ({
+          ...prev,
+          jurisdictionCode: savedJurisdiction,
+          jurisdiction: savedJurisdiction === 'SK' ? 'Slovakia' : 'Czech Republic',
+          currency: savedJurisdiction === 'SK' ? 'EUR' : 'CZK',
+        }));
+      }
+    }
+  }, []);
 
   const contextValue: LocalizationContextType = {
     ...state,
     setCountryCode,
     setLanguageCode,
+    setJurisdictionCode,
     isLoading,
   };
 

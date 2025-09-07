@@ -8,6 +8,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { adaptDbDocumentToApp } from '@/lib/type-adapters';
 
 interface Document {
@@ -46,6 +47,7 @@ export const DocumentList = () => {
   const [deletingId, setDeletingId] = useState<null | string>(null);
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
+  const { t } = useTranslation('ui/document-list');
 
   // Fetch documents from database
   const fetchDocuments = useCallback(async () => {
@@ -130,10 +132,10 @@ export const DocumentList = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      toast.success('Document downloaded successfully!');
+      toast.success(t('toast.downloadSuccess'));
     } catch (err: unknown) {
       console.error('Error downloading document:', err);
-      toast.error('Failed to download document. Please try again.');
+      toast.error(t('toast.downloadError'));
     } finally {
       setDownloadingId(null);
     }
@@ -190,10 +192,10 @@ export const DocumentList = () => {
       localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
       localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
 
-      toast.success('Document deleted successfully!');
+      toast.success(t('toast.deleteSuccess'));
     } catch (err: unknown) {
       console.error('Error deleting document:', err);
-      toast.error('Failed to delete document. Please try again.');
+      toast.error(t('toast.deleteError'));
     } finally {
       setDeletingId(null);
     }
@@ -254,7 +256,7 @@ export const DocumentList = () => {
             name={'upload' as any}
             className='w-8 h-8 text-muted-foreground mx-auto mb-4 animate-pulse'
           />
-          <p className='text-muted-foreground'>Loading documents...</p>
+          <p className='text-muted-foreground'>{t('loading.message')}</p>
         </Card>
       </FadeIn>
     );
@@ -269,12 +271,12 @@ export const DocumentList = () => {
             className='w-8 h-8 text-status-error mx-auto mb-4'
           />
           <h3 className='text-lg font-semibold mb-2 text-status-error'>
-            Error Loading Documents
+            {t('error.title')}
           </h3>
           <p className='text-muted-foreground mb-4'>{error}</p>
           <Button onClick={fetchDocuments} variant={'outline' as any} size='sm'>
             <Icon name={'upload' as any} className='w-4 h-4 mr-2' />
-            Retry
+            {t('error.retry')}
           </Button>
         </Card>
       </FadeIn>
@@ -289,9 +291,9 @@ export const DocumentList = () => {
             name={'documents' as any}
             className='w-12 h-12 text-muted-foreground mx-auto mb-4'
           />
-          <h3 className='text-lg font-semibold mb-2'>No Documents Yet</h3>
+          <h3 className='text-lg font-semibold mb-2'>{t('empty.title')}</h3>
           <p className='text-muted-foreground'>
-            Upload your first document to get started with secure storage
+            {t('empty.message')}
           </p>
         </Card>
       </FadeIn>
@@ -302,9 +304,9 @@ export const DocumentList = () => {
     <div className='space-y-4'>
       <FadeIn duration={0.5} delay={0.5}>
         <div className='flex justify-between items-center mb-4'>
-          <h3 className='text-lg font-semibold'>Your Encrypted Documents</h3>
+          <h3 className='text-lg font-semibold'>{t('header.title')}</h3>
           <span className='text-sm text-muted-foreground'>
-            {documents.length} document{documents.length !== 1 ? 's' : ''}
+            {t('header.count', { count: documents.length })}
           </span>
         </div>
       </FadeIn>
@@ -324,16 +326,17 @@ export const DocumentList = () => {
                   <div>
                     <p className='font-medium'>{doc.file_name}</p>
                     <div className='flex items-center gap-3 text-xs text-muted-foreground'>
-                      <span>{formatFileSize(doc.file_size)}</span>
+                      <span>{t('document.size', { size: formatFileSize(doc.file_size) })}</span>
                       <span>•</span>
                       <span>
-                        Encrypted{' '}
-                        {format(new Date(doc.encrypted_at), 'MMM d, yyyy')}
+                        {t('document.uploaded', {
+                          date: format(new Date(doc.encrypted_at), 'MMM d, yyyy')
+                        })}
                       </span>
                       <span>•</span>
                       <span className='flex items-center gap-1'>
                         <Icon name={'locked' as any} className='w-3 h-3' />
-                        Secure
+                        {t('document.secure')}
                       </span>
                     </div>
                   </div>
@@ -346,7 +349,7 @@ export const DocumentList = () => {
                     className='text-muted-foreground hover:text-primary'
                     onClick={() => handleDownload(doc)}
                     disabled={downloadingId === doc.id}
-                    title='Download document'
+                    title={t('document.download')}
                   >
                     {downloadingId === doc.id ? (
                       <Icon
@@ -363,7 +366,7 @@ export const DocumentList = () => {
                     className='text-muted-foreground hover:text-status-error'
                     onClick={() => handleDelete(doc)}
                     disabled={deletingId === doc.id}
-                    title='Delete document'
+                    title={t('document.delete')}
                   >
                     {deletingId === doc.id ? (
                       <Icon

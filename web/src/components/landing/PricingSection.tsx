@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Check, Shield, Star, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -88,34 +89,16 @@ const PricingCard: React.FC<{ index: number; tier: PricingTier }> = ({
 };
 
 export const PricingSection: React.FC = () => {
+  const { t } = useTranslation('landing/pricing');
+  
   const pricingTiers: PricingTier[] = [
     {
       id: 'free',
-      name: 'Forever Free',
-      price: '€0',
-      description: 'The perfect starting point, powered by our mobile app.',
-      features: [
-        {
-          title: 'Intelligent Document Scanner',
-          description:
-            'Transform paper chaos into digital order with a single photo.',
-        },
-        {
-          title: 'Basic Digital Vault',
-          description:
-            'Secure storage for up to 10 of your most important documents.',
-        },
-        {
-          title: 'Sofia AI Assistant (Basic)',
-          description: 'Get help and answers to your basic questions.',
-        },
-        {
-          title: 'Basic Family Shield',
-          description:
-            'Invite 1 Guardian to ensure your family has someone to turn to.',
-        },
-      ],
-      cta: 'Start with the Free App',
+      name: t('tiers.free.name'),
+      price: t('tiers.free.price'),
+      description: t('tiers.free.description'),
+      features: t('tiers.free.features', { returnObjects: true }) as { title: string; description: string }[],
+      cta: t('tiers.free.cta'),
       ctaAction: () => {
         // Navigate to app download or sign up
         window.location.href = '/sign-up';
@@ -123,40 +106,14 @@ export const PricingSection: React.FC = () => {
     },
     {
       id: 'premium',
-      name: 'Legacy Premium',
-      price: '€9.99',
-      period: 'month',
-      description:
-        'For individuals ready to create a complete, lasting legacy.',
+      name: t('tiers.premium.name'),
+      price: t('tiers.premium.price'),
+      period: t('tiers.premium.period'),
+      description: t('tiers.premium.description'),
       highlighted: true,
-      badge: 'Most Popular',
-      features: [
-        {
-          title: 'Unlimited Digital Vault',
-          description: 'Store everything that matters, without any limits.',
-        },
-        {
-          title: 'Premium Will Creator',
-          description:
-            'Create a legally robust will with our intelligent guide.',
-        },
-        {
-          title: 'Time Capsule (Personal Messages)',
-          description:
-            'Record video and audio messages to be delivered to your loved ones in the future.',
-        },
-        {
-          title: 'Complete Family Shield',
-          description:
-            'Set up detailed emergency protocols and invite unlimited Guardians.',
-        },
-        {
-          title: 'Advanced AI Assistance',
-          description:
-            'Sofia helps you draft your will and provides in-depth analysis.',
-        },
-      ],
-      cta: 'Build Your Legacy',
+      badge: t('tiers.premium.badge'),
+      features: t('tiers.premium.features', { returnObjects: true }) as { title: string; description: string }[],
+      cta: t('tiers.premium.cta'),
       ctaAction: () => {
         // Navigate to premium sign up
         window.location.href = '/sign-up?plan=premium';
@@ -164,37 +121,12 @@ export const PricingSection: React.FC = () => {
     },
     {
       id: 'family',
-      name: 'Family Premium',
-      price: '€14.99',
-      period: 'month',
-      description:
-        'The ultimate solution for protecting your entire family circle.',
-      features: [
-        {
-          title: 'Shared Access for up to 5 Members',
-          description:
-            'Your entire family can collaborate in one connected ecosystem.',
-        },
-        {
-          title: 'Shared Family Calendar',
-          description:
-            'Track all important dates and anniversaries in one place.',
-        },
-        {
-          title: 'Collaborative Family Shield',
-          description: 'Together set up and test emergency protocols.',
-        },
-        {
-          title: 'Visual Family Tree',
-          description:
-            'Clearly map your entire family and assign roles and inheritance.',
-        },
-        {
-          title: 'Priority Support',
-          description: 'Get priority access to our team of experts.',
-        },
-      ],
-      cta: 'Protect Your Entire Family',
+      name: t('tiers.family.name'),
+      price: t('tiers.family.price'),
+      period: t('tiers.family.period'),
+      description: t('tiers.family.description'),
+      features: t('tiers.family.features', { returnObjects: true }) as { title: string; description: string }[],
+      cta: t('tiers.family.cta'),
       ctaAction: () => {
         // Navigate to family plan sign up
         window.location.href = '/sign-up?plan=family';

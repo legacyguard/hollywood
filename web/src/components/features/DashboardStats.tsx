@@ -1,5 +1,6 @@
 
 import _React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@clerk/clerk-react';
 import { KPICard, type KPICardProps } from '@/components/ui/kpi-card';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
@@ -17,6 +18,7 @@ interface StatsData {
 }
 
 export function DashboardStats({ className }: DashboardStatsProps) {
+  const { t } = useTranslation('ui/dashboard-stats');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   const { context: _context } = useSofiaStore();
@@ -100,36 +102,36 @@ export function DashboardStats({ className }: DashboardStatsProps) {
 
     return [
       {
-        title: 'Documents Secured',
+        title: t('cards.documentsSecured.title'),
         value: stats.documentsCount.toString(),
         change:
           stats.recentUploads > 0
-            ? `+${stats.recentUploads} this month`
-            : 'No recent uploads',
+            ? t('cards.documentsSecured.changeThisMonth', { count: stats.recentUploads })
+            : t('cards.documentsSecured.noRecentUploads'),
         changeType: stats.recentUploads > 0 ? 'positive' : 'neutral',
         trendType: stats.recentUploads > 0 ? 'up' : 'neutral',
         showTrend: true,
       },
       {
-        title: 'Guardians Added',
+        title: t('cards.guardiansAdded.title'),
         value: stats.guardiansCount.toString(),
-        change: stats.guardiansCount > 0 ? 'Setup complete' : 'Needs setup',
+        change: stats.guardiansCount > 0 ? t('cards.guardiansAdded.setupComplete') : t('cards.guardiansAdded.needsSetup'),
         changeType: stats.guardiansCount > 0 ? 'positive' : 'negative',
         trendType: stats.guardiansCount > 0 ? 'up' : 'down',
         showTrend: true,
       },
       {
-        title: 'Legacy Progress',
+        title: t('cards.legacyProgress.title'),
         value: `${completionPercentage}%`,
-        change: completionPercentage >= 50 ? 'Great progress!' : 'Keep going!',
+        change: completionPercentage >= 50 ? t('cards.legacyProgress.greatProgress') : t('cards.legacyProgress.keepGoing'),
         changeType: completionPercentage >= 50 ? 'positive' : 'neutral',
         trendType: completionPercentage >= 50 ? 'up' : 'neutral',
         showTrend: true,
       },
       {
-        title: 'Expiring Soon',
+        title: t('cards.expiringSoon.title'),
         value: stats.expiringDocuments.toString(),
-        change: stats.expiringDocuments > 0 ? 'Needs attention' : 'All current',
+        change: stats.expiringDocuments > 0 ? t('cards.expiringSoon.needsAttention') : t('cards.expiringSoon.allCurrent'),
         changeType: stats.expiringDocuments > 0 ? 'negative' : 'positive',
         trendType: stats.expiringDocuments > 0 ? 'down' : 'up',
         showTrend: true,
@@ -144,10 +146,10 @@ export function DashboardStats({ className }: DashboardStatsProps) {
       <div className={className}>
         <div className='mb-6'>
           <h2 className='text-xl font-semibold text-foreground mb-2'>
-            Your Progress Overview
+            {t('title')}
           </h2>
           <p className='text-sm text-muted-foreground'>
-            Track your journey as Guardian of Memories
+            {t('subtitle')}
           </p>
         </div>
 
@@ -171,10 +173,10 @@ export function DashboardStats({ className }: DashboardStatsProps) {
     <div className={className}>
       <div className='mb-6'>
         <h2 className='text-xl font-semibold text-foreground mb-2'>
-          Your Progress Overview
+          {t('title')}
         </h2>
         <p className='text-sm text-muted-foreground'>
-          Track your journey as Guardian of Memories
+          {t('subtitle')}
         </p>
       </div>
 

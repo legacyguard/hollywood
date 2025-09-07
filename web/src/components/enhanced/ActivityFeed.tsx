@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 export interface ActivityItem {
   action: string;
@@ -36,14 +37,17 @@ interface ActivityFeedProps {
 
 export function ActivityFeed({
   activities,
-  title = 'Recent Activity',
+  title,
   showViewAll = true,
   onViewAll,
   maxHeight = '400px',
   loading = false,
-  emptyMessage = 'No recent activity',
+  emptyMessage,
   className,
 }: ActivityFeedProps) {
+  const { t } = useTranslation('ui/activity-feed');
+  const displayTitle = title || t('title');
+  const displayEmptyMessage = emptyMessage || t('empty.description');
   const getActivityIcon = (item: ActivityItem) => {
     if (item.icon) return item.icon;
 
@@ -86,7 +90,7 @@ export function ActivityFeed({
     <FadeIn duration={0.5}>
       <Card className={cn('h-full', className)}>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-4'>
-          <CardTitle className='text-lg font-semibold'>{title}</CardTitle>
+          <CardTitle className='text-lg font-semibold'>{displayTitle}</CardTitle>
           {showViewAll && onViewAll && (
             <Button
               variant='ghost'
@@ -94,7 +98,7 @@ export function ActivityFeed({
               onClick={onViewAll}
               className='text-primary hover:text-primary-hover'
             >
-              View all
+              {t('viewAll')}
               <Icon name='arrowRight' className='ml-2 h-4 w-4' />
             </Button>
           )}
@@ -118,7 +122,7 @@ export function ActivityFeed({
                 name='inbox'
                 className='w-12 h-12 mx-auto mb-3 opacity-50'
               />
-              <p>{emptyMessage}</p>
+              <p>{displayEmptyMessage}</p>
             </div>
           ) : (
             <ScrollArea className='px-6' style={{ maxHeight }}>
