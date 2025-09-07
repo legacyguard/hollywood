@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { TimeCapsule } from '@/types/timeCapsule';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 
 interface TimeCapsuleListProps {
@@ -38,6 +39,7 @@ export function TimeCapsuleList({
   onDelete,
   onTestPreview,
 }: TimeCapsuleListProps) {
+  const { t } = useTranslation('ui/time-capsule-list');
   const defaultOnTestPreview = onTestPreview || (() => {});
   const [deleteConfirm, setDeleteConfirm] = useState<null | string>(null);
 
@@ -118,7 +120,7 @@ export function TimeCapsuleList({
         <div className='space-y-4'>
           <h3 className='text-lg font-semibold flex items-center gap-2'>
             <Icon name={'clock' as any} className='w-5 h-5 text-orange-600' />
-            Pending Delivery ({groupedCapsules['pending'].length})
+            {t('sections.pendingDelivery', { count: groupedCapsules['pending'].length })}
           </h3>
           <div className='grid gap-4'>
             {groupedCapsules['pending'].map(capsule => (
@@ -146,7 +148,7 @@ export function TimeCapsuleList({
               name={'check-circle' as any}
               className='w-5 h-5 text-green-600'
             />
-            Delivered ({groupedCapsules['delivered'].length})
+            {t('sections.delivered', { count: groupedCapsules['delivered'].length })}
           </h3>
           <div className='grid gap-4'>
             {groupedCapsules['delivered'].map(capsule => (
@@ -175,7 +177,7 @@ export function TimeCapsuleList({
               name={'alert-circle' as any}
               className='w-5 h-5 text-red-600'
             />
-            Failed Delivery ({groupedCapsules['failed'].length})
+            {t('sections.failedDelivery', { count: groupedCapsules['failed'].length })}
           </h3>
           <div className='grid gap-4'>
             {groupedCapsules['failed'].map(capsule => (
@@ -203,22 +205,20 @@ export function TimeCapsuleList({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Time Capsule</AlertDialogTitle>
+            <AlertDialogTitle>{t('deleteDialog.title')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this Time Capsule? This action
-              cannot be undone, and your recorded message will be permanently
-              lost.
+              {t('deleteDialog.description')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() =>
                 deleteConfirm && handleDeleteConfirm(deleteConfirm)
               }
               className='bg-red-600 hover:bg-red-700'
             >
-              Delete Time Capsule
+              {t('deleteDialog.confirmButton')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -260,7 +260,7 @@ function TimeCapsuleCard({
       <div className='absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 rotate-45 flex items-center justify-center'>
         <div className='rotate-[-45deg] text-white text-xs font-bold flex flex-col items-center'>
           <Icon name={'shield-check' as any} className='w-3 h-3 mb-0.5' />
-          <span className='text-[8px] leading-none'>SEALED</span>
+          <span className='text-[8px] leading-none'>{t('card.sealed')}</span>
         </div>
       </div>
 
@@ -292,7 +292,7 @@ function TimeCapsuleCard({
               </div>
               <div className='flex items-center gap-2 text-sm text-muted-foreground mt-1'>
                 <Icon name={'user' as any} className='w-3 h-3 flex-shrink-0' />
-                <span className='truncate'>For {capsule.recipient_name}</span>
+                <span className='truncate'>{t('card.recipient', { name: capsule.recipient_name })}</span>
                 <span>•</span>
                 <Icon name={'mail' as any} className='w-3 h-3 flex-shrink-0' />
                 <span className='truncate'>{capsule.recipient_email}</span>
@@ -319,7 +319,7 @@ function TimeCapsuleCard({
                       name={'external-link' as any}
                       className='w-4 h-4 mr-2'
                     />
-                    View Delivered Message
+                    {t('menu.viewDeliveredMessage')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                 </>
@@ -328,14 +328,14 @@ function TimeCapsuleCard({
                 <>
                   <DropdownMenuItem>
                     <Icon name={'eye' as any} className='w-4 h-4 mr-2' />
-                    Preview Recording
+                    {t('menu.previewRecording')}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className='text-blue-600 focus:text-blue-600'
                     onClick={() => onTestPreview?.(capsule.id)}
                   >
                     <Icon name={'mail-check' as any} className='w-4 h-4 mr-2' />
-                    Send Test Preview
+                    {t('menu.sendTestPreview')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                 </>
@@ -345,7 +345,7 @@ function TimeCapsuleCard({
                 className='text-red-600 focus:text-red-600'
               >
                 <Icon name={'trash-2' as any} className='w-4 h-4 mr-2' />
-                Delete
+                {t('menu.delete')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -371,14 +371,14 @@ function TimeCapsuleCard({
                 <p className='text-sm font-medium text-gray-900'>
                   {capsule.delivery_condition === 'ON_DATE' &&
                   capsule.delivery_date
-                    ? 'Scheduled Delivery'
-                    : 'Family Shield Activation'}
+                    ? t('card.deliveryConditions.scheduledDelivery')
+                    : t('card.deliveryConditions.familyShieldActivation')}
                 </p>
                 <p className='text-xs text-gray-600'>
                   {capsule.delivery_condition === 'ON_DATE' &&
                   capsule.delivery_date
-                    ? `Will be delivered: ${format(new Date(capsule.delivery_date), 'MMMM d, yyyy')}`
-                    : 'Will be delivered when Family Shield is activated'}
+                    ? t('card.deliveryConditions.scheduledDate', { date: format(new Date(capsule.delivery_date), 'MMMM d, yyyy') })
+                    : t('card.deliveryConditions.activationMessage')}
                 </p>
               </div>
             </div>
@@ -389,11 +389,11 @@ function TimeCapsuleCard({
                 className='w-3 h-3 mr-1'
               />
               {capsule.status === 'PENDING'
-                ? 'Sealed'
+                ? t('card.status.sealed')
                 : capsule.status === 'DELIVERED'
-                  ? 'Delivered'
+                  ? t('card.status.delivered')
                   : capsule.status === 'FAILED'
-                    ? 'Failed'
+                    ? t('card.status.failed')
                     : capsule.status}
             </Badge>
           </div>
@@ -430,7 +430,7 @@ function TimeCapsuleCard({
           </div>
 
           <span className='text-muted-foreground'>
-            Created {format(new Date(capsule.created_at), 'MMM d, yyyy')}
+            {t('card.created', { date: format(new Date(capsule.created_at), 'MMM d, yyyy') })}
           </span>
         </div>
 
@@ -442,11 +442,9 @@ function TimeCapsuleCard({
               className='w-4 h-4 inline mr-2 text-green-600'
             />
             <span className='text-green-800'>
-              Delivered on{' '}
-              {format(
-                new Date(capsule.delivered_at),
-                "MMMM d, yyyy 'at' h:mm a"
-              )}
+              {t('card.deliveryStatus.deliveredOn', { 
+                date: format(new Date(capsule.delivered_at), "MMMM d, yyyy 'at' h:mm a")
+              })}
             </span>
           </div>
         )}
@@ -458,7 +456,7 @@ function TimeCapsuleCard({
               className='w-4 h-4 inline mr-2 text-red-600'
             />
             <span className='text-red-800'>
-              Delivery failed: {capsule.delivery_error}
+              {t('card.deliveryStatus.deliveryFailed', { error: capsule.delivery_error })}
             </span>
           </div>
         )}

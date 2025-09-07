@@ -11,6 +11,7 @@ import {
   SUPPORTED_COMBINATIONS,
   useLocalization,
 } from '@/contexts/LocalizationContext';
+import { useTranslation } from 'react-i18next';
 
 interface CountrySelectorProps {
   onCountryConfirmed: () => void;
@@ -73,6 +74,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
   onCountryConfirmed,
   showStepByStep = false,
 }) => {
+  const { t } = useTranslation('ui/country-selector');
   const {
     countryCode,
     jurisdiction,
@@ -130,7 +132,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
             name={'loader' as any}
             className='w-8 h-8 text-primary animate-spin mx-auto mb-4'
           />
-          <p className='text-muted-foreground'>Detecting your location...</p>
+          <p className='text-muted-foreground'>{t('loading.title')}</p>
         </div>
       </div>
     );
@@ -149,9 +151,9 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                   name={'globe' as any}
                   className='w-12 h-12 text-primary mx-auto mb-6'
                 />
-                <h1 className='text-3xl font-bold mb-4'>Choose Your Language</h1>
+                <h1 className='text-3xl font-bold mb-4'>{t('languageSelection.title')}</h1>
                 <p className='text-lg text-muted-foreground'>
-                  Select the language for your will interface
+                  {t('languageSelection.subtitle')}
                 </p>
                 <div className='flex justify-center mt-6'>
                   <div className='flex items-center space-x-2 text-sm text-muted-foreground'>
@@ -216,9 +218,9 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                   name={'balance-scale' as any}
                   className='w-12 h-12 text-primary mx-auto mb-6'
                 />
-                <h1 className='text-3xl font-bold mb-4'>Choose Legal Jurisdiction</h1>
+                <h1 className='text-3xl font-bold mb-4'>{t('jurisdictionSelection.title')}</h1>
                 <p className='text-lg text-muted-foreground'>
-                  Select the legal framework that applies to your will
+                  {t('jurisdictionSelection.subtitle')}
                 </p>
                 <div className='flex justify-center mt-6'>
                   <div className='flex items-center space-x-2 text-sm text-muted-foreground'>
@@ -307,7 +309,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                   name={'shield-check' as any}
                   className='w-16 h-16 text-primary mx-auto mb-6'
                 />
-                <h1 className='text-4xl font-bold mb-6'>Confirm Your Selection</h1>
+                <h1 className='text-4xl font-bold mb-6'>{t('confirmation.title')}</h1>
                 <div className='flex justify-center mt-6'>
                   <div className='flex items-center space-x-2 text-sm text-muted-foreground'>
                     <div className='w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center'>
@@ -468,9 +470,9 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
               name={'shield-check' as any}
               className='w-16 h-16 text-primary mx-auto mb-6'
             />
-            <h1 className='text-4xl font-bold mb-6'>Will Creator</h1>
+            <h1 className='text-4xl font-bold mb-6'>{t('defaultConfirmation.title')}</h1>
             <p className='text-xl text-muted-foreground mb-8'>
-              Let's ensure your will complies with the right legal framework
+              {t('defaultConfirmation.subtitle')}
             </p>
           </div>
 

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FadeIn } from '@/components/motion/FadeIn';
+import { useTranslation } from 'react-i18next';
 
 interface Scene1PromiseProps {
   onNext: () => void;
@@ -11,10 +12,11 @@ interface Scene1PromiseProps {
 }
 
 export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
+  const { t } = useTranslation('ui/scene1-promise');
+  
   const subtitle = useMemo(
-    () =>
-      "Every life is a story. Let's ensure yours will be a source of strength and calm for your loved ones.",
-    []
+    () => t('subtitle'),
+    [t]
   );
 
   return (
@@ -29,7 +31,7 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
           transition={{ delay: 2, duration: 0.5 }}
           whileHover={{ scale: 1.05 }}
         >
-          Skip introduction
+          {t('skipIntroduction')}
         </motion.button>
       )}
 
@@ -42,7 +44,7 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
               transition={{ delay: 0.3, duration: 0.8 }}
             >
               <CardTitle className='text-3xl font-heading bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent'>
-                A Promise of Calm
+                {t('title')}
               </CardTitle>
             </motion.div>
           </CardHeader>
@@ -127,7 +129,7 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2, duration: 1 }}
                 >
-                  Your story begins here
+                  {t('storyBegins')}
                 </motion.p>
               </div>
             </motion.div>
@@ -142,10 +144,10 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
                 className='bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300'
                 onClick={onNext}
               >
-                ✨ Start writing my story
+                {t('startWriting')}
               </Button>
               <p className='text-xs text-muted-foreground mt-3 opacity-70'>
-                Takes just 2 minutes • Completely private
+                {t('footer')}
               </p>
             </motion.div>
           </CardContent>

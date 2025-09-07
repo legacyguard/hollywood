@@ -1,5 +1,6 @@
 
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Define the props the component will accept
 interface MetaTagsProps {
@@ -13,18 +14,10 @@ interface MetaTagsProps {
   url?: string;
 }
 
-// Define default values for when no props are provided
-const DEFAULTS = {
-  TITLE: 'LegacyGuard | Your Legacy, Secured. Your Family, Protected.',
-  DESCRIPTION:
-    "The most caring and secure way to organize your life's journey and protect your family's future. AI-powered document management, family shield protocol, and will creation.",
-  // Social media image - 1200x630px for optimal sharing
+// Define default image and URL values
+const STATIC_DEFAULTS = {
   IMAGE_URL: 'https://legacyguard.app/og-image.png',
   URL: 'https://legacyguard.app',
-  KEYWORDS:
-    'legacy planning, document management, family protection, digital vault, will creation, emergency planning, secure storage, AI assistant',
-  AUTHOR: 'LegacyGuard',
-  ROBOTS: 'index, follow',
 };
 
 export const MetaTags = ({
@@ -37,30 +30,32 @@ export const MetaTags = ({
   author,
   robots,
 }: MetaTagsProps) => {
+  const { t } = useTranslation('ui/meta-tags');
+
   // Use provided props or fall back to the default values
-  const pageTitle = title ? `${title} | LegacyGuard` : DEFAULTS.TITLE;
-  const pageDescription = description || DEFAULTS.DESCRIPTION;
-  const pageImageUrl = imageUrl || DEFAULTS.IMAGE_URL;
-  const pageUrl = url || DEFAULTS.URL;
-  const pageKeywords = keywords || DEFAULTS.KEYWORDS;
-  const pageAuthor = author || DEFAULTS.AUTHOR;
-  const pageRobots = robots || DEFAULTS.ROBOTS;
+  const pageTitle = title ? t('titleWithBrand', { title }) : t('defaults.title');
+  const pageDescription = description || t('defaults.description');
+  const pageImageUrl = imageUrl || STATIC_DEFAULTS.IMAGE_URL;
+  const pageUrl = url || STATIC_DEFAULTS.URL;
+  const pageKeywords = keywords || t('defaults.keywords');
+  const pageAuthor = author || t('defaults.author');
+  const pageRobots = robots || t('defaults.robots');
 
   // Default structured data for LegacyGuard
   const defaultStructuredData = useMemo(
     () => ({
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
-      name: 'LegacyGuard',
+      name: t('structuredData.name'),
       description: pageDescription,
       url: pageUrl,
-      applicationCategory: 'FinanceApplication',
-      operatingSystem: 'Web',
+      applicationCategory: t('structuredData.applicationCategory'),
+      operatingSystem: t('structuredData.operatingSystem'),
       offers: {
         '@type': 'Offer',
         price: '0',
         priceCurrency: 'USD',
-        category: 'Free',
+        category: t('structuredData.freeCategory'),
       },
       aggregateRating: {
         '@type': 'AggregateRating',
@@ -125,8 +120,8 @@ export const MetaTags = ({
     updateMetaTag('meta[property="og:title"]', pageTitle);
     updateMetaTag('meta[property="og:description"]', pageDescription);
     updateMetaTag('meta[property="og:image"]', pageImageUrl);
-    updateMetaTag('meta[property="og:site_name"]', 'LegacyGuard');
-    updateMetaTag('meta[property="og:locale"]', 'en_US');
+    updateMetaTag('meta[property="og:site_name"]', t('defaults.siteName'));
+    updateMetaTag('meta[property="og:locale"]', t('defaults.locale'));
 
     // Update Twitter Card meta tags
     updateMetaTag('meta[name="twitter:card"]', 'summary_large_image');

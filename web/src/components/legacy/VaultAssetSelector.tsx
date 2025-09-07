@@ -7,6 +7,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
 
 interface VaultAsset {
   bundle?: undefined | {
@@ -41,6 +42,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
   selectedAssets = [],
   assetType = 'all',
 }) => {
+  const { t } = useTranslation('ui/vault-asset-selector');
   const { userId } = useAuth();
   const [assets, setAssets] = useState<VaultAsset[]>([]);
   const [loading, setLoading] = useState(true);
@@ -173,7 +175,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
           description += ` (${asset.description})`;
         }
         if (asset.bundle) {
-          description += ` - from ${asset.bundle.name}`;
+          description += ` - ${t('bundlePrefix', { name: asset.bundle.name })}`;
         }
         return description;
       });
@@ -223,18 +225,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
   };
 
   const getAssetTypeLabel = () => {
-    switch (assetType) {
-      case 'realEstate':
-        return 'Real Estate Properties';
-      case 'vehicles':
-        return 'Vehicles';
-      case 'bankAccounts':
-        return 'Bank Accounts & Investments';
-      case 'personalProperty':
-        return 'Personal Property';
-      default:
-        return 'All Assets';
-    }
+    return t(`assetTypes.${assetType}`);
   };
 
   return (
@@ -244,11 +235,10 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
         <div className='flex items-center justify-between p-6 border-b border-border'>
           <div>
             <h2 className='text-xl font-semibold'>
-              Select Assets from Your Vault
+              {t('header.title')}
             </h2>
             <p className='text-sm text-muted-foreground mt-1'>
-              Choose from {getAssetTypeLabel().toLowerCase()} in your secure
-              document vault
+              {t('header.subtitle', { assetType: getAssetTypeLabel().toLowerCase() })}
             </p>
           </div>
           <Button onClick={onClose} variant='ghost' size='sm'>
@@ -264,7 +254,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
               className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground'
             />
             <Input
-              placeholder='Search your assets...'
+              placeholder={t('search.placeholder')}
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               className='pl-10'
@@ -281,7 +271,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                   name={'loader' as any}
                   className='w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground'
                 />
-                <p className='text-muted-foreground'>Loading your assets...</p>
+                <p className='text-muted-foreground'>{t('loading.message')}</p>
               </div>
             </div>
           ) : filteredAssets.length === 0 ? (
@@ -290,11 +280,11 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                 name={'folder-open' as any}
                 className='w-12 h-12 mx-auto mb-4 text-muted-foreground'
               />
-              <h3 className='font-semibold mb-2'>No Assets Found</h3>
+              <h3 className='font-semibold mb-2'>{t('empty.title')}</h3>
               <p className='text-muted-foreground'>
                 {searchTerm
-                  ? 'No assets match your search criteria.'
-                  : `No ${getAssetTypeLabel().toLowerCase()} found in your vault.`}
+                  ? t('empty.searchMessage')
+                  : t('empty.noAssetsMessage', { assetType: getAssetTypeLabel().toLowerCase() })}
               </p>
             </div>
           ) : (
@@ -359,12 +349,14 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
         <div className='p-6 border-t border-border'>
           <div className='flex items-center justify-between'>
             <p className='text-sm text-muted-foreground'>
-              {selectedIds.length} asset{selectedIds.length !== 1 ? 's' : ''}{' '}
-              selected
+              {t('footer.selected', {
+                count: selectedIds.length,
+                plural: selectedIds.length !== 1 ? t('footer.selectedPlural') : t('footer.selectedSingular')
+              })}
             </p>
             <div className='flex items-center gap-2'>
               <Button onClick={onClose} variant='outline'>
-                Cancel
+                {t('footer.cancelButton')}
               </Button>
               <Button
                 onClick={handleConfirmSelection}
@@ -372,7 +364,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                 className='bg-primary hover:bg-primary-hover text-primary-foreground'
               >
                 <Icon name={'check' as any} className='w-4 h-4 mr-2' />
-                Add Selected Assets
+                {t('footer.confirmButton')}
               </Button>
             </div>
           </div>

@@ -4,18 +4,12 @@ import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   type JurisdictionCode,
   type LanguageCode,
   SUPPORTED_COMBINATIONS,
   useLocalization,
 } from '@/contexts/LocalizationContext';
+import { useTranslation } from 'react-i18next';
 
 interface EnhancedCountrySelectorProps {
   onSelectionConfirmed: () => void;
@@ -24,6 +18,7 @@ interface EnhancedCountrySelectorProps {
 export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = ({
   onSelectionConfirmed,
 }) => {
+  const { t } = useTranslation('ui/enhanced-country-selector');
   const { languageCode, jurisdictionCode, setLanguageCode, setJurisdictionCode, isLoading } =
     useLocalization();
 
@@ -97,7 +92,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
             name={'loader' as any}
             className="w-8 h-8 text-primary animate-spin mx-auto mb-4"
           />
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">{t('status.loading')}</p>
         </div>
       </div>
     );
@@ -112,9 +107,9 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
               name={'shield-check' as any}
               className="w-16 h-16 text-primary mx-auto mb-6"
             />
-            <h1 className="text-4xl font-bold mb-6">Will Creator</h1>
+            <h1 className="text-4xl font-bold mb-6">{t('title')}</h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Choose your preferred language and legal jurisdiction
+              {t('languageSelection.description')}
             </p>
           </div>
 
@@ -122,10 +117,10 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
             <Card className="p-8 max-w-2xl mx-auto">
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-semibold mb-4">
-                  Select Your Language
+                  {t('languageSelection.title')}
                 </h2>
                 <p className="text-muted-foreground">
-                  Choose the language you want to use for creating your will
+                  {t('languageSelection.subtitle')}
                 </p>
               </div>
 
@@ -153,14 +148,14 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                 <div className="flex items-center justify-center gap-3 mb-4">
                   <span className="text-2xl">{getLanguageFlag(selectedLanguage)}</span>
                   <h2 className="text-2xl font-semibold">
-                    Language: {getLanguageLabel(selectedLanguage)}
+                    {t('confirmation.language')}: {getLanguageLabel(selectedLanguage)}
                   </h2>
                 </div>
                 <h3 className="text-xl font-medium mb-4">
-                  Select Legal Jurisdiction
+                  {t('jurisdictionSelection.title')}
                 </h3>
                 <p className="text-muted-foreground">
-                  Choose which country's laws will govern your will
+                  {t('jurisdictionSelection.subtitle')}
                 </p>
               </div>
 
@@ -183,7 +178,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
               <div className="text-center">
                 <Button variant="ghost" onClick={handleBack}>
                   <Icon name={'arrow-left' as any} className="w-4 h-4 mr-2" />
-                  Back to Language
+                  {t('buttons.back')}
                 </Button>
               </div>
             </Card>
@@ -192,7 +187,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
           {step === 'confirmation' && (
             <Card className="p-8 max-w-2xl mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-2xl font-semibold mb-6">Confirm Your Selection</h2>
+                <h2 className="text-2xl font-semibold mb-6">{t('confirmation.title')}</h2>
 
                 <div className="bg-muted/30 rounded-lg p-6 mb-6">
                   <div className="flex items-center justify-center gap-4 mb-4">
@@ -217,11 +212,11 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                     <Icon name={'info' as any} className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                     <div className="text-left">
                       <h4 className="font-semibold text-sm mb-1 text-blue-900">
-                        Your Will Configuration
+                        {t('confirmation.legalCompliance.title')}
                       </h4>
                       <p className="text-sm text-blue-800">
-                        <strong>Interface Language:</strong> {getLanguageLabel(selectedLanguage)}<br/>
-                        <strong>Legal Framework:</strong> {getJurisdictionLabel(selectedJurisdiction)}<br/>
+                        <strong>{t('confirmation.language')}:</strong> {getLanguageLabel(selectedLanguage)}<br/>
+                        <strong>{t('confirmation.jurisdiction')}:</strong> {getJurisdictionLabel(selectedJurisdiction)}<br/>
                         <strong>Currency:</strong> {selectedJurisdiction === 'SK' ? 'EUR' : 'CZK'}
                       </p>
                     </div>
@@ -236,7 +231,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                   size="lg"
                 >
                   <Icon name={'check' as any} className="w-5 h-5 mr-2" />
-                  Start Creating Will
+                  {t('buttons.confirm')}
                 </Button>
 
                 <Button
@@ -246,7 +241,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                   className="px-8"
                 >
                   <Icon name={'arrow-left' as any} className="w-5 h-5 mr-2" />
-                  Change Selection
+                  {t('buttons.changeSelection')}
                 </Button>
               </div>
 
@@ -258,12 +253,10 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                   />
                   <div>
                     <h4 className="font-semibold text-sm mb-1">
-                      Why these settings matter
+                      {t('confirmation.legalCompliance.title')}
                     </h4>
                     <p className="text-sm text-muted-foreground">
-                      <strong>Language</strong> determines the interface and document language, while{' '}
-                      <strong>Jurisdiction</strong> determines which country's legal requirements
-                      your will must follow. You can use any language with any supported jurisdiction.
+                      {t('confirmation.legalCompliance.description')}
                     </p>
                   </div>
                 </div>

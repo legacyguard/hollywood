@@ -9,6 +9,7 @@ import {
   useLocalization
 } from '@/contexts/LocalizationContext';
 import { EnhancedWillWizard } from './EnhancedWillWizard';
+import { useTranslation } from 'react-i18next';
 
 interface TestConfiguration {
   jurisdiction: JurisdictionCode;
@@ -17,6 +18,7 @@ interface TestConfiguration {
 }
 
 export const WillWizardTester: React.FC = () => {
+  const { t } = useTranslation('ui/will-wizard-tester');
   const { setLanguageCode, setJurisdictionCode, languageCode, jurisdictionCode } = useLocalization();
   const [showWizard, setShowWizard] = useState(false);
   const [currentTest, setCurrentTest] = useState<null | TestConfiguration>(null);
@@ -48,7 +50,7 @@ export const WillWizardTester: React.FC = () => {
     testResults.push(snapshot);
     localStorage.setItem('willWizardTests', JSON.stringify(testResults));
 
-    alert(`✅ Test completed for ${currentTest?.label}!\nCheck console and localStorage for results.`);
+    alert(t('alerts.testCompleted', { label: currentTest?.label }));
     handleWizardClose();
   };
 
@@ -59,9 +61,9 @@ export const WillWizardTester: React.FC = () => {
     );
 
     return hasTest ? (
-      <Badge className="bg-green-100 text-green-800">✅ Tested</Badge>
+      <Badge className="bg-green-100 text-green-800">{t('status.tested')}</Badge>
     ) : (
-      <Badge variant="outline">⏳ Pending</Badge>
+      <Badge variant="outline">{t('status.pending')}</Badge>
     );
   };
 
@@ -91,25 +93,25 @@ export const WillWizardTester: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-4">
-            Will Wizard Testing Suite
+            {t('title')}
           </h1>
           <p className="text-lg text-muted-foreground mb-6">
-            Test all 8 language-jurisdiction combinations for the will wizard
+            {t('subtitle')}
           </p>
 
           <div className="flex justify-center gap-4 mb-6">
             <div className="text-sm">
-              <strong>Current:</strong> {languageCode}-{jurisdictionCode}
+              <strong>{t('currentLabel')}</strong> {languageCode}-{jurisdictionCode}
             </div>
             <Button variant="outline" size="sm" onClick={clearTestResults}>
-              Clear Test Results
+              {t('buttons.clearTestResults')}
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => console.log('Test Results:', getTestResults())}
             >
-              View Test Results
+              {t('buttons.viewTestResults')}
             </Button>
           </div>
         </div>
@@ -131,63 +133,61 @@ export const WillWizardTester: React.FC = () => {
                 className="w-full"
                 onClick={() => runTest(config)}
               >
-                Test {config.language}-{config.jurisdiction}
+                {t('buttons.testCombination', { 
+                  language: config.language, 
+                  jurisdiction: config.jurisdiction 
+                })}
               </Button>
 
               <div className="mt-3 text-xs text-muted-foreground">
-                <div><strong>UI:</strong> {config.language}</div>
-                <div><strong>Law:</strong> {config.jurisdiction}</div>
-                <div><strong>File:</strong> {config.language}_{config.jurisdiction}.json</div>
+                <div><strong>{t('labels.ui')}</strong> {config.language}</div>
+                <div><strong>{t('labels.law')}</strong> {config.jurisdiction}</div>
+                <div><strong>{t('labels.file')}</strong> {config.language}_{config.jurisdiction}.json</div>
               </div>
             </Card>
           ))}
         </div>
 
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Expected Test Combinations</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('sections.expectedCombinations')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h3 className="font-medium mb-2">Slovakia Jurisdiction (SK)</h3>
+              <h3 className="font-medium mb-2">{t('sections.slovakiaJurisdiction')}</h3>
               <ul className="text-sm space-y-1">
-                <li>• 🇸🇰 sk-SK: Slovak interface + Slovak law</li>
-                <li>• 🇨🇿 cs-SK: Czech interface + Slovak law</li>
-                <li>• 🇬🇧 en-SK: English interface + Slovak law</li>
-                <li>• 🇩🇪 de-SK: German interface + Slovak law</li>
+                <li>• 🇸🇰 sk-SK: {t('combinations.sk-SK')}</li>
+                <li>• 🇨🇿 cs-SK: {t('combinations.cs-SK')}</li>
+                <li>• 🇬🇧 en-SK: {t('combinations.en-SK')}</li>
+                <li>• 🇩🇪 de-SK: {t('combinations.de-SK')}</li>
               </ul>
             </div>
             <div>
-              <h3 className="font-medium mb-2">Czech Jurisdiction (CZ)</h3>
+              <h3 className="font-medium mb-2">{t('sections.czechJurisdiction')}</h3>
               <ul className="text-sm space-y-1">
-                <li>• 🇸🇰 sk-CZ: Slovak interface + Czech law</li>
-                <li>• 🇨🇿 cs-CZ: Czech interface + Czech law</li>
-                <li>• 🇬🇧 en-CZ: English interface + Czech law</li>
-                <li>• 🇩🇪 de-CZ: German interface + Czech law</li>
+                <li>• 🇸🇰 sk-CZ: {t('combinations.sk-CZ')}</li>
+                <li>• 🇨🇿 cs-CZ: {t('combinations.cs-CZ')}</li>
+                <li>• 🇬🇧 en-CZ: {t('combinations.en-CZ')}</li>
+                <li>• 🇩🇪 de-CZ: {t('combinations.de-CZ')}</li>
               </ul>
             </div>
           </div>
         </Card>
 
         <Card className="p-6 mt-4">
-          <h2 className="text-xl font-semibold mb-4">Test Instructions</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('sections.testInstructions')}</h2>
           <ol className="list-decimal list-inside space-y-2 text-sm">
-            <li>Click each test button to launch the will wizard in that language-jurisdiction combination</li>
-            <li>Navigate through the wizard steps to verify the interface language is correct</li>
-            <li>Check that legal terms and requirements match the selected jurisdiction</li>
-            <li>Complete the wizard or go through several steps to verify functionality</li>
-            <li>Close the wizard and check that the test is marked as completed</li>
-            <li>Repeat for all 8 combinations</li>
-            <li>Use "View Test Results" to inspect the saved test data</li>
-            <li>Use browser dev tools to take HTML snapshots if needed</li>
+            {t('instructions', { returnObjects: true }).map((instruction: string, index: number) => (
+              <li key={index}>{instruction}</li>
+            ))}
           </ol>
         </Card>
 
         <Card className="p-6 mt-4">
-          <h2 className="text-xl font-semibold mb-4">Expected File Routing</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('sections.expectedFileRouting')}</h2>
           <div className="bg-muted/30 p-4 rounded-lg">
             <p className="text-sm mb-2">
-              The system should load translation files from:
+              {t('fileRouting.description')}
               <code className="ml-2 px-2 py-1 bg-gray-100 rounded text-xs">
-                /public/locales/content/wills/[language]_[jurisdiction].json
+                {t('fileRouting.path')}
               </code>
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-mono">

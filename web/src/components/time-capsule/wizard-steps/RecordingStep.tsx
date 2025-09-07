@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import {
   type CapsuleFileType,
   DEFAULT_RECORDING_CONSTRAINTS,
@@ -35,6 +36,7 @@ export function RecordingStep({
   onMessagePreviewChange,
   onRecordingChange,
 }: RecordingStepProps) {
+  const { t } = useTranslation('ui/recording-step');
   const [recordingState, setRecordingState] = useState<RecordingState>('idle');
   const [recordingType, setRecordingType] = useState<CapsuleFileType>('video');
   const [duration, setDuration] = useState(0);
@@ -73,9 +75,7 @@ export function RecordingStep({
       return stream;
     } catch (error) {
       console.error('Permission denied:', error);
-      toast.error(
-        `Camera/microphone access denied. Please grant permission to record ${recordingType}.`
-      );
+      toast.error(t('errors.accessDenied'));
       setIsPermissionGranted(false);
       return null;
     }
@@ -138,7 +138,7 @@ export function RecordingStep({
 
         // Check file size
         if (blob.size > MAX_FILE_SIZE) {
-          toast.error('Recording is too large. Please keep it under 100MB.');
+          toast.error(t('errors.tooLarge'));
           return;
         }
 
@@ -171,7 +171,7 @@ export function RecordingStep({
       }, 1000);
     } catch (error) {
       console.error('Recording failed:', error);
-      toast.error('Failed to start recording. Please try again.');
+      toast.error(t('errors.recordingFailed'));
     }
   }, [
     recordingType,
@@ -250,9 +250,7 @@ export function RecordingStep({
   const switchRecordingType = useCallback(
     (type: CapsuleFileType) => {
       if (recordingState !== 'idle') {
-        toast.error(
-          'Please stop the current recording before switching types.'
-        );
+        toast.error(t('errors.recordingFailed'));
         return;
       }
 
@@ -278,7 +276,7 @@ export function RecordingStep({
       {/* Message Details */}
       <div className='space-y-4'>
         <div>
-          <Label htmlFor='messageTitle'>Message Title *</Label>
+          <Label htmlFor='messageTitle'>{t('title')}</Label>
           <Input
             id='messageTitle'
             value={messageTitle}
@@ -289,7 +287,7 @@ export function RecordingStep({
         </div>
 
         <div>
-          <Label htmlFor='messagePreview'>Message Preview (Optional)</Label>
+          <Label htmlFor='messagePreview'>{t('subtitle')}</Label>
           <Textarea
             id='messagePreview'
             value={messagePreview}
@@ -303,7 +301,7 @@ export function RecordingStep({
 
       {/* Recording Type Selection */}
       <div className='space-y-3'>
-        <Label>Recording Type</Label>
+        <Label>{t('recordingType.label')}</Label>
         <div className='flex gap-3'>
           <Button
             variant={recordingType === 'video' ? 'default' : 'outline'}
@@ -312,7 +310,7 @@ export function RecordingStep({
             disabled={recordingState !== 'idle'}
           >
             <Icon name={'video' as any} className='w-4 h-4 mr-2' />
-            Video Message
+            {t('recordingType.video')}
           </Button>
           <Button
             variant={recordingType === 'audio' ? 'default' : 'outline'}
@@ -321,7 +319,7 @@ export function RecordingStep({
             disabled={recordingState !== 'idle'}
           >
             <Icon name={'mic' as any} className='w-4 h-4 mr-2' />
-            Audio Message
+            {t('recordingType.audio')}
           </Button>
         </div>
       </div>
@@ -336,13 +334,11 @@ export function RecordingStep({
                 className='w-12 h-12 text-muted-foreground mx-auto mb-4'
               />
               <p className='text-muted-foreground mb-4'>
-                Click the button below to grant {recordingType} permissions and
-                start recording your message.
+                {recordingType === 'video' ? t('permissions.cameraDescription') : t('permissions.microphoneDescription')}
               </p>
               <Button onClick={requestPermissions}>
                 <Icon name={'camera' as any} className='w-4 h-4 mr-2' />
-                Grant {recordingType === 'video' ? 'Camera' : 'Microphone'}{' '}
-                Access
+                {recordingType === 'video' ? t('permissions.grantCamera') : t('permissions.grantMicrophone')}
               </Button>
             </div>
           )}
@@ -370,7 +366,7 @@ export function RecordingStep({
                 className='bg-red-600 hover:bg-red-700'
               >
                 <Icon name={'circle' as any} className='w-4 h-4 mr-2' />
-                Start Recording
+                {t('buttons.startRecording')}
               </Button>
             </div>
           )}
@@ -430,7 +426,7 @@ export function RecordingStep({
               </div>
               <div>
                 <h3 className='font-medium text-green-900'>
-                  Recording Complete!
+                  {t('status.stopped')}
                 </h3>
                 <p className='text-sm text-muted-foreground'>
                   Duration: {formatTime(Math.round(recording.duration))} • Size:{' '}
@@ -441,11 +437,11 @@ export function RecordingStep({
               <div className='flex justify-center space-x-2'>
                 <Button variant='outline' onClick={deleteRecording}>
                   <Icon name={'trash-2' as any} className='w-4 h-4 mr-2' />
-                  Record Again
+                  {t('buttons.recordAgain')}
                 </Button>
                 <Button variant='outline'>
                   <Icon name={'play' as any} className='w-4 h-4 mr-2' />
-                  Preview
+                  {t('buttons.preview')}
                 </Button>
               </div>
             </div>
