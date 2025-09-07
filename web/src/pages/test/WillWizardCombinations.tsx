@@ -5,17 +5,17 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { CountrySelector } from '@/components/legacy/CountrySelector';
 import {
-  useLocalization,
-  SUPPORTED_COMBINATIONS,
-  type LanguageCode,
   type JurisdictionCode,
+  type LanguageCode,
+  SUPPORTED_COMBINATIONS,
+  useLocalization,
 } from '@/contexts/LocalizationContext';
 
 interface TestCombination {
-  language: LanguageCode;
+  file: string;
   jurisdiction: JurisdictionCode;
   label: string;
-  file: string;
+  language: LanguageCode;
 }
 
 const TEST_COMBINATIONS: TestCombination[] = [
@@ -33,7 +33,7 @@ type TestMode = 'overview' | 'stepByStep' | 'willWizard';
 
 export const WillWizardCombinations: React.FC = () => {
   const [currentMode, setCurrentMode] = React.useState<TestMode>('overview');
-  const [currentCombination, setCurrentCombination] = React.useState<TestCombination | null>(null);
+  const [currentCombination, setCurrentCombination] = React.useState<null | TestCombination>(null);
   const {
     setLanguageCode,
     setJurisdictionCode,
@@ -74,8 +74,8 @@ export const WillWizardCombinations: React.FC = () => {
               Testing: {currentCombination?.label}
             </div>
           </div>
-          
-          <CountrySelector 
+
+          <CountrySelector
             onCountryConfirmed={handleWillWizardStart}
             showStepByStep={true}
           />
@@ -111,7 +111,7 @@ export const WillWizardCombinations: React.FC = () => {
                 </h3>
               </div>
               <p className="text-green-700">
-                The language-jurisdiction combination has been successfully selected and 
+                The language-jurisdiction combination has been successfully selected and
                 the will wizard would now load with:
               </p>
               <ul className="mt-4 text-left text-sm text-green-600 space-y-1">
@@ -131,7 +131,7 @@ export const WillWizardCombinations: React.FC = () => {
                 <Icon name="arrow-left" className="w-4 h-4 mr-2" />
                 Test Another Combination
               </Button>
-              
+
               <Button
                 onClick={() => setCurrentMode('stepByStep')}
                 size="lg"
@@ -161,7 +161,7 @@ export const WillWizardCombinations: React.FC = () => {
             <p className="text-xl text-muted-foreground mb-8">
               Test all {TEST_COMBINATIONS.length} supported language-jurisdiction combinations
             </p>
-            
+
             <div className="flex flex-wrap justify-center gap-4 mb-8">
               <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg">
                 <Icon name="languages" className="w-5 h-5 text-blue-600" />
@@ -223,7 +223,7 @@ export const WillWizardCombinations: React.FC = () => {
                     onClick={() => handleTestCombination(combination)}
                     className="w-full"
                     variant={
-                      languageCode === combination.language && 
+                      languageCode === combination.language &&
                       jurisdictionCode === combination.jurisdiction
                         ? "default"
                         : "outline"

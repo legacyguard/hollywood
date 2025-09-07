@@ -11,8 +11,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  type LanguageCode,
   type JurisdictionCode,
+  type LanguageCode,
   SUPPORTED_COMBINATIONS,
   useLocalization,
 } from '@/contexts/LocalizationContext';
@@ -26,15 +26,15 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
 }) => {
   const { languageCode, jurisdictionCode, setLanguageCode, setJurisdictionCode, isLoading } =
     useLocalization();
-  
+
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(languageCode);
   const [selectedJurisdiction, setSelectedJurisdiction] = useState<JurisdictionCode>(jurisdictionCode);
-  const [step, setStep] = useState<'language' | 'jurisdiction' | 'confirmation'>('language');
+  const [step, setStep] = useState<'confirmation' | 'jurisdiction' | 'language'>('language');
 
   const getLanguageFlag = (lang: LanguageCode): string => {
     const flags = {
       sk: '🇸🇰',
-      cs: '🇨🇿', 
+      cs: '🇨🇿',
       en: '🇬🇧',
       de: '🇩🇪',
     };
@@ -193,7 +193,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
             <Card className="p-8 max-w-2xl mx-auto">
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-semibold mb-6">Confirm Your Selection</h2>
-                
+
                 <div className="bg-muted/30 rounded-lg p-6 mb-6">
                   <div className="flex items-center justify-center gap-4 mb-4">
                     <div className="flex items-center gap-2">
@@ -206,7 +206,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                       <span className="font-medium">{getJurisdictionLabel(selectedJurisdiction)}</span>
                     </div>
                   </div>
-                  
+
                   <p className="text-sm text-muted-foreground">
                     {getCurrentCombination()?.label}
                   </p>
@@ -262,7 +262,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                     </h4>
                     <p className="text-sm text-muted-foreground">
                       <strong>Language</strong> determines the interface and document language, while{' '}
-                      <strong>Jurisdiction</strong> determines which country's legal requirements 
+                      <strong>Jurisdiction</strong> determines which country's legal requirements
                       your will must follow. You can use any language with any supported jurisdiction.
                     </p>
                   </div>

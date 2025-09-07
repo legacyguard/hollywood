@@ -2,24 +2,24 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  SUPPORTED_COMBINATIONS,
-  type LanguageCode,
+import {
   type JurisdictionCode,
+  type LanguageCode,
+  SUPPORTED_COMBINATIONS,
   useLocalization
 } from '@/contexts/LocalizationContext';
 import { EnhancedWillWizard } from './EnhancedWillWizard';
 
 interface TestConfiguration {
-  language: LanguageCode;
   jurisdiction: JurisdictionCode;
   label: string;
+  language: LanguageCode;
 }
 
 export const WillWizardTester: React.FC = () => {
   const { setLanguageCode, setJurisdictionCode, languageCode, jurisdictionCode } = useLocalization();
   const [showWizard, setShowWizard] = useState(false);
-  const [currentTest, setCurrentTest] = useState<TestConfiguration | null>(null);
+  const [currentTest, setCurrentTest] = useState<null | TestConfiguration>(null);
 
   const runTest = (config: TestConfiguration) => {
     setLanguageCode(config.language);
@@ -42,22 +42,22 @@ export const WillWizardTester: React.FC = () => {
       willData,
       success: true,
     };
-    
+
     // Save to localStorage for inspection
     const testResults = JSON.parse(localStorage.getItem('willWizardTests') || '[]');
     testResults.push(snapshot);
     localStorage.setItem('willWizardTests', JSON.stringify(testResults));
-    
+
     alert(`✅ Test completed for ${currentTest?.label}!\nCheck console and localStorage for results.`);
     handleWizardClose();
   };
 
   const getStatusBadge = (config: TestConfiguration) => {
     const testResults = JSON.parse(localStorage.getItem('willWizardTests') || '[]');
-    const hasTest = testResults.some((result: any) => 
+    const hasTest = testResults.some((result: any) =>
       result.combination === `${config.language}-${config.jurisdiction}`
     );
-    
+
     return hasTest ? (
       <Badge className="bg-green-100 text-green-800">✅ Tested</Badge>
     ) : (
@@ -78,7 +78,7 @@ export const WillWizardTester: React.FC = () => {
   if (showWizard && currentTest) {
     return (
       <div className="fixed inset-0 z-50">
-        <EnhancedWillWizard 
+        <EnhancedWillWizard
           onClose={handleWizardClose}
           onComplete={handleWizardComplete}
         />
@@ -96,7 +96,7 @@ export const WillWizardTester: React.FC = () => {
           <p className="text-lg text-muted-foreground mb-6">
             Test all 8 language-jurisdiction combinations for the will wizard
           </p>
-          
+
           <div className="flex justify-center gap-4 mb-6">
             <div className="text-sm">
               <strong>Current:</strong> {languageCode}-{jurisdictionCode}
@@ -104,9 +104,9 @@ export const WillWizardTester: React.FC = () => {
             <Button variant="outline" size="sm" onClick={clearTestResults}>
               Clear Test Results
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => console.log('Test Results:', getTestResults())}
             >
               View Test Results
@@ -126,14 +126,14 @@ export const WillWizardTester: React.FC = () => {
                 </p>
                 {getStatusBadge(config)}
               </div>
-              
-              <Button 
+
+              <Button
                 className="w-full"
                 onClick={() => runTest(config)}
               >
                 Test {config.language}-{config.jurisdiction}
               </Button>
-              
+
               <div className="mt-3 text-xs text-muted-foreground">
                 <div><strong>UI:</strong> {config.language}</div>
                 <div><strong>Law:</strong> {config.jurisdiction}</div>

@@ -6,26 +6,24 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { familyDataCache } from '@/lib/performance/caching';
-import type {
-  CreateFamilyInvitationRequest,
-  CreateFamilyMemberRequest,
-  DbFamilyMember,
-  DbFamilyMemberUpdate,
-  EmergencyAccessRequest,
-  FamilyActivity,
-  FamilyCalendarEvent,
-  FamilyInvitation,
-  FamilyMember,
-  FamilyProtectionStatus,
-  FamilyStats,
-  UpdateFamilyMemberRequest,
-} from '@/integrations/supabase/database-aligned-types';
 import {
+  type CreateFamilyInvitationRequest,
+  type CreateFamilyMemberRequest,
+  type DbFamilyMember,
+  type DbFamilyMemberUpdate,
+  type EmergencyAccessRequest,
+  type FamilyActivity,
+  type FamilyCalendarEvent,
+  type FamilyInvitation,
+  type FamilyMember,
+  type FamilyProtectionStatus,
+  type FamilyStats,
   isValidAccessLevel,
   isValidFamilyRole,
   isValidRelationship,
   mapApplicationToDbFamilyMember,
   mapDbFamilyMemberToApplication,
+  type UpdateFamilyMemberRequest,
 } from '@/integrations/supabase/database-aligned-types';
 import type { Json } from '@/integrations/supabase/types';
 
@@ -827,7 +825,6 @@ export class FamilyService {
       return { total: 0, shared: 0 };
     }
   }
-
 
 
   /**

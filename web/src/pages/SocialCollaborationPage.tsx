@@ -342,7 +342,7 @@ export default function SocialCollaborationPage() {
 
 function EmergencyAccessTab() {
   const { t } = useTranslation('ui/social-collaboration-page');
-  
+
   return (
     <div className='space-y-6'>
       <Card>
@@ -515,7 +515,7 @@ function EmergencyAccessTab() {
 
 function ActivityFeedTab() {
   const { t } = useTranslation('ui/social-collaboration-page');
-  
+
   const activities = [
     {
       id: 1,

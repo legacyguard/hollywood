@@ -4,7 +4,7 @@ import { LegalPageLayout } from '@/components/layout/LegalPageLayout';
 
 export function SecurityPolicy() {
   const { t } = useTranslation('pages/security-policy');
-  
+
   return (
     <LegalPageLayout
       title={t('title')}

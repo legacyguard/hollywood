@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { TimeCapsule } from '@/types/timeCapsule';
 import { format } from 'date-fns';
- 
+
 
 interface TimeCapsuleListProps {
   onDelete: (id: string) => void;

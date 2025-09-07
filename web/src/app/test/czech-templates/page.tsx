@@ -9,14 +9,14 @@ export default function CzechTemplatesTestPage() {
             Czech Will Template System Test
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            This page tests the Czech will template loading system, validating that all three 
-            will types (holographic with mandatory dating, witnessed with 2 witnesses, and notarial) 
+            This page tests the Czech will template loading system, validating that all three
+            will types (holographic with mandatory dating, witnessed with 2 witnesses, and notarial)
             can be loaded successfully from the template library with proper Czech Civil Code compliance.
           </p>
         </div>
-        
+
         <CZTemplateLoaderTest />
-        
+
         <div className="mt-8 text-center text-sm text-gray-500">
           <p>🚀 Czech will template system test - Verifying will-cz implementation</p>
           <p>Legal compliance: Czech Civil Code § 1540-1542</p>

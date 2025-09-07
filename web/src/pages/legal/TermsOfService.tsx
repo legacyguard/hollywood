@@ -4,7 +4,7 @@ import { LegalPageLayout } from '@/components/layout/LegalPageLayout';
 
 export function TermsOfService() {
   const { t } = useTranslation('pages/terms-of-service');
-  
+
   return (
     <LegalPageLayout
       title={t('title')}

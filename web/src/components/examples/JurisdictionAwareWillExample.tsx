@@ -3,7 +3,7 @@
  * Demonstrates how translations work based on jurisdiction and language
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useJurisdictionAwareTranslation } from '@/lib/i18n/jurisdiction-aware-hooks';
 import type { SupportedJurisdictionCode, SupportedLanguageCode } from '@/lib/i18n/config';
@@ -12,15 +12,15 @@ const JurisdictionAwareWillExample: React.FC = () => {
   const { i18n } = useTranslation();
   const [jurisdiction, setJurisdiction] = useState<SupportedJurisdictionCode>('SK');
   const [uiLanguage, setUiLanguage] = useState<SupportedLanguageCode>('sk');
-  
+
   // Use jurisdiction-aware translation hook
   const { t, isContentLoaded, loadError } = useJurisdictionAwareTranslation(jurisdiction, 'wills');
-  
+
   // Change UI language when selection changes
   useEffect(() => {
     i18n.changeLanguage(uiLanguage);
   }, [uiLanguage, i18n]);
-  
+
   // Test data for displaying will content
   const testData = {
     fullName: 'Ján Novák',
@@ -30,7 +30,7 @@ const JurisdictionAwareWillExample: React.FC = () => {
     city: 'Bratislava',
     date: new Date().toLocaleDateString(uiLanguage === 'cs' ? 'cs-CZ' : 'sk-SK')
   };
-  
+
   // Format currency based on jurisdiction
   const formatCurrency = (amount: number) => {
     const currency = jurisdiction === 'CZ' ? 'CZK' : 'EUR';
@@ -40,17 +40,17 @@ const JurisdictionAwareWillExample: React.FC = () => {
       currency
     }).format(amount);
   };
-  
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">
         Jurisdiction-Aware Will Translation Demo
       </h1>
-      
+
       {/* Control Panel */}
       <div className="bg-gray-100 p-4 rounded mb-6">
         <h2 className="text-lg font-semibold mb-3">Settings</h2>
-        
+
         <div className="grid grid-cols-2 gap-4">
           {/* UI Language Selection */}
           <div>
@@ -67,7 +67,7 @@ const JurisdictionAwareWillExample: React.FC = () => {
               <option value="en">English</option>
             </select>
           </div>
-          
+
           {/* Jurisdiction Selection */}
           <div>
             <label className="block text-sm font-medium mb-2">
@@ -83,7 +83,7 @@ const JurisdictionAwareWillExample: React.FC = () => {
             </select>
           </div>
         </div>
-        
+
         {/* Status Indicators */}
         <div className="mt-4 text-sm">
           <p>
@@ -102,32 +102,32 @@ const JurisdictionAwareWillExample: React.FC = () => {
           )}
         </div>
       </div>
-      
+
       {/* Will Content Display */}
       {isContentLoaded && (
         <div className="bg-white border rounded p-6">
           <h2 className="text-xl font-bold mb-4">
             {String(t('title'))}
           </h2>
-          
+
           <div className="mb-4 text-sm text-gray-600">
             <p><strong>{String(t('jurisdiction'))}:</strong> {jurisdiction === 'CZ' ? 'Česká republika' : 'Slovenská republika'}</p>
             <p><strong>{String(t('language'))}:</strong> {uiLanguage === 'cs' ? 'Čeština' : uiLanguage === 'sk' ? 'Slovenčina' : 'English'}</p>
           </div>
-          
+
           <div className="prose max-w-none">
             {/* Legal Notice */}
             <div className="bg-yellow-50 p-3 rounded mb-4">
               <p className="text-sm">{String(t('legalNotice'))}</p>
             </div>
-            
+
             {/* Testator Section */}
             <section className="mb-6">
               <h3 className="font-semibold">{String(t('sections.testator.title'))}</h3>
               <p>{String(t('sections.testator.declaration', testData))}</p>
               <p>{String(t('sections.testator.mentalCapacity'))}</p>
             </section>
-            
+
             {/* Forced Heirs Section (jurisdiction-specific) */}
             <section className="mb-6">
               <h3 className="font-semibold">{String(t('sections.forcedHeirs.title'))}</h3>
@@ -137,7 +137,7 @@ const JurisdictionAwareWillExample: React.FC = () => {
                 <li>{String(t('sections.forcedHeirs.adultChildren'))}</li>
               </ul>
             </section>
-            
+
             {/* Legal Requirements */}
             <section className="mb-6">
               <h3 className="font-semibold">Legal Requirements</h3>
@@ -156,7 +156,7 @@ const JurisdictionAwareWillExample: React.FC = () => {
                 </div>
               </div>
             </section>
-            
+
             {/* Signature Section */}
             <section className="mb-6">
               <h3 className="font-semibold">{String(t('sections.signature.title'))}</h3>
@@ -165,7 +165,7 @@ const JurisdictionAwareWillExample: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {/* Test Scenarios */}
       <div className="mt-6 bg-blue-50 p-4 rounded">
         <h3 className="font-semibold mb-3">Test Scenarios</h3>
@@ -186,7 +186,7 @@ const JurisdictionAwareWillExample: React.FC = () => {
             <strong>Any + English:</strong> Fallback to English if translation missing
           </li>
         </ul>
-        
+
         <div className="mt-4">
           <h4 className="font-medium mb-2">Currency Formatting Test</h4>
           <p>Amount: {formatCurrency(15000)}</p>
@@ -194,7 +194,7 @@ const JurisdictionAwareWillExample: React.FC = () => {
             (Should show EUR for SK, CZK for CZ)
           </p>
         </div>
-        
+
         <div className="mt-4">
           <h4 className="font-medium mb-2">Fallback Chain</h4>
           <ol className="list-decimal list-inside text-xs">

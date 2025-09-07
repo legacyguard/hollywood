@@ -8,8 +8,8 @@
 
 import fs from 'fs/promises';
 import path from 'path';
-import { willExportService, type WillExportData, type ExportOptions } from '../services/willExportService';
-import type { LanguageCode, JurisdictionCode } from '../contexts/LocalizationContext';
+import { type ExportOptions, type WillExportData, willExportService } from '../services/willExportService';
+import type { JurisdictionCode, LanguageCode } from '../contexts/LocalizationContext';
 
 // Sample data for Slovak testator
 const sampleWillDataSK: WillExportData = {
@@ -20,7 +20,7 @@ const sampleWillDataSK: WillExportData = {
   address: 'Hlavná 123, 811 01 Bratislava',
   citizenship: 'slovenská',
   maritalStatus: 'married',
-  
+
   spouseName: 'Mária Nováková',
   children: [
     {
@@ -34,7 +34,7 @@ const sampleWillDataSK: WillExportData = {
       relationship: 'dcéra'
     }
   ],
-  
+
   beneficiaries: [
     {
       name: 'Mária Nováková',
@@ -53,7 +53,7 @@ const sampleWillDataSK: WillExportData = {
       percentage: 25
     }
   ],
-  
+
   realEstate: [
     {
       description: 'Rodinný dom',
@@ -66,7 +66,7 @@ const sampleWillDataSK: WillExportData = {
       value: 80000
     }
   ],
-  
+
   bankAccounts: [
     {
       bank: 'Slovenská sporiteľňa',
@@ -79,7 +79,7 @@ const sampleWillDataSK: WillExportData = {
       type: 'sporiaci účet'
     }
   ],
-  
+
   vehicles: [
     {
       make: 'Škoda',
@@ -89,7 +89,7 @@ const sampleWillDataSK: WillExportData = {
       value: 22000
     }
   ],
-  
+
   personalProperty: [
     {
       description: 'Šperky a hodinky',
@@ -102,35 +102,35 @@ const sampleWillDataSK: WillExportData = {
       recipient: 'Peter Novák'
     }
   ],
-  
+
   primaryExecutor: {
     name: 'JUDr. Milan Svoboda',
     address: 'Právnická 15, 811 01 Bratislava',
     relationship: 'právny zástupca'
   },
-  
+
   backupExecutor: {
     name: 'Ing. Pavel Horák',
     address: 'Ekonomická 8, 811 01 Bratislava',
     relationship: 'priateľ'
   },
-  
+
   primaryGuardian: {
     name: 'Eva Nováková',
     address: 'Rodinná 67, 811 01 Bratislava',
     relationship: 'sestra'
   },
-  
+
   backupGuardian: {
     name: 'Michal Novák',
     address: 'Bratská 89, 811 01 Bratislava',
     relationship: 'brat'
   },
-  
+
   funeralWishes: 'Požadujem kremáciu a rozptýlenie popola v Tatrách',
   organDonation: true,
   personalMessages: 'Ďakujem svojej rodine za lásku a podporu po celý život. Pamätajte si na mňa s úsmevom.',
-  
+
   willType: 'witnessed',
   createdDate: new Date().toISOString().split('T')[0],
   city: 'Bratislava'
@@ -145,7 +145,7 @@ const sampleWillDataCZ: WillExportData = {
   address: 'Václavské náměstí 28, 110 00 Praha 1',
   citizenship: 'česká',
   maritalStatus: 'married',
-  
+
   spouseName: 'Helena Svobodová',
   children: [
     {
@@ -159,7 +159,7 @@ const sampleWillDataCZ: WillExportData = {
       relationship: 'dcera'
     }
   ],
-  
+
   beneficiaries: [
     {
       name: 'Helena Svobodová',
@@ -178,7 +178,7 @@ const sampleWillDataCZ: WillExportData = {
       percentage: 20
     }
   ],
-  
+
   realEstate: [
     {
       description: 'Byt 3+1',
@@ -186,7 +186,7 @@ const sampleWillDataCZ: WillExportData = {
       value: 8500000
     }
   ],
-  
+
   bankAccounts: [
     {
       bank: 'Česká spořitelna',
@@ -199,7 +199,7 @@ const sampleWillDataCZ: WillExportData = {
       type: 'spořicí účet'
     }
   ],
-  
+
   vehicles: [
     {
       make: 'Škoda',
@@ -209,7 +209,7 @@ const sampleWillDataCZ: WillExportData = {
       value: 450000
     }
   ],
-  
+
   personalProperty: [
     {
       description: 'Umělecká sbírka',
@@ -222,35 +222,35 @@ const sampleWillDataCZ: WillExportData = {
       recipient: 'Tomáš Svoboda'
     }
   ],
-  
+
   primaryExecutor: {
     name: 'JUDr. Václav Novotný',
     address: 'Právnická 10, 110 00 Praha 1',
     relationship: 'právní zástupce'
   },
-  
+
   backupExecutor: {
     name: 'Ing. Jana Procházková',
     address: 'Ekonomická 5, 110 00 Praha 1',
     relationship: 'přítelkyně'
   },
-  
+
   primaryGuardian: {
     name: 'Marie Svobodová',
     address: 'Rodinná 45, 120 00 Praha 2',
     relationship: 'sestra'
   },
-  
+
   backupGuardian: {
     name: 'Josef Svoboda',
     address: 'Bratrská 67, 130 00 Praha 3',
     relationship: 'bratr'
   },
-  
+
   funeralWishes: 'Požaduji pohřeb v rodinné hrobce na Olšanech',
   organDonation: false,
   personalMessages: 'Děkuji své rodině za krásný společný život. Buďte šťastní a pamatujte si na mě v dobrém.',
-  
+
   willType: 'holographic',
   createdDate: new Date().toISOString().split('T')[0],
   city: 'Praha'
@@ -258,9 +258,9 @@ const sampleWillDataCZ: WillExportData = {
 
 // All language-jurisdiction combinations
 const combinations: Array<{
-  language: LanguageCode;
   jurisdiction: JurisdictionCode;
   label: string;
+  language: LanguageCode;
   testatorData: WillExportData;
 }> = [
   {
@@ -320,7 +320,7 @@ async function generateSampleWills() {
   console.log('🚀 Starting sample will generation for all language-jurisdiction combinations...\n');
 
   const testResultsDir = path.join(process.cwd(), '../../test-results');
-  
+
   // Ensure test-results directory exists
   try {
     await fs.access(testResultsDir);
@@ -335,7 +335,7 @@ async function generateSampleWills() {
 
   for (const combination of combinations) {
     console.log(`\n📝 Generating will for ${combination.label} (${combination.language}-${combination.jurisdiction})...`);
-    
+
     const exportOptions: ExportOptions = {
       format: 'pdf',
       language: combination.language,
@@ -350,7 +350,7 @@ async function generateSampleWills() {
       const pdfBuffer = Buffer.from(await pdfBlob.arrayBuffer());
       const pdfFilename = `Sample-Will-${combination.language}-${combination.jurisdiction}-${new Date().toISOString().split('T')[0]}.pdf`;
       const pdfPath = path.join(testResultsDir, pdfFilename);
-      
+
       await fs.writeFile(pdfPath, pdfBuffer);
       console.log(`✅ PDF saved: ${pdfFilename}`);
 
@@ -360,7 +360,7 @@ async function generateSampleWills() {
       const docxBuffer = Buffer.from(await docxBlob.arrayBuffer());
       const docxFilename = `Sample-Will-${combination.language}-${combination.jurisdiction}-${new Date().toISOString().split('T')[0]}.docx`;
       const docxPath = path.join(testResultsDir, docxFilename);
-      
+
       await fs.writeFile(docxPath, docxBuffer);
       console.log(`✅ DOCX saved: ${docxFilename}`);
 
@@ -370,13 +370,13 @@ async function generateSampleWills() {
       const mdBuffer = Buffer.from(await mdBlob.arrayBuffer());
       const mdFilename = `Sample-Will-${combination.language}-${combination.jurisdiction}-${new Date().toISOString().split('T')[0]}.md`;
       const mdPath = path.join(testResultsDir, mdFilename);
-      
+
       await fs.writeFile(mdPath, mdBuffer);
       console.log(`✅ MD saved: ${mdFilename}`);
 
       successCount++;
       results.push(`✅ ${combination.label}: PDF, DOCX, MD generated successfully`);
-      
+
     } catch (error) {
       console.error(`❌ Error generating will for ${combination.label}:`, error);
       errorCount++;
@@ -487,18 +487,18 @@ ${results.map(result => `- ${result}`).join('\n')}
   console.log(`📁 Files saved to: ${testResultsDir}`);
   console.log(`📊 Summary report: ${reportPath}`);
   console.log(`📖 Documentation: ${readmePath}`);
-  
+
   if (errorCount === 0) {
     console.log('\n🎉 All language-jurisdiction combinations generated successfully!');
   } else {
     console.log(`\n⚠️  ${errorCount} combinations failed. Check the error messages above.`);
   }
-  
+
   console.log('\n🔍 Manual Testing Instructions:');
   summaryReport.testingInstructions.forEach((instruction, index) => {
     console.log(`   ${index + 1}. ${instruction}`);
   });
-  
+
   console.log('\n✨ Export functionality is ready for production use!');
 }
 

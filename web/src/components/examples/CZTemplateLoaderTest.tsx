@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { TemplateLibraryImpl } from '@/lib/templateLibrary';
-import type { WillTemplate, WillJurisdictionConfig } from '@/types/will-templates';
+import type { WillJurisdictionConfig, WillTemplate } from '@/types/will-templates';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 /**
  * Test component to validate Czech will template loading and seeding
@@ -13,9 +13,9 @@ import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 export const CZTemplateLoaderTest: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<{
-    templates: WillTemplate[];
-    czConfig: WillJurisdictionConfig | null;
+    czConfig: null | WillJurisdictionConfig;
     errors: string[];
+    templates: WillTemplate[];
   }>({
     templates: [],
     czConfig: null,
@@ -70,7 +70,7 @@ export const CZTemplateLoaderTest: React.FC = () => {
       }
 
       // Test 4: Load jurisdiction config
-      let czConfig: WillJurisdictionConfig | null = null;
+      let czConfig: null | WillJurisdictionConfig = null;
       try {
         console.log('🏛️ Testing Czech Republic jurisdiction config...');
         czConfig = await templateLibrary.getJurisdictionConfig('CZ');
@@ -119,13 +119,13 @@ export const CZTemplateLoaderTest: React.FC = () => {
           Czech Will Template Loader Test
         </h2>
         <p className="text-gray-600 mb-6">
-          This test validates that the Czech will templates (will-cz) can be successfully 
-          loaded from the template library system. It tests all three will types: holographic 
+          This test validates that the Czech will templates (will-cz) can be successfully
+          loaded from the template library system. It tests all three will types: holographic
           (with mandatory dating), witnessed (with 2 witness requirement), and notarial.
         </p>
 
-        <Button 
-          onClick={runTemplateTest} 
+        <Button
+          onClick={runTemplateTest}
           disabled={loading}
           className="w-full mb-6"
         >
@@ -149,13 +149,13 @@ export const CZTemplateLoaderTest: React.FC = () => {
                 <AlertDescription>
                   <div className="font-medium">✅ {template.metadata.name}</div>
                   <div className="text-sm mt-1">
-                    ID: {template.id} | Version: {template.version} | 
+                    ID: {template.id} | Version: {template.version} |
                     Legal Basis: {template.metadata.legalBasis}
                   </div>
                   <div className="text-sm text-green-700 mt-1">
                     {template.metadata.description}
                   </div>
-                  
+
                   {/* Special validations for Czech-specific requirements */}
                   {template.type === 'holographic' && (
                     <div className="text-sm mt-1">
@@ -187,7 +187,7 @@ export const CZTemplateLoaderTest: React.FC = () => {
                     Will Types: {results.czConfig.supportedWillTypes.join(', ')}
                   </div>
                   <div className="text-sm mt-1">
-                    Witness Requirement: {results.czConfig.legalRequirements.witnessRequirements.minimumCount} 
+                    Witness Requirement: {results.czConfig.legalRequirements.witnessRequirements.minimumCount}
                     witnesses for witnessed will
                   </div>
                   <div className="text-sm mt-1">
@@ -219,7 +219,7 @@ export const CZTemplateLoaderTest: React.FC = () => {
             {results.templates.map((template) => (
               <div key={template.id} className="border rounded-lg p-4">
                 <h4 className="font-medium text-lg">
-                  {template.metadata.name} 
+                  {template.metadata.name}
                   {template.metadata.name_cs && (
                     <span className="text-sm text-gray-600 ml-2">
                       ({template.metadata.name_cs})
@@ -242,8 +242,8 @@ export const CZTemplateLoaderTest: React.FC = () => {
                 </div>
                 <div className="mt-2 text-sm text-gray-600">
                   <strong>Legal Review:</strong> {
-                    template.metadata.legalReview.isApproved 
-                      ? `✅ Approved on ${template.metadata.legalReview.reviewDate}` 
+                    template.metadata.legalReview.isApproved
+                      ? `✅ Approved on ${template.metadata.legalReview.reviewDate}`
                       : '❌ Not approved'
                   }
                 </div>
@@ -259,7 +259,7 @@ export const CZTemplateLoaderTest: React.FC = () => {
                 <div className="mt-1">
                   <strong>Legal Clauses:</strong> {template.legalClauses.length} clauses
                 </div>
-                
+
                 {/* Czech-specific features */}
                 {template.type === 'holographic' && (
                   <div className="mt-2 p-2 bg-yellow-50 rounded text-sm">
@@ -316,12 +316,12 @@ export const CZTemplateLoaderTest: React.FC = () => {
           <p>✅ <strong>Template Loading:</strong> Template library successfully loads will-cz templates</p>
           <p>✅ <strong>Bilingual Support:</strong> Templates include both English and Czech labels</p>
         </div>
-        
+
         <div className="mt-4 p-3 bg-blue-100 rounded">
           <p className="text-sm font-medium">🎯 Success Criteria:</p>
           <p className="text-xs mt-1">
-            All three Czech will types (holographic with mandatory dating, witnessed with 2 witnesses, 
-            notarial) should load successfully, demonstrating compliance with Czech Civil Code 
+            All three Czech will types (holographic with mandatory dating, witnessed with 2 witnesses,
+            notarial) should load successfully, demonstrating compliance with Czech Civil Code
             requirements (§ 1540-1542).
           </p>
         </div>

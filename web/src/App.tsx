@@ -369,7 +369,7 @@ export default function App() {
                     </ProtectedRoute>
                   }
                 />
-                
+
                 <Route
                   path='/test/will-wizard-combinations'
                   element={

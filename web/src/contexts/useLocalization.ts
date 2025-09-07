@@ -1,6 +1,5 @@
 
-import { useContext } from 'react';
-import type { Context } from 'react';
+import { type Context, useContext } from 'react';
 import type { CountryCode, LocalizationContextType } from './localizationTypes';
 // import { LocalizationContext } from './LocalizationContext';
 

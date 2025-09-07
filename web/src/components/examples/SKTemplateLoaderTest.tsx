@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { TemplateLibraryImpl } from '@/lib/templateLibrary';
-import type { WillTemplate, WillJurisdictionConfig } from '@/types/will-templates';
+import type { WillJurisdictionConfig, WillTemplate } from '@/types/will-templates';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 /**
  * Test component to validate Slovak will template loading and seeding
@@ -13,9 +13,9 @@ import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 export const SKTemplateLoaderTest: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<{
-    templates: WillTemplate[];
-    skConfig: WillJurisdictionConfig | null;
     errors: string[];
+    skConfig: null | WillJurisdictionConfig;
+    templates: WillTemplate[];
   }>({
     templates: [],
     skConfig: null,
@@ -70,7 +70,7 @@ export const SKTemplateLoaderTest: React.FC = () => {
       }
 
       // Test 4: Load jurisdiction config
-      let skConfig: WillJurisdictionConfig | null = null;
+      let skConfig: null | WillJurisdictionConfig = null;
       try {
         console.log('🏛️ Testing Slovakia jurisdiction config...');
         skConfig = await templateLibrary.getJurisdictionConfig('SK');
@@ -119,13 +119,13 @@ export const SKTemplateLoaderTest: React.FC = () => {
           Slovak Will Template Loader Test
         </h2>
         <p className="text-gray-600 mb-6">
-          This test validates that the Slovak will templates (will-sk) can be successfully 
-          loaded from the template library system. It tests all three will types: holographic, 
+          This test validates that the Slovak will templates (will-sk) can be successfully
+          loaded from the template library system. It tests all three will types: holographic,
           witnessed (with 2 witness requirement), and notarial.
         </p>
 
-        <Button 
-          onClick={runTemplateTest} 
+        <Button
+          onClick={runTemplateTest}
           disabled={loading}
           className="w-full mb-6"
         >
@@ -149,7 +149,7 @@ export const SKTemplateLoaderTest: React.FC = () => {
                 <AlertDescription>
                   <div className="font-medium">✅ {template.metadata.name}</div>
                   <div className="text-sm mt-1">
-                    ID: {template.id} | Version: {template.version} | 
+                    ID: {template.id} | Version: {template.version} |
                     Legal Basis: {template.metadata.legalBasis}
                   </div>
                   <div className="text-sm text-green-700 mt-1">
@@ -175,7 +175,7 @@ export const SKTemplateLoaderTest: React.FC = () => {
                     Will Types: {results.skConfig.supportedWillTypes.join(', ')}
                   </div>
                   <div className="text-sm mt-1">
-                    Witness Requirement: {results.skConfig.legalRequirements.witnessRequirements.minimumCount} 
+                    Witness Requirement: {results.skConfig.legalRequirements.witnessRequirements.minimumCount}
                     witnesses for witnessed will
                   </div>
                 </AlertDescription>
@@ -220,8 +220,8 @@ export const SKTemplateLoaderTest: React.FC = () => {
                 </div>
                 <div className="mt-2 text-sm text-gray-600">
                   <strong>Legal Review:</strong> {
-                    template.metadata.legalReview.isApproved 
-                      ? `✅ Approved on ${template.metadata.legalReview.reviewDate}` 
+                    template.metadata.legalReview.isApproved
+                      ? `✅ Approved on ${template.metadata.legalReview.reviewDate}`
                       : '❌ Not approved'
                   }
                 </div>
@@ -254,12 +254,12 @@ export const SKTemplateLoaderTest: React.FC = () => {
           <p>✅ <strong>Template Loading:</strong> Template library can successfully load will-sk templates</p>
           <p>✅ <strong>Bilingual Support:</strong> Templates include both English and Slovak labels</p>
         </div>
-        
+
         <div className="mt-4 p-3 bg-blue-100 rounded">
           <p className="text-sm font-medium">🎯 Success Criteria:</p>
           <p className="text-xs mt-1">
-            All three Slovak will types (holographic, witnessed, notarial) should load successfully, 
-            and the witnessed template should show the requirement for exactly 2 witnesses as per 
+            All three Slovak will types (holographic, witnessed, notarial) should load successfully,
+            and the witnessed template should show the requirement for exactly 2 witnesses as per
             § 477 of the Slovak Civil Code.
           </p>
         </div>

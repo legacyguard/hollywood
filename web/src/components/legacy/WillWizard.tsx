@@ -203,7 +203,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
   const { user } = useUser();
   const { isFocusMode } = useFocusMode();
   const [currentStep, setCurrentStep] = useState(0);
-  
+
   const STEPS = getSteps(t);
   const RELATIONSHIPS = getRelationships(t);
   const [showVaultSelector, setShowVaultSelector] = useState(false);
@@ -295,8 +295,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({
       });
       setShowVaultSelector(false);
       toast.success(
-        t('toast.assetsAdded', { 
-          count: selectedAssets.length, 
+        t('toast.assetsAdded', {
+          count: selectedAssets.length,
           plural: selectedAssets.length > 1 ? t('toast.assetsPlural') : t('toast.assetsSingular')
         })
       );
@@ -314,8 +314,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
     setShowVaultSelector(false);
     toast.success(
-      t('toast.assetsAdded', { 
-        count: selectedAssets.length, 
+      t('toast.assetsAdded', {
+        count: selectedAssets.length,
         plural: selectedAssets.length > 1 ? t('toast.assetsPlural') : t('toast.assetsSingular')
       })
     );

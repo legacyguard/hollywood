@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Heart, Settings, Star } from '@tamagui/lucide-icons';
 import { Text, View } from 'tamagui';
 import { Button } from './Button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './Card';
@@ -45,69 +44,6 @@ export const Default: Story = {
         </CardContent>
         <CardFooter>
           <Button variant="primary">Action</Button>
-        </CardFooter>
-      </>
-    ),
-  },
-};
-
-export const WithLongContent: Story = {
-  args: {
-    children: (
-      <>
-        <CardHeader>
-          <CardTitle>Card with Long Content</CardTitle>
-          <CardDescription>This card demonstrates how content wraps and handles long text</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </Text>
-          <Text marginTop="$3">
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
-          </Text>
-        </CardContent>
-        <CardFooter>
-          <Button variant="secondary">Read More</Button>
-          <Button variant="primary">Contact</Button>
-        </CardFooter>
-      </>
-    ),
-  },
-};
-
-export const WithInteractiveElements: Story = {
-  args: {
-    children: (
-      <>
-        <CardHeader>
-          <CardTitle>Interactive Card</CardTitle>
-          <CardDescription>Card with buttons and inputs inside</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <View gap={12}>
-            <View flexDirection="row" alignItems="center" gap={8}>
-              <Text>User Profile</Text>
-            </View>
-            <View flexDirection="row" alignItems="center" gap={8}>
-              <Text>user@example.com</Text>
-            </View>
-            <View flexDirection="row" alignItems="center" gap={8}>
-              <Text>+1 (555) 123-4567</Text>
-            </View>
-            <View marginTop={16} gap={8}>
-              <Button variant="outline" size="small">
-                Edit Profile
-              </Button>
-              <Button variant="ghost" size="small">
-                Change Settings
-              </Button>
-            </View>
-          </View>
-        </CardContent>
-        <CardFooter>
-          <Button variant="primary">Save Changes</Button>
-          <Button variant="secondary">Cancel</Button>
         </CardFooter>
       </>
     ),
@@ -216,91 +152,6 @@ export const Ghost: Story = {
   },
 };
 
-export const NoPadding: Story = {
-  args: {
-    padding: 'none',
-    children: (
-      <>
-        <CardHeader>
-          <CardTitle>No Padding Card</CardTitle>
-          <CardDescription>Card with no padding</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Text>This card has no padding, useful for full-width content like images.</Text>
-        </CardContent>
-      </>
-    ),
-  },
-};
-
-export const SmallPadding: Story = {
-  args: {
-    padding: 'small',
-    children: (
-      <>
-        <CardHeader>
-          <CardTitle>Small Padding</CardTitle>
-          <CardDescription>Card with small padding</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Text>This card uses small padding for compact layouts.</Text>
-        </CardContent>
-      </>
-    ),
-  },
-};
-
-export const LargePadding: Story = {
-  args: {
-    padding: 'large',
-    children: (
-      <>
-        <CardHeader>
-          <CardTitle>Large Padding</CardTitle>
-          <CardDescription>Card with large padding</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Text>This card uses large padding for spacious layouts.</Text>
-        </CardContent>
-      </>
-    ),
-  },
-};
-
-export const Clickable: Story = {
-  args: {
-    clickable: true,
-    children: (
-      <>
-        <CardHeader>
-          <CardTitle>Clickable Card</CardTitle>
-          <CardDescription>This card has hover and press effects</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Text>Clickable cards provide visual feedback on hover and press interactions.</Text>
-        </CardContent>
-      </>
-    ),
-  },
-};
-
-export const FullWidth: Story = {
-  args: {
-    fullWidth: true,
-    children: (
-      <>
-        <CardHeader>
-          <CardTitle>Full Width Card</CardTitle>
-          <CardDescription>Card that spans full width</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Text>This card spans the full width of its container.</Text>
-        </CardContent>
-      </>
-    ),
-  },
-};
-
 export const AllVariants: Story = {
   render: () => (
     <View gap={16}>
@@ -337,43 +188,5 @@ export const AllVariants: Story = {
         </CardContent>
       </Card>
     </View>
-  ),
-};
-
-export const ComplexCard: Story = {
-  render: () => (
-    <Card>
-      <CardHeader>
-        <View flexDirection="row" alignItems="center" gap={8}>
-          <Star size={20} />
-          <View>
-            <CardTitle>Complex Card Example</CardTitle>
-            <CardDescription>With multiple interactive elements</CardDescription>
-          </View>
-        </View>
-      </CardHeader>
-      <CardContent>
-        <View gap={16}>
-          <Text>
-            This is a more complex card example that demonstrates how to combine multiple
-            components and create rich, interactive experiences.
-          </Text>
-          <View flexDirection="row" gap={8} flexWrap="wrap">
-            <Button size="small" variant="outline">
-              Settings
-            </Button>
-            <Button size="small" variant="ghost">
-              Favorite
-            </Button>
-            <Button size="small" variant="secondary">
-              Share
-            </Button>
-          </View>
-        </View>
-      </CardContent>
-      <CardFooter>
-        <Button variant="primary">View Details</Button>
-      </CardFooter>
-    </Card>
   ),
 };

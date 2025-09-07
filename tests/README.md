@@ -7,11 +7,13 @@ This test suite provides comprehensive End-to-End testing for the LegacyGuard ap
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js and npm installed
 - Application running on `http://localhost:8080`
 - Clerk authentication configured in test mode
 
 ### Installation
+
 ```bash
 # Install dependencies (if not already installed)
 npm install
@@ -23,6 +25,7 @@ npx playwright install chromium
 ## 📋 Available Test Commands
 
 ### Basic E2E Tests
+
 ```bash
 # Run all E2E tests
 npm run test:e2e
@@ -35,6 +38,7 @@ npm run test:e2e:debug
 ```
 
 ### Full Journey Tests ("Generálna Skúška")
+
 ```bash
 # Run complete user journey test
 npm run test:journey
@@ -50,6 +54,7 @@ npm run test:journey:report
 ```
 
 ### Specific Test Files
+
 ```bash
 # Run onboarding tests only
 npx playwright test tests/onboarding.spec.ts
@@ -64,9 +69,11 @@ npx playwright test tests/full-user-journey.spec.ts
 ## 🎬 Test Scenarios
 
 ### 1. **Full User Journey** (`full-user-journey.spec.ts`)
+
 Complete "Guardian of Memories" experience testing:
 
 #### Act 1: Invitation to the Journey
+
 - **Scene 1**: Registration - New user sign-up
 - **Scene 2**: Promise of Calm - Onboarding introduction with firefly animation
 - **Scene 3**: Box of Certainty - Emotional prompt about important items
@@ -74,20 +81,24 @@ Complete "Guardian of Memories" experience testing:
 - **Scene 5**: Preparing the Path - Loading animation and dashboard redirect
 
 #### Act 2: Building the Legacy
+
 - **Scene 1**: First Dashboard Interaction - 5-minute challenge
 - **Scene 2**: Document Upload - Laying the first mosaic stone
 - **Scene 3**: Path of Peace - Milestone unlocked
 - **Scene 4**: Adding a Guardian - Creating the Circle of Trust
 
 #### Act 3: Completion
+
 - Sign out and journey verification
 
 ### 2. **Basic Onboarding Tests** (`onboarding.spec.ts`)
+
 - Clerk authentication form detection
 - Sign-up flow validation
 - Basic navigation checks
 
 ### 3. **User Journey Tests** (`user-journey.spec.ts`)
+
 - Document management flow
 - People management (Trusted Circle)
 - Assets management
@@ -98,8 +109,10 @@ Complete "Guardian of Memories" experience testing:
 ## 📸 Test Artifacts
 
 ### Screenshots
+
 Automatically captured at key points and stored in:
-```
+
+```text
 tests/screenshots/
 ├── journey-01-registration.png
 ├── journey-02-promise-of-calm.png
@@ -116,15 +129,19 @@ tests/screenshots/
 ```
 
 ### Videos
+
 Full test recordings stored in:
-```
+
+```text
 tests/videos/
 └── [test-name]-[timestamp].webm
 ```
 
 ### Test Reports
+
 HTML reports available at:
-```
+
+```text
 playwright-report/
 └── journey/
     └── index.html
@@ -133,6 +150,7 @@ playwright-report/
 ## 🔧 Configuration
 
 ### Main Configuration (`playwright.config.ts`)
+
 - Base URL: `http://localhost:8080`
 - Browser: Chromium
 - Automatic dev server startup
@@ -140,6 +158,7 @@ playwright-report/
 - Screenshot on failure
 
 ### Journey Configuration (`playwright.journey.config.ts`)
+
 - Extended timeouts (3 minutes per test)
 - Full video recording
 - Comprehensive trace collection
@@ -151,11 +170,13 @@ playwright-report/
 For robust test selectors, add these `data-testid` attributes to your React components:
 
 ### Authentication
+
 - `data-testid="email-input"`
 - `data-testid="password-input"`
 - `data-testid="submit-registration"`
 
 ### Onboarding
+
 - `data-testid="onboarding-container"`
 - `data-testid="start-onboarding"`
 - `data-testid="box-of-certainty"`
@@ -163,12 +184,14 @@ For robust test selectors, add these `data-testid` attributes to your React comp
 - `data-testid="preparing-path"`
 
 ### Dashboard
+
 - `data-testid="dashboard"`
 - `data-testid="micro-task"`
 - `data-testid="start-challenge"`
 - `data-testid="milestone-foundation"`
 
 ### Documents
+
 - `data-testid="upload-document"`
 - `data-testid="file-input"`
 - `data-testid="analysis-status"`
@@ -177,6 +200,7 @@ For robust test selectors, add these `data-testid` attributes to your React comp
 - `data-testid="document-list"`
 
 ### Guardians
+
 - `data-testid="guardians-nav"`
 - `data-testid="add-guardian"`
 - `data-testid="guardian-name"`
@@ -186,12 +210,15 @@ For robust test selectors, add these `data-testid` attributes to your React comp
 ## 🔐 Handling Clerk Authentication
 
 ### Test Mode Setup
+
 1. Configure Clerk in test/development mode
 2. Use test API keys in `.env.test`
 3. Consider using Clerk's test tokens for CI/CD
 
 ### Mock Authentication (Optional)
+
 For faster tests without real authentication:
+
 ```javascript
 // In your test setup
 await mockClerkAuth(page, testUser);
@@ -200,25 +227,33 @@ await mockClerkAuth(page, testUser);
 ## 🐛 Debugging Tips
 
 ### Visual Debugging
+
 Use UI mode to see tests execute in real-time:
+
 ```bash
 npm run test:journey:ui
 ```
 
 ### Step-by-Step Debugging
+
 Use debug mode to pause at each step:
+
 ```bash
 npm run test:journey:debug
 ```
 
 ### Trace Viewer
+
 View detailed execution traces:
+
 ```bash
 npx playwright show-trace trace.zip
 ```
 
 ### Console Logs
+
 Tests include console logs at key checkpoints:
+
 - ✅ Successful step completion
 - 🚀 Journey start
 - 🎉 Journey completion
@@ -226,6 +261,7 @@ Tests include console logs at key checkpoints:
 ## 📊 Performance Metrics
 
 The test suite includes performance checks:
+
 - Page load time (< 3 seconds)
 - Action completion times
 - Navigation timing
@@ -233,6 +269,7 @@ The test suite includes performance checks:
 ## 🔄 CI/CD Integration
 
 ### GitHub Actions Example
+
 ```yaml
 name: E2E Tests
 on: [push, pull_request]
@@ -259,15 +296,19 @@ jobs:
 ## 🚨 Common Issues & Solutions
 
 ### Issue: Clerk authentication fails
+
 **Solution**: Ensure Clerk is configured in test mode with proper test credentials
 
 ### Issue: Timeouts during onboarding
+
 **Solution**: Increase timeout in `playwright.journey.config.ts` or check network conditions
 
 ### Issue: Elements not found
+
 **Solution**: Add appropriate `data-testid` attributes to components
 
 ### Issue: Dev server not starting
+
 **Solution**: Ensure port 8080 is free or update `baseURL` in config
 
 ## 📚 Additional Resources
@@ -301,6 +342,7 @@ jobs:
 ## 🤝 Contributing
 
 When adding new features, please include corresponding E2E tests:
+
 1. Add test scenarios to appropriate spec files
 2. Update this README with new test descriptions
 3. Add necessary data-testid attributes
@@ -308,6 +350,6 @@ When adding new features, please include corresponding E2E tests:
 
 ---
 
-**Happy Testing! 🎭**
+## Happy Testing! 🎭
 
-*"Every test is a guardian of quality, ensuring peace of mind for both developers and users."*
+> "Every test is a guardian of quality, ensuring peace of mind for both developers and users."

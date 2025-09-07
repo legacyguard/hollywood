@@ -5,9 +5,8 @@
 
 import { useTranslation as useI18nTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
-import { NamespaceLoader } from './config';
+import { NamespaceLoader, type SupportedJurisdictionCode, type SupportedLanguageCode } from './config';
 import { i18n as i18nInstance } from './index';
-import type { SupportedLanguageCode, SupportedJurisdictionCode } from './config';
 
 /**
  * Enhanced useTranslation hook that considers jurisdiction
@@ -15,11 +14,11 @@ import type { SupportedLanguageCode, SupportedJurisdictionCode } from './config'
  */
 export const useJurisdictionAwareTranslation = (
   jurisdiction: SupportedJurisdictionCode,
-  contentType: 'wills' | 'familyShield' = 'wills'
+  contentType: 'familyShield' | 'wills' = 'wills'
 ) => {
   const { t, i18n } = useI18nTranslation();
   const [isContentLoaded, setIsContentLoaded] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<null | string>(null);
 
   // Current UI language (normalize to base, e.g., 'en-US' → 'en')
   const currentLanguage = ((i18n.resolvedLanguage ?? i18n.language) || 'en')
@@ -111,13 +110,13 @@ export const useJurisdictionAwareTranslation = (
 
   // Create namespace key for content
   const contentNamespace = `${contentType}_${currentLanguage}_${jurisdiction}`;
-  
+
   // Enhanced translation function with fallback
   const tJurisdiction = (key: string, options?: any) => {
     // Try jurisdiction-specific translation first
     const jurisdictionKey = `${contentNamespace}:${key}`;
     let translation = t(jurisdictionKey, { ...options, defaultValue: '' });
-    
+
     // If not found, try jurisdiction default language
     if (!translation) {
       const jurisdictionDefaults: Record<string, string> = {
@@ -130,18 +129,18 @@ export const useJurisdictionAwareTranslation = (
         translation = t(`${fallbackNamespace}:${key}`, { ...options, defaultValue: '' });
       }
     }
-    
+
     // If still not found, try English
     if (!translation && currentLanguage !== 'en') {
       const englishNamespace = `${contentType}_en_${jurisdiction}`;
       translation = t(`${englishNamespace}:${key}`, { ...options, defaultValue: '' });
     }
-    
+
     // Ultimate fallback to UI namespace
     if (!translation) {
       translation = t(key, options);
     }
-    
+
     return translation;
   };
 
@@ -170,21 +169,21 @@ export const getWillTranslation = (
     'sk_CZ': 'sk_CZ', // Slovak speakers in CZ → Czech law in Slovak
     'en_CZ': 'en_CZ', // English speakers in CZ → Czech law in English
     'de_CZ': 'de_CZ', // German speakers in CZ → Czech law in German
-    
+
     // Slovakia jurisdiction
     'sk_SK': 'sk_SK', // Slovak speakers in SK → Slovak law in Slovak
     'cs_SK': 'cs_SK', // Czech speakers in SK → Slovak law in Czech
     'en_SK': 'en_SK', // English speakers in SK → Slovak law in English
     'de_SK': 'de_SK', // German speakers in SK → Slovak law in German
   };
-  
+
   const key = `${userLanguage}_${jurisdiction}`;
   const result = translationMatrix[key];
-  
+
   if (result) {
     return result;
   }
-  
+
   // Enhanced fallback logic
   // 1. Try English for the jurisdiction if not already tried
   if (userLanguage !== 'en') {
@@ -193,13 +192,13 @@ export const getWillTranslation = (
       return englishKey;
     }
   }
-  
+
   // 2. Try jurisdiction's default language
   const jurisdictionDefaults: Record<string, string> = {
     CZ: 'cs',
     SK: 'sk'
   };
-  
+
   const defaultLang = jurisdictionDefaults[jurisdiction];
   if (defaultLang && defaultLang !== userLanguage) {
     const defaultKey = `${defaultLang}_${jurisdiction}`;
@@ -207,7 +206,7 @@ export const getWillTranslation = (
       return defaultKey;
     }
   }
-  
+
   // 3. Ultimate fallback to English
   return `en_${jurisdiction}`;
 };
@@ -234,10 +233,10 @@ export const validateTranslationCompleteness = async (
     'legalRequirements.witnesses.requirements',
     'validation.errors.missingForcedHeirs'
   ];
-  
+
   const namespace = `wills_${language}_${jurisdiction}`;
   const missingKeys: string[] = [];
-  
+
   // Ensure namespace is loaded before validation
   if (!NamespaceLoader.isLoaded(namespace)) {
     try {
@@ -254,7 +253,7 @@ export const validateTranslationCompleteness = async (
       missingKeys.push(key);
     }
   }
-  
+
   return {
     isComplete: missingKeys.length === 0,
     missingKeys,

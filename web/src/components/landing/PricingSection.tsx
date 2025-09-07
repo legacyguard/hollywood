@@ -90,14 +90,14 @@ const PricingCard: React.FC<{ index: number; tier: PricingTier }> = ({
 
 export const PricingSection: React.FC = () => {
   const { t } = useTranslation('landing/pricing');
-  
+
   const pricingTiers: PricingTier[] = [
     {
       id: 'free',
       name: t('tiers.free.name'),
       price: t('tiers.free.price'),
       description: t('tiers.free.description'),
-      features: t('tiers.free.features', { returnObjects: true }) as { title: string; description: string }[],
+      features: t('tiers.free.features', { returnObjects: true }) as { description: string; title: string; }[],
       cta: t('tiers.free.cta'),
       ctaAction: () => {
         // Navigate to app download or sign up
@@ -112,7 +112,7 @@ export const PricingSection: React.FC = () => {
       description: t('tiers.premium.description'),
       highlighted: true,
       badge: t('tiers.premium.badge'),
-      features: t('tiers.premium.features', { returnObjects: true }) as { title: string; description: string }[],
+      features: t('tiers.premium.features', { returnObjects: true }) as { description: string; title: string; }[],
       cta: t('tiers.premium.cta'),
       ctaAction: () => {
         // Navigate to premium sign up
@@ -125,7 +125,7 @@ export const PricingSection: React.FC = () => {
       price: t('tiers.family.price'),
       period: t('tiers.family.period'),
       description: t('tiers.family.description'),
-      features: t('tiers.family.features', { returnObjects: true }) as { title: string; description: string }[],
+      features: t('tiers.family.features', { returnObjects: true }) as { description: string; title: string; }[],
       cta: t('tiers.family.cta'),
       ctaAction: () => {
         // Navigate to family plan sign up

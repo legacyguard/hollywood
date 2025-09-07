@@ -4,24 +4,22 @@
  * Provides a bridge between legacy API calls and the new centralized API services
  */
 
-import type {
-  AnalyticsService,
-  DocumentService,
-  GuardianService,
-  LegacyItemService,
-  ProfileService,
-  WillService,
-} from '@legacyguard/logic';
 import {
+  type AnalyticsService,
   type ApiClientInterface,
   createLegacyGuardAPI,
+  type DocumentService,
+  type GuardianService,
+  type LegacyItemService,
+  type ProfileService,
+  type WillService,
 } from '@legacyguard/logic';
 import { createClient } from '@supabase/supabase-js';
 
 // Environment configuration
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env['VITE_API_URL'] || '/api';
 
 // Initialize Supabase client
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -98,12 +96,17 @@ class WebApiClient implements ApiClientInterface {
    */
   async post<T = unknown>(endpoint: string, data?: unknown): Promise<T> {
     const headers = await this.buildHeaders();
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const requestInit: RequestInit = {
       method: 'POST',
       headers,
-      body: data ? JSON.stringify(data) : undefined,
       credentials: 'include',
-    });
+    };
+
+    if (data) {
+      requestInit.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(`${this.baseUrl}${endpoint}`, requestInit);
     return this.handleResponse<T>(response);
   }
 
@@ -112,12 +115,17 @@ class WebApiClient implements ApiClientInterface {
    */
   async put<T = unknown>(endpoint: string, data?: unknown): Promise<T> {
     const headers = await this.buildHeaders();
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const requestInit: RequestInit = {
       method: 'PUT',
       headers,
-      body: data ? JSON.stringify(data) : undefined,
       credentials: 'include',
-    });
+    };
+
+    if (data) {
+      requestInit.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(`${this.baseUrl}${endpoint}`, requestInit);
     return this.handleResponse<T>(response);
   }
 

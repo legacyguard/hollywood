@@ -405,7 +405,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                       .toUpperCase()}
                   </Badge>
                   <span className='text-sm text-red-700 dark:text-red-300'>
-                    {t('status.tokenExpires', { 
+                    {t('status.tokenExpires', {
                       date: new Date(
                         activation_details.token_expires_at
                       ).toLocaleString()

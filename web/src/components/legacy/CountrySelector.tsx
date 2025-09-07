@@ -6,10 +6,10 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import {
   type CountryCode,
-  type LanguageCode,
   type JurisdictionCode,
-  useLocalization,
+  type LanguageCode,
   SUPPORTED_COMBINATIONS,
+  useLocalization,
 } from '@/contexts/LocalizationContext';
 
 interface CountrySelectorProps {
@@ -17,7 +17,7 @@ interface CountrySelectorProps {
   showStepByStep?: boolean;
 }
 
-type SelectionStep = 'language' | 'jurisdiction' | 'confirmation';
+type SelectionStep = 'confirmation' | 'jurisdiction' | 'language';
 
 const SUPPORTED_LANGUAGES = [
   { code: 'sk' as LanguageCode, name: 'Slovenčina', flag: '🇸🇰', nativeName: 'Slovenčina' },
@@ -39,7 +39,7 @@ const SUPPORTED_JURISDICTIONS = [
     code: 'CZ' as JurisdictionCode,
     name: 'Czech Republic',
     flag: '🇨🇿',
-    description: 'Czech legal framework', 
+    description: 'Czech legal framework',
     currency: 'CZK',
     legalBasis: '§ 1540-1542 Czech Civil Code',
   },
@@ -83,7 +83,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
     setJurisdictionCode,
     isLoading,
   } = useLocalization();
-  
+
   const [currentStep, setCurrentStep] = React.useState<SelectionStep>('language');
   const [selectedLanguage, setSelectedLanguage] = React.useState<LanguageCode>(languageCode);
   const [selectedJurisdiction, setSelectedJurisdiction] = React.useState<JurisdictionCode>(jurisdictionCode);

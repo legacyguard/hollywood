@@ -3,20 +3,19 @@
  * Manages jurisdiction-specific will translations with full language support
  */
 
-import { NamespaceLoader } from './config';
-import type { SupportedLanguageCode, SupportedJurisdictionCode } from './config';
+import { NamespaceLoader, type SupportedJurisdictionCode, type SupportedLanguageCode } from './config';
 
 export interface WillTranslationConfig {
+  fallbackLanguage?: SupportedLanguageCode;
   jurisdiction: SupportedJurisdictionCode;
   language: SupportedLanguageCode;
-  fallbackLanguage?: SupportedLanguageCode;
 }
 
 export interface TranslationAvailability {
-  jurisdiction: string;
   availableLanguages: string[];
   defaultLanguage: string;
   hasEnglish: boolean;
+  jurisdiction: string;
 }
 
 /**
@@ -24,12 +23,12 @@ export interface TranslationAvailability {
  */
 export class WillTranslationService {
   private static instance: WillTranslationService;
-  
+
   // Available translation combinations - now with German support
   private static readonly AVAILABLE_TRANSLATIONS: Record<string, {
-    languages: string[];
     default: string;
     files: Record<string, string>;
+    languages: string[];
   }> = {
     CZ: {
       languages: ['cs', 'sk', 'en', 'de'],
@@ -52,23 +51,23 @@ export class WillTranslationService {
       }
     }
   };
-  
+
   private constructor() {}
-  
+
   static getInstance(): WillTranslationService {
     if (!WillTranslationService.instance) {
       WillTranslationService.instance = new WillTranslationService();
     }
     return WillTranslationService.instance;
   }
-  
+
   /**
    * Get available languages for a jurisdiction
    */
   getAvailableLanguages(jurisdiction: SupportedJurisdictionCode): string[] {
     return WillTranslationService.AVAILABLE_TRANSLATIONS[jurisdiction]?.languages || ['en'];
   }
-  
+
   /**
    * Check if a specific language is available for a jurisdiction
    */
@@ -79,51 +78,51 @@ export class WillTranslationService {
     const config = WillTranslationService.AVAILABLE_TRANSLATIONS[jurisdiction];
     return config ? config.languages.includes(language) : false;
   }
-  
+
   /**
    * Get the default language for a jurisdiction
    */
   getDefaultLanguage(jurisdiction: SupportedJurisdictionCode): SupportedLanguageCode {
     return (WillTranslationService.AVAILABLE_TRANSLATIONS[jurisdiction]?.default || 'en') as SupportedLanguageCode;
   }
-  
+
   /**
    * Load translations for a specific jurisdiction and language
    */
   async loadTranslations(config: WillTranslationConfig): Promise<boolean> {
     try {
       const { jurisdiction, language, fallbackLanguage } = config;
-      
+
       // Primary: Load requested language
       if (this.isLanguageAvailable(jurisdiction, language)) {
         await NamespaceLoader.loadWills(language, jurisdiction);
       }
-      
+
       // Fallback: Load fallback language if specified
       if (fallbackLanguage && fallbackLanguage !== language) {
         if (this.isLanguageAvailable(jurisdiction, fallbackLanguage)) {
           await NamespaceLoader.loadWills(fallbackLanguage, jurisdiction);
         }
       }
-      
+
       // Always load English as ultimate fallback
       if (language !== 'en' && this.isLanguageAvailable(jurisdiction, 'en')) {
         await NamespaceLoader.loadWills('en' as SupportedLanguageCode, jurisdiction);
       }
-      
+
       // Load jurisdiction default if different
       const defaultLang = this.getDefaultLanguage(jurisdiction);
       if (defaultLang !== language && defaultLang !== fallbackLanguage) {
         await NamespaceLoader.loadWills(defaultLang, jurisdiction);
       }
-      
+
       return true;
     } catch (error) {
       console.error('Failed to load will translations:', error);
       return false;
     }
   }
-  
+
   /**
    * Get translation key for a specific combination
    */
@@ -135,7 +134,7 @@ export class WillTranslationService {
     const namespace = `wills_${language}_${jurisdiction}`;
     return `${namespace}:${key}`;
   }
-  
+
   /**
    * Get all available translation configurations
    */
@@ -147,23 +146,23 @@ export class WillTranslationService {
       hasEnglish: config.languages.includes('en')
     }));
   }
-  
+
   /**
    * Validate that all required translations exist for a jurisdiction
    */
   async validateJurisdictionTranslations(
     jurisdiction: SupportedJurisdictionCode
-  ): Promise<{ valid: boolean; missing: string[] }> {
+  ): Promise<{ missing: string[]; valid: boolean; }> {
     const config = WillTranslationService.AVAILABLE_TRANSLATIONS[jurisdiction];
     if (!config) {
       return { valid: false, missing: [`No configuration for ${jurisdiction}`] };
     }
-    
+
     const missing: string[] = [];
-    
+
     for (const language of config.languages) {
       const namespace = `wills_${language}_${jurisdiction}`;
-      
+
       // Check if namespace is loaded or can be loaded
       if (!NamespaceLoader.isLoaded(namespace)) {
         try {
@@ -173,22 +172,22 @@ export class WillTranslationService {
         }
       }
     }
-    
+
     return {
       valid: missing.length === 0,
       missing
     };
   }
-  
+
   /**
    * Get formatted currency for jurisdiction
    */
   formatCurrency(amount: number, jurisdiction: SupportedJurisdictionCode, language: SupportedLanguageCode): string {
     const currency = jurisdiction === 'CZ' ? 'CZK' : 'EUR';
-    const locale = language === 'cs' ? 'cs-CZ' : 
-                   language === 'sk' ? 'sk-SK' : 
+    const locale = language === 'cs' ? 'cs-CZ' :
+                   language === 'sk' ? 'sk-SK' :
                    language === 'de' ? 'de-DE' : 'en-US';
-    
+
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency,
@@ -196,15 +195,15 @@ export class WillTranslationService {
       maximumFractionDigits: 2
     }).format(amount);
   }
-  
+
   /**
    * Get formatted date for jurisdiction
    */
   formatDate(date: Date, jurisdiction: SupportedJurisdictionCode, language: SupportedLanguageCode): string {
-    const locale = language === 'cs' ? 'cs-CZ' : 
-                   language === 'sk' ? 'sk-SK' : 
+    const locale = language === 'cs' ? 'cs-CZ' :
+                   language === 'sk' ? 'sk-SK' :
                    language === 'de' ? 'de-DE' : 'en-US';
-    
+
     // Czech, Slovak and German use DD.MM.YYYY format
     if (jurisdiction === 'CZ' || jurisdiction === 'SK') {
       return new Intl.DateTimeFormat(locale, {
@@ -213,11 +212,11 @@ export class WillTranslationService {
         year: 'numeric'
       }).format(date).replace(/\//g, '.');
     }
-    
+
     // Default format for other jurisdictions
     return new Intl.DateTimeFormat(locale).format(date);
   }
-  
+
   /**
    * Get legal reference format for jurisdiction
    */
@@ -236,7 +235,7 @@ export class WillTranslationService {
         de: 'Gesetz Nr. 40/1964 Slg., Bürgerliches Gesetzbuch'
       }
     };
-    
+
     return references[jurisdiction]?.[language] || references[jurisdiction]?.['en'] || 'Civil Code';
   }
 }

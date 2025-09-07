@@ -408,7 +408,7 @@ export function SecurityDashboard() {
                 </div>
                 <div className='text-right'>
                   <p className='text-sm text-muted-foreground'>
-                    {t('activeSessions.active', { 
+                    {t('activeSessions.active', {
                       timeAgo: formatDistanceToNow(new Date(session.last_active), {
                         addSuffix: true,
                       })

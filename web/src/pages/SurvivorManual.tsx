@@ -428,7 +428,7 @@ export default function SurvivorManualPage() {
                         className='w-4 h-4 text-green-600'
                       />
                       <span className='text-sm text-muted-foreground'>
-                        {t('header.entriesCompleted', { 
+                        {t('header.entriesCompleted', {
                           completed: entries.filter(e => e.is_completed).length,
                           total: entries.length
                         })}

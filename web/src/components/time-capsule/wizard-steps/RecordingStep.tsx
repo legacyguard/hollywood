@@ -21,8 +21,8 @@ interface RecordingStepProps {
   messageTitle: string;
   onMessagePreviewChange: (preview: string) => void;
   onMessageTitleChange: (title: string) => void;
-  onRecordingChange: (recording: TimeCapsuleRecordingData | null) => void;
-  recording: TimeCapsuleRecordingData | null;
+  onRecordingChange: (recording: null | TimeCapsuleRecordingData) => void;
+  recording: null | TimeCapsuleRecordingData;
 }
 
 type RecordingState = 'completed' | 'idle' | 'paused' | 'recording';

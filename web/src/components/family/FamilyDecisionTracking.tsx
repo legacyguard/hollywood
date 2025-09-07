@@ -983,9 +983,9 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                           </span>
                         </div>
                         <p className='text-sm text-green-700 mt-1'>
-                          {t('voting.resultFinalized', { 
-                            name: 'System', 
-                            date: decision.result.finalizedAt.toLocaleDateString() 
+                          {t('voting.resultFinalized', {
+                            name: 'System',
+                            date: decision.result.finalizedAt.toLocaleDateString()
                           })}
                         </p>
                       </div>

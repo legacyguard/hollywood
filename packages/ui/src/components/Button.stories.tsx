@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Heart, Settings, Star } from '@tamagui/lucide-icons';
+import { Heart, Star } from '@tamagui/lucide-icons';
 import { View } from 'tamagui';
 import { Button } from './Button';
 

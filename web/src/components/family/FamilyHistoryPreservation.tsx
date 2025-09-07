@@ -493,8 +493,8 @@ export const FamilyHistoryPreservation: React.FC<
             <div className='flex items-center gap-3'>
               <div className='w-4 h-4 bg-red-500 rounded-full animate-pulse'></div>
               <span className='font-medium'>
-                {t('recording.recording', { 
-                  type: isRecording === 'video' ? t('recording.video') : t('recording.audio') 
+                {t('recording.recording', {
+                  type: isRecording === 'video' ? t('recording.video') : t('recording.audio')
                 })}
               </span>
             </div>

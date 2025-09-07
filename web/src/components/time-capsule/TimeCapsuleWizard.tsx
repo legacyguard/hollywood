@@ -40,7 +40,7 @@ export function TimeCapsuleWizard({
   onCapsuleCreated,
 }: TimeCapsuleWizardProps) {
   const { t } = useTranslation('ui/time-capsule-wizard');
-  
+
   const WIZARD_STEPS = [
     {
       id: 1,

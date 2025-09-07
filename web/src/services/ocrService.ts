@@ -1,16 +1,16 @@
 
-import type {
-  BoundingBox,
-  DocumentClassification,
-  DocumentMetadata,
-  DocumentType,
-  ExtractedEntity,
-  OCRProcessingConfig,
-  OCRResult,
-  ProcessedDocument,
-  TextBlock,
+import {
+  type BoundingBox,
+  DOCUMENT_PATTERNS,
+  type DocumentClassification,
+  type DocumentMetadata,
+  type DocumentType,
+  type ExtractedEntity,
+  type OCRProcessingConfig,
+  type OCRResult,
+  type ProcessedDocument,
+  type TextBlock,
 } from '@/types/ocr';
-import { DOCUMENT_PATTERNS } from '@/types/ocr';
 // Google Cloud Vision AI client configuration
 interface GoogleCloudVisionResponse {
   responses: Array<{

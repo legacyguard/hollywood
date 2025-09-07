@@ -21,6 +21,12 @@ export {
   useLegalTerm,
   useTranslation,
 } from './hooks';
+// Enhanced hooks
+export {
+  getWillTranslation,
+  useJurisdictionAwareTranslation,
+  validateTranslationCompleteness
+} from './jurisdiction-aware-hooks';
 export {
   getAllJurisdictions,
   getJurisdictionByDomain,
@@ -28,6 +34,7 @@ export {
   getJurisdictionsByTier,
   JURISDICTION_CONFIG,
 } from './jurisdictions';
+
 export type { JurisdictionConfig } from './jurisdictions';
 
 export {
@@ -39,7 +46,6 @@ export {
   getRTLLanguages,
   LANGUAGE_CONFIG,
 } from './languages';
-
 export type { LanguageConfig } from './languages';
 export {
   getLegalDefinition,
@@ -51,19 +57,8 @@ export {
   LegalTermCategory,
   searchLegalTerms,
 } from './legal-terminology';
+
 export type { LegalTerm } from './legal-terminology';
-
-// Service exports
-export { willTranslationService } from './will-translation-service';
-export type { WillTranslationConfig, TranslationAvailability } from './will-translation-service';
-
-// Enhanced hooks
-export { 
-  useJurisdictionAwareTranslation,
-  getWillTranslation,
-  validateTranslationCompleteness
-} from './jurisdiction-aware-hooks';
-
 // Type exports
 export type {
   DeepPartial,
@@ -81,3 +76,8 @@ export type {
   UseLegalTermReturn,
   UseTranslationReturn,
 } from './types';
+
+// Service exports
+export { willTranslationService } from './will-translation-service';
+
+export type { TranslationAvailability, WillTranslationConfig } from './will-translation-service';

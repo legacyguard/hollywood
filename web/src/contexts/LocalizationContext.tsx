@@ -22,8 +22,8 @@ interface LocalizationState {
 interface LocalizationContextType extends LocalizationState {
   isLoading: boolean;
   setCountryCode: (code: CountryCode) => void;
-  setLanguageCode: (code: LanguageCode) => void;
   setJurisdictionCode: (code: JurisdictionCode) => void;
+  setLanguageCode: (code: LanguageCode) => void;
 }
 
 const LocalizationContext = createContext<LocalizationContextType | undefined>(
@@ -185,7 +185,7 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({
     if (typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('legacyguard-language') as LanguageCode;
       const savedJurisdiction = localStorage.getItem('legacyguard-jurisdiction') as JurisdictionCode;
-      
+
       if (savedLanguage && ['cs', 'de', 'en', 'sk'].includes(savedLanguage)) {
         setState(prev => ({ ...prev, languageCode: savedLanguage }));
       }

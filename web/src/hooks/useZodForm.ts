@@ -1,6 +1,5 @@
 
-import { useCallback, useEffect } from 'react';
-import type React from 'react';
+import { type BaseSyntheticEvent, useCallback, useEffect } from 'react';
 // import { type UseFormProps, type UseFormReturn, type FieldValues, useForm } from 'react-hook-form';
 // import { zodResolver } from '@hookform/resolvers/zod';
 // import type { ZodSchema, ZodTypeDef } from 'zod';
@@ -84,7 +83,7 @@ export function useZodForm<TSchema extends ZodSchema<any, ZodTypeDef, any>>({
   const form = useForm<any>({
     ...formOptions,
     resolver: zodResolver(schema),
-    mode: formOptions.mode || 'onBlur',
+    mode: formOptions['mode'] || 'onBlur',
     criteriaMode: 'all',
     shouldFocusError: true,
   });
@@ -105,7 +104,7 @@ export function useZodForm<TSchema extends ZodSchema<any, ZodTypeDef, any>>({
 
   // Handle form submission with error handling
   const submitHandler = useCallback(
-    async (e?: React.BaseSyntheticEvent) => {
+    async (e?: BaseSyntheticEvent) => {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -147,7 +146,7 @@ export function useZodForm<TSchema extends ZodSchema<any, ZodTypeDef, any>>({
         },
         (errors: any) => {
           // Log validation errors in development
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env['NODE_ENV'] === 'development') {
             console.error('Form validation errors:', errors);
           }
         }

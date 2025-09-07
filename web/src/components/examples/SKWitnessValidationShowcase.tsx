@@ -3,7 +3,7 @@ import { LegalValidator } from '@/lib/will-legal-validator';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { AlertCircle, CheckCircle, Info } from 'lucide-react';
 
 /**
  * Showcase component demonstrating Slovak jurisdiction witness validation

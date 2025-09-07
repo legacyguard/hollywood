@@ -23,7 +23,7 @@ export function LegallyReviewedStamp({
   className,
 }: LegallyReviewedStampProps) {
   const { t } = useTranslation('ui/legally-reviewed-stamp');
-  
+
   if (review.status !== 'approved') {
     return null;
   }

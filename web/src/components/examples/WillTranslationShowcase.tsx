@@ -10,19 +10,19 @@ import { willTranslationService } from '@/lib/i18n/will-translation-service';
 import type { SupportedJurisdictionCode, SupportedLanguageCode } from '@/lib/i18n/config';
 
 interface TestScenario {
-  id: string;
-  name: string;
-  language: SupportedLanguageCode;
-  jurisdiction: SupportedJurisdictionCode;
   description: string;
   expectedFile: string;
+  id: string;
+  jurisdiction: SupportedJurisdictionCode;
+  language: SupportedLanguageCode;
+  name: string;
 }
 
 const WillTranslationShowcase: React.FC = () => {
   const { i18n } = useTranslation();
-  const [selectedScenario, setSelectedScenario] = useState<TestScenario | null>(null);
+  const [selectedScenario, setSelectedScenario] = useState<null | TestScenario>(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Test scenarios covering all combinations - now with German
   const testScenarios: TestScenario[] = [
     // Czech Republic scenarios
@@ -92,21 +92,21 @@ const WillTranslationShowcase: React.FC = () => {
       expectedFile: 'de_SK.json'
     }
   ];
-  
+
   // Load scenario translations
   const loadScenario = async (scenario: TestScenario) => {
     setIsLoading(true);
     try {
       // Change UI language
       await i18n.changeLanguage(scenario.language);
-      
+
       // Load jurisdiction-specific translations
       await willTranslationService.loadTranslations({
         jurisdiction: scenario.jurisdiction,
         language: scenario.language,
         fallbackLanguage: 'en' as SupportedLanguageCode
       });
-      
+
       setSelectedScenario(scenario);
     } catch (error) {
       console.error('Failed to load scenario:', error);
@@ -114,13 +114,13 @@ const WillTranslationShowcase: React.FC = () => {
       setIsLoading(false);
     }
   };
-  
+
   // Use jurisdiction-aware translation hook for selected scenario
   const { t, isContentLoaded } = useJurisdictionAwareTranslation(
     selectedScenario?.jurisdiction || 'SK',
     'wills'
   );
-  
+
   // Sample data for template filling
   const sampleData = {
     fullName: 'John Smith',
@@ -131,13 +131,13 @@ const WillTranslationShowcase: React.FC = () => {
     date: new Date().toLocaleDateString('en-GB'),
     amount: 10000
   };
-  
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">
         Will Translation System Showcase
       </h1>
-      
+
       {/* Configuration Matrix */}
       <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">Available Configurations</h2>
@@ -160,7 +160,7 @@ const WillTranslationShowcase: React.FC = () => {
           ))}
         </div>
       </div>
-      
+
       {/* Selected Configuration Details */}
       {selectedScenario && (
         <div className="bg-blue-50 rounded-lg p-6 mb-6">
@@ -170,7 +170,7 @@ const WillTranslationShowcase: React.FC = () => {
               <span className="text-gray-600">Language:</span>
               <span className="ml-2 font-semibold">
                 {selectedScenario.language === 'en' ? 'English' :
-                 selectedScenario.language === 'cs' ? 'Czech' : 
+                 selectedScenario.language === 'cs' ? 'Czech' :
                  selectedScenario.language === 'de' ? 'German' : 'Slovak'}
               </span>
             </div>
@@ -199,17 +199,17 @@ const WillTranslationShowcase: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {/* Translation Content Display */}
       {selectedScenario && isContentLoaded && (
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-4">{String(t('title'))}</h2>
-          
+
           {/* Legal Notice */}
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
             <p className="text-sm">{String(t('legalNotice'))}</p>
           </div>
-          
+
           {/* Content Sections */}
           <div className="space-y-6">
             {/* Testator Declaration */}
@@ -218,7 +218,7 @@ const WillTranslationShowcase: React.FC = () => {
               <p className="mb-2">{String(t('sections.testator.declaration', sampleData))}</p>
               <p className="text-gray-700">{String(t('sections.testator.mentalCapacity'))}</p>
             </section>
-            
+
             {/* Forced Heirs (Jurisdiction-specific) */}
             <section>
               <h3 className="font-semibold text-lg mb-2">{String(t('sections.forcedHeirs.title'))}</h3>
@@ -233,7 +233,7 @@ const WillTranslationShowcase: React.FC = () => {
                 </p>
               </div>
             </section>
-            
+
             {/* Legal Requirements */}
             <section>
               <h3 className="font-semibold text-lg mb-2">Legal Requirements</h3>
@@ -252,7 +252,7 @@ const WillTranslationShowcase: React.FC = () => {
                 </div>
               </div>
             </section>
-            
+
             {/* Specific Bequests Example */}
             <section>
               <h3 className="font-semibold text-lg mb-2">{String(t('sections.specificBequests.title'))}</h3>
@@ -268,7 +268,7 @@ const WillTranslationShowcase: React.FC = () => {
                 }))}</p>
               </div>
             </section>
-            
+
             {/* International features for expats */}
             {(selectedScenario.language === 'en' || selectedScenario.language === 'de') && (
               <section className="bg-blue-50 p-4 rounded">
@@ -276,13 +276,13 @@ const WillTranslationShowcase: React.FC = () => {
                   {selectedScenario.language === 'en' ? 'International Considerations' : 'Internationale Aspekte'}
                 </h3>
                 <p className="text-sm mb-2">
-                  {selectedScenario.language === 'en' 
+                  {selectedScenario.language === 'en'
                     ? 'This English version maintains legal accuracy while being accessible to international residents.'
                     : 'Diese deutsche Version gewährleistet rechtliche Genauigkeit für deutschsprachige Einwohner.'}
                 </p>
                 <ul className="list-disc ml-6 text-sm space-y-1">
                   <li>
-                    {selectedScenario.language === 'en' 
+                    {selectedScenario.language === 'en'
                       ? 'All legal references use official English translations'
                       : 'Alle rechtlichen Bezüge verwenden offizielle deutsche Übersetzungen'}
                   </li>
@@ -304,7 +304,7 @@ const WillTranslationShowcase: React.FC = () => {
               </section>
             )}
           </div>
-          
+
           {/* Legal Reference */}
           <div className="mt-6 pt-6 border-t">
             <p className="text-sm text-gray-600">
@@ -316,7 +316,7 @@ const WillTranslationShowcase: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {/* Testing Summary */}
       <div className="mt-6 bg-gray-100 rounded-lg p-6">
         <h3 className="font-semibold mb-3">System Capabilities</h3>

@@ -4,7 +4,7 @@ import { LegalPageLayout } from '@/components/layout/LegalPageLayout';
 
 export function PrivacyPolicy() {
   const { t } = useTranslation('pages/privacy-policy');
-  
+
   return (
     <LegalPageLayout
       title={t('title')}

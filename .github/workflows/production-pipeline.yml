@@ -195,7 +195,10 @@ jobs:
 
       - name: Start development server
         run: |
-          npm run dev:web &
+          # Kill any existing processes on port 8080
+          pkill -f "vite" || true
+          sleep 2
+          npm run web:dev &
           sleep 10
           curl -f http://localhost:8080 || (echo "Server failed to start" && exit 1)
         env:
@@ -243,7 +246,10 @@ jobs:
 
       - name: Start production server
         run: |
-          npm run preview:web &
+          # Kill any existing processes on port 8080
+          pkill -f "vite" || true
+          sleep 2
+          cd web && npm run preview -- --port 8080 &
           sleep 5
           curl -f http://localhost:8080 || (echo "Server failed to start" && exit 1)
 

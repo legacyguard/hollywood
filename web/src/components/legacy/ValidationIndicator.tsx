@@ -8,8 +8,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import type { ValidationResult } from '@/lib/will-legal-validator';
-import { getValidationColor } from '@/lib/will-legal-validator';
+import { getValidationColor, type ValidationResult } from '@/lib/will-legal-validator';
 
 interface ValidationIndicatorProps {
   className?: string;

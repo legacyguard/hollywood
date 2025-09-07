@@ -25,7 +25,7 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
   className,
 }) => {
   const { t } = useTranslation('ui/attention-section');
-  
+
   // Mock data - in real implementation, this would come from API/hooks
   const attentionItems: AttentionItem[] = [
     {

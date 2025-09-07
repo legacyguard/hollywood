@@ -770,7 +770,7 @@ export function ProfessionalRecommendationEngine({
                                 </span>
                                 <span className='flex items-center gap-1'>
                                   <Star className='h-4 w-4 text-yellow-500 fill-current' />
-                                  {t('recommendations.reviews', { 
+                                  {t('recommendations.reviews', {
                                     rating: recommendation.clientReviews.rating,
                                     count: recommendation.clientReviews.count
                                   })}
