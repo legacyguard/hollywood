@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20.19.0'
 
 jobs:
   # Dependency vulnerability scanning
@@ -61,9 +61,14 @@ jobs:
         run: |
           # Install and run Snyk (would require Snyk token in production)
           npm install -g snyk
-          # snyk auth ${{ secrets.SNYK_TOKEN }}
-          # snyk test --json > snyk-report.json || true
-          echo "Snyk scan completed (requires SNYK_TOKEN for full functionality)"
+          if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
+            snyk auth ${{ secrets.SNYK_TOKEN }}
+            snyk test --json > snyk-report.json || true
+            echo "Snyk scan completed"
+          else
+            echo "Snyk scan skipped (SNYK_TOKEN not configured)"
+            echo '{}' > snyk-report.json
+          fi
 
       - name: Check for high-severity vulnerabilities
         run: |

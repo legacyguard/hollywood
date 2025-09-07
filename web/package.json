@@ -10,6 +10,7 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "lint:ci": "eslint . --report-unused-disable-directives",
+    "test": "echo 'No unit tests configured yet' && exit 0",
     "test:e2e": "cypress run"
   },
   "dependencies": {

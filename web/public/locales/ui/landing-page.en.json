@@ -45,7 +45,21 @@
   },
   "howItWorks": {
     "title": "How It Works",
-    "subtitle": "Your journey to family security in three simple steps"
+    "subtitle": "Your journey to family security in three simple steps",
+    "steps": {
+      "act1": {
+        "title": "Organize Your Present",
+        "description": "Securely upload and manage all your vital documents with AI-powered assistance. Sofia guides you through every step with care and intelligence."
+      },
+      "act2": {
+        "title": "Protect Your Family",
+        "description": "Build your Family Shield by appointing trusted guardians for any situation. Ensure your loved ones know exactly what to do and where to find help."
+      },
+      "act3": {
+        "title": "Define Your Legacy",
+        "description": "Create a legally sound will and leave personal messages that last forever. Your wisdom and love will guide your family for generations."
+      }
+    }
   },
   "values": {
     "title": "Built on Trust & Innovation",
@@ -68,14 +82,20 @@
     }
   },
   "trust": {
-    "title": "Trusted by Families Worldwide",
-    "subtitle": "Join thousands of families who've found peace of mind with LegacyGuard. Start your 30-day free trial today.",
+    "title": "Trusted by Professionals, Built for Families",
+    "subtitle": "LegacyGuard is built on principles of legal precision and bank-level security, in consultation with legal and financial experts.",
     "poweredBy": {
       "clerk": "Secured by Clerk",
       "supabase": "Powered by Supabase",
       "vercel": "Deployed on Vercel",
       "legal": "Legal Partnership",
       "gdpr": "GDPR Compliant"
+    },
+    "indicators": {
+      "endToEndEncryption": "End-to-End Encryption",
+      "zeroKnowledge": "Zero-Knowledge Architecture",
+      "bankLevelSecurity": "Bank-Level Security",
+      "legalExpertConsultation": "Legal Expert Consultation"
     },
     "features": {
       "encryption": "Bank-level encryption",
@@ -86,9 +106,29 @@
   },
   "cta": {
     "final": {
-      "title": "Your Story Starts Here",
+      "title": "Your Story is Waiting",
       "subtitle": "Begin your legacy with LegacyGuard. Secure, organize, and preserve what matters most.",
-      "button": "Start Your Free Trial"
+      "button": "Begin Your LegacyGuard Today"
     }
+  },
+  "footer": {
+    "tagline": "Securing your legacy, protecting your family, one document at a time.",
+    "sections": {
+      "product": "Product",
+      "support": "Support",
+      "legal": "Legal"
+    },
+    "links": {
+      "features": "Features",
+      "security": "Security",
+      "pricing": "Pricing",
+      "helpCenter": "Help Center",
+      "contactUs": "Contact Us",
+      "userGuides": "User Guides",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "securityPolicy": "Security Policy"
+    },
+    "copyright": "All rights reserved."
   }
 }

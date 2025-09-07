@@ -1,10 +1,12 @@
 # 📊 I18N Konzistencia Report
+
 *Dátum: 7. september 2025*
 *Vykonaná kontrola: Kompletná analýza lokalizačnej konzistencie*
 
 ## ✅ ZHRNUTIE KONTROLY
 
-### 🎯 Kontrolované oblasti:
+### 🎯 Kontrolované oblasti
+
 1. **CZ vs SK template keysety** - ✅ KONZISTENTNÉ
 2. **I18n keyset parity** - ⚠️ OPRAVENÉ (chýbali kľúče dashboard)
 3. **Routing podľa I18N_ENHANCEMENTS_SUMMARY.md** - ✅ IMPLEMENTOVANÉ
@@ -14,14 +16,17 @@
 
 ### 1. Chýbajúce kľúče v UI lokalizáciách
 
-#### ❌ PROBLÉM:
+#### ❌ PROBLÉM – Hardcoded reťazce
+
 - V súboroch `sk.json`, `cs.json` a `de.json` chýbal celý blok `dashboard`
 - `en.json` mal 80 kľúčov, ostatné jazyky len 49
 
-#### ✅ RIEŠENIE:
+#### ✅ RIEŠENIE – Hardcoded reťazce
+
 Pridané chýbajúce preklady do všetkých súborov:
 
 **sk.json** - Pridaných 31 nových kľúčov:
+
 ```json
 "dashboard": {
   "header": {
@@ -38,6 +43,7 @@ Pridané chýbajúce preklady do všetkých súborov:
 ```
 
 **cs.json** - Pridaných 31 nových kľúčov:
+
 ```json
 "dashboard": {
   "header": {
@@ -49,6 +55,7 @@ Pridané chýbajúce preklady do všetkých súborov:
 ```
 
 **de.json** - Pridaných 31 nových kľúčov:
+
 ```json
 "dashboard": {
   "header": {
@@ -61,21 +68,25 @@ Pridané chýbajúce preklady do všetkých súborov:
 
 ### 2. Template konzistencia vo WillExportService
 
-#### ✅ SPRÁVNE:
+#### ✅ SPRÁVNE
+
 - Všetkých 8 template kombinácií má identickú štruktúru kľúčov
 - SK jurisdikcia templates: `sk_SK`, `cs_SK`, `en_SK`, `de_SK`
 - CZ jurisdikcia templates: `sk_CZ`, `cs_CZ`, `en_CZ`, `de_CZ`
 
-#### ✅ NOVÉ VYLEPŠENIE:
+#### ✅ NOVÉ VYLEPŠENIE
+
 Pridané `legalNotes` do všetkých templates s jurisdikčne špecifickými právnymi poučeniami:
 
 **SK jurisdikcia** - Kľúčové právne rozdiely:
+
 - Minimálny vek: 18 rokov
 - Holografický závet: dátum ODPORÚČANÝ
 - Povinné podiely: maloletí 100%, plnoletí 50%
 - Register: Notársky centrálny register listín
 
 **CZ jurisdikcia** - Kľúčové právne rozdiely:
+
 - Minimálny vek: 15 rokov (len s notárom)
 - Holografický závet: dátum POVINNÝ
 - Povinné podiely: maloletí 75%, plnoletí 25%
@@ -83,15 +94,19 @@ Pridané `legalNotes` do všetkých templates s jurisdikčne špecifickými prá
 
 ### 3. Lokalizačné hardcoded reťazce
 
-#### ❌ PROBLÉM:
+#### ❌ PROBLÉM
+
 Našli sa hardcoded slovenské reťazce v exportných metódach:
+
 - "Právne upozornenie"
 - "Svedok", "Dátum"
 - "Hodnota", "Adresa", "Podmienky"
 - "Nehnuteľnosti", "Bankové účty", "Vozidlá"
 
-#### ✅ RIEŠENIE:
+#### ✅ RIEŠENIE
+
 Pridané lokalizačné helper metódy:
+
 ```typescript
 private getInCityText(language: LanguageCode): string
 private getDateText(language: LanguageCode): string
@@ -103,8 +118,9 @@ private getLegalDisclaimerTitle(language: LanguageCode): string
 
 ## 🔍 ŠTRUKTÚRA LOKALIZÁCIÍ
 
-### Aktuálna štruktúra:
-```
+### Aktuálna štruktúra
+
+```text
 /locales/
 ├── ui/               # UI lokalizácie
 │   ├── sk.json      # ✅ 80 kľúčov (po oprave)
@@ -125,7 +141,7 @@ private getLegalDisclaimerTitle(language: LanguageCode): string
 
 ## 📈 ROUTING A KONFIGURÁCIA
 
-### ✅ Implementované podľa I18N_ENHANCEMENTS_SUMMARY.md:
+### ✅ Implementované podľa I18N_ENHANCEMENTS_SUMMARY.md
 
 1. **Namespace loading** - `NamespaceLoader` class
 2. **Lazy loading** - Content namespaces sa načítavajú na požiadanie
@@ -133,7 +149,8 @@ private getLegalDisclaimerTitle(language: LanguageCode): string
 4. **Pluralizácia** - Plná podpora pre SK/CZ plurály
 5. **Date formatting** - Integrácia s date-fns
 
-### Konfiguračné súbory:
+### Konfiguračné súbory
+
 - `/src/lib/i18n/config.ts` - ✅ Hlavná konfigurácia
 - `/src/lib/i18n/enhanced-config.ts` - ✅ Rozšírená konfigurácia s plurálmi
 - `/src/lib/i18n/languages.ts` - ✅ Jazykové konfigurácie (34 jazykov)
@@ -141,7 +158,7 @@ private getLegalDisclaimerTitle(language: LanguageCode): string
 
 ## 🎉 VÝSLEDOK
 
-### ✅ VŠETKY PROBLÉMY VYRIEŠENÉ:
+### ✅ VŠETKY PROBLÉMY VYRIEŠENÉ
 
 1. **UI lokalizácie** - Všetky jazyky majú teraz rovnaký počet kľúčov (80)
 2. **Template konzistencia** - Všetkých 8 kombinácií má identickú štruktúru
@@ -149,7 +166,8 @@ private getLegalDisclaimerTitle(language: LanguageCode): string
 4. **Legal notes** - Pridané pre všetky jurisdikcie s právnymi špecifikami
 5. **Validačné hlášky** - Existujú vo všetkých jazykoch (forms.*)
 
-### 📊 Štatistiky:
+### 📊 Štatistiky
+
 - **Celkovo opravených súborov**: 4
 - **Pridaných prekladových kľúčov**: 93 (31 × 3 jazyky)
 - **Pridaných helper metód**: 15
@@ -157,17 +175,20 @@ private getLegalDisclaimerTitle(language: LanguageCode): string
 
 ## 🚀 ODPORÚČANIA
 
-### Krátkodobé (1 týždeň):
+### Krátkodobé (1 týždeň)
+
 1. ✅ Otestovať všetky jazykové mutácie v staging prostredí
 2. ✅ Validovať právne poučenia s právnikmi pre SK/CZ
 3. ✅ Skontrolovať formátovanie dátumov a čísel
 
-### Strednodobé (1 mesiac):
+### Strednodobé (1 mesiac)
+
 1. 📝 Implementovať TMS (Translation Management System)
 2. 📝 Pridať automatické testy pre konzistenciu kľúčov
 3. 📝 Rozšíriť legal notes pre ďalšie jurisdikcie
 
-### Dlhodobé (3 mesiace):
+### Dlhodobé (3 mesiace)
+
 1. 📝 AI-assisted preklady pre nové texty
 2. 📝 Lokalizované obrázky a videá
 3. 📝 A/B testovanie prekladových variantov

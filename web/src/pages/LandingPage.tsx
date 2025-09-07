@@ -849,12 +849,10 @@ export function LandingPage() {
                     />
                   </motion.div>
                   <h3 className='text-2xl font-bold text-white'>
-                    Organize Your Present
+                    {t('howItWorks.steps.act1.title')}
                   </h3>
                   <p className='text-slate-300 leading-relaxed'>
-                    Securely upload and manage all your vital documents with
-                    AI-powered assistance. Sofia guides you through every step
-                    with care and intelligence.
+                    {t('howItWorks.steps.act1.description')}
                   </p>
                 </CardContent>
               </Card>
@@ -880,12 +878,10 @@ export function LandingPage() {
                     />
                   </motion.div>
                   <h3 className='text-2xl font-bold text-white'>
-                    Protect Your Family
+                    {t('howItWorks.steps.act2.title')}
                   </h3>
                   <p className='text-slate-300 leading-relaxed'>
-                    Build your Family Shield by appointing trusted guardians for
-                    any situation. Ensure your loved ones know exactly what to
-                    do and where to find help.
+                    {t('howItWorks.steps.act2.description')}
                   </p>
                 </CardContent>
               </Card>
@@ -911,12 +907,10 @@ export function LandingPage() {
                     />
                   </motion.div>
                   <h3 className='text-2xl font-bold text-white'>
-                    Define Your Legacy
+                    {t('howItWorks.steps.act3.title')}
                   </h3>
                   <p className='text-slate-300 leading-relaxed'>
-                    Create a legally sound will and leave personal messages that
-                    last forever. Your wisdom and love will guide your family
-                    for generations.
+                    {t('howItWorks.steps.act3.description')}
                   </p>
                 </CardContent>
               </Card>
@@ -939,10 +933,10 @@ export function LandingPage() {
             viewport={{ once: true }}
           >
             <h2 className='text-4xl lg:text-5xl font-bold text-white mb-6'>
-              Our Commitments to You
+              {t('values.title')}
             </h2>
             <p className='text-xl text-slate-300 max-w-2xl mx-auto'>
-              The principles that guide everything we do
+              {t('values.subtitle')}
             </p>
           </motion.div>
 
@@ -1106,12 +1100,10 @@ export function LandingPage() {
             viewport={{ once: true }}
           >
             <h2 className='text-3xl lg:text-4xl font-bold text-white mb-4'>
-              Trusted by Professionals, Built for Families
+              {t('trust.title')}
             </h2>
             <p className='text-xl text-slate-300 max-w-3xl mx-auto'>
-              LegacyGuard is built on principles of legal precision and
-              bank-level security, in consultation with legal and financial
-              experts.
+              {t('trust.subtitle')}
             </p>
           </motion.div>
 
@@ -1129,7 +1121,7 @@ export function LandingPage() {
               <div className='w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center'>
                 <span className='text-white font-bold text-sm'>C</span>
               </div>
-              <span className='text-sm font-medium'>Secured by Clerk</span>
+              <span className='text-sm font-medium'>{t('trust.poweredBy.clerk')}</span>
             </div>
 
             {/* Supabase - Database */}
@@ -1137,7 +1129,7 @@ export function LandingPage() {
               <div className='w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center'>
                 <span className='text-white font-bold text-sm'>S</span>
               </div>
-              <span className='text-sm font-medium'>Powered by Supabase</span>
+              <span className='text-sm font-medium'>{t('trust.poweredBy.supabase')}</span>
             </div>
 
             {/* Vercel - Hosting */}
@@ -1145,7 +1137,7 @@ export function LandingPage() {
               <div className='w-8 h-8 bg-gradient-to-br from-black to-slate-800 rounded-lg flex items-center justify-center border border-slate-600'>
                 <span className='text-white font-bold text-sm'>▲</span>
               </div>
-              <span className='text-sm font-medium'>Deployed on Vercel</span>
+              <span className='text-sm font-medium'>{t('trust.poweredBy.vercel')}</span>
             </div>
 
             {/* Legal Partner */}
@@ -1153,7 +1145,7 @@ export function LandingPage() {
               <div className='w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center'>
                 <span className='text-white font-bold text-sm'>⚖</span>
               </div>
-              <span className='text-sm font-medium'>Legal Partnership</span>
+              <span className='text-sm font-medium'>{t('trust.poweredBy.legal')}</span>
             </div>
 
             {/* GDPR Compliant */}
@@ -1161,7 +1153,7 @@ export function LandingPage() {
               <div className='w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center'>
                 <span className='text-white font-bold text-xs'>🇪🇺</span>
               </div>
-              <span className='text-sm font-medium'>GDPR Compliant</span>
+              <span className='text-sm font-medium'>{t('trust.poweredBy.gdpr')}</span>
             </div>
           </motion.div>
 
@@ -1178,19 +1170,19 @@ export function LandingPage() {
                 name={'shield-check' as any}
                 className='w-4 h-4 text-green-400'
               />
-              <span>End-to-End Encryption</span>
+              <span>{t('trust.indicators.endToEndEncryption')}</span>
             </div>
             <div className='flex items-center gap-2'>
               <Icon name={'check' as any} className='w-4 h-4 text-green-400' />
-              <span>Zero-Knowledge Architecture</span>
+              <span>{t('trust.indicators.zeroKnowledge')}</span>
             </div>
             <div className='flex items-center gap-2'>
               <Icon name={'key' as any} className='w-4 h-4 text-green-400' />
-              <span>Bank-Level Security</span>
+              <span>{t('trust.indicators.bankLevelSecurity')}</span>
             </div>
             <div className='flex items-center gap-2'>
               <Icon name={'users' as any} className='w-4 h-4 text-green-400' />
-              <span>Legal Expert Consultation</span>
+              <span>{t('trust.indicators.legalExpertConsultation')}</span>
             </div>
           </motion.div>
         </div>
@@ -1304,7 +1296,7 @@ export function LandingPage() {
               transition={{ duration: 1, delay: 1 }}
               viewport={{ once: true }}
             >
-              Your Story is Waiting
+              {t('cta.final.title')}
             </motion.h2>
 
             <motion.div
@@ -1325,7 +1317,7 @@ export function LandingPage() {
                   transition={{ duration: 0.3 }}
                 />
                 <span className='relative z-10 group-hover:scale-105 transition-transform duration-200'>
-                  Begin Your LegacyGuard Today
+                  {t('cta.final.button')}
                 </span>
               </Button>
             </motion.div>
@@ -1362,7 +1354,7 @@ export function LandingPage() {
 
           <div className='relative z-10 text-center text-white max-w-2xl mx-auto px-4 mt-32'>
             <h2 className='text-5xl lg:text-6xl font-bold mb-8 leading-tight'>
-              Your Story is Waiting
+              {t('cta.final.title')}
             </h2>
             <Button
               size='lg'
@@ -1370,7 +1362,7 @@ export function LandingPage() {
               className='bg-yellow-500 hover:bg-yellow-400 text-slate-900 text-xl px-16 py-8 rounded-full shadow-2xl hover:shadow-yellow-500/25 transition-all duration-300 font-bold relative overflow-hidden group'
             >
               <span className='relative z-10 group-hover:scale-105 transition-transform duration-200'>
-                Begin Your LegacyGuard Today
+                {t('cta.final.button')}
               </span>
             </Button>
           </div>
@@ -1389,20 +1381,19 @@ export function LandingPage() {
                 </span>
               </div>
               <p className='text-slate-400 text-sm'>
-                Securing your legacy, protecting your family, one document at a
-                time.
+                {t('footer.tagline')}
               </p>
             </div>
 
             <div>
-              <h4 className='font-semibold mb-3'>Product</h4>
+              <h4 className='font-semibold mb-3'>{t('footer.sections.product')}</h4>
               <ul className='space-y-2 text-sm'>
                 <li>
                   <Link
                     to='/features'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
-                    Features
+                    {t('footer.links.features')}
                   </Link>
                 </li>
                 <li>
@@ -1410,7 +1401,7 @@ export function LandingPage() {
                     to='/security'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
-                    Security
+                    {t('footer.links.security')}
                   </Link>
                 </li>
                 <li>
@@ -1418,21 +1409,21 @@ export function LandingPage() {
                     to='/pricing'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
-                    Pricing
+                    {t('footer.links.pricing')}
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className='font-semibold mb-3'>Support</h4>
+              <h4 className='font-semibold mb-3'>{t('footer.sections.support')}</h4>
               <ul className='space-y-2 text-sm'>
                 <li>
                   <Link
                     to='/help'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
-                    Help Center
+                    {t('footer.links.helpCenter')}
                   </Link>
                 </li>
                 <li>
@@ -1440,7 +1431,7 @@ export function LandingPage() {
                     to='/contact'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
-                    Contact Us
+                    {t('footer.links.contactUs')}
                   </Link>
                 </li>
                 <li>
@@ -1448,21 +1439,21 @@ export function LandingPage() {
                     to='/guides'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
-                    User Guides
+                    {t('footer.links.userGuides')}
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className='font-semibold mb-3'>Legal</h4>
+              <h4 className='font-semibold mb-3'>{t('footer.sections.legal')}</h4>
               <ul className='space-y-2 text-sm'>
                 <li>
                   <Link
                     to='/privacy-policy'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
-                    Privacy Policy
+                    {t('footer.links.privacyPolicy')}
                   </Link>
                 </li>
                 <li>
@@ -1470,7 +1461,7 @@ export function LandingPage() {
                     to='/terms-of-service'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
-                    Terms of Service
+                    {t('footer.links.termsOfService')}
                   </Link>
                 </li>
                 <li>
@@ -1478,7 +1469,7 @@ export function LandingPage() {
                     to='/security-policy'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
-                    Security Policy
+                    {t('footer.links.securityPolicy')}
                   </Link>
                 </li>
               </ul>
@@ -1487,8 +1478,7 @@ export function LandingPage() {
 
           <div className='border-t border-slate-800 mt-8 pt-8 text-center text-sm text-slate-400'>
             <p>
-              &copy; {new Date().getFullYear()} LegacyGuard. All rights
-              reserved.
+              &copy; {new Date().getFullYear()} LegacyGuard. {t('footer.copyright')}
             </p>
           </div>
         </div>

@@ -28,7 +28,7 @@ on:
           - sync-database
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20.19.0'
 
 jobs:
   # Validate environment configuration

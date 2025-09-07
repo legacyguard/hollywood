@@ -95,9 +95,9 @@ jobs:
       - name: Build ${{ matrix.app }}
         run: |
           if [ "${{ matrix.app }}" = "web" ]; then
-            npm run build
+            npm run build:web
           elif [ "${{ matrix.app }}" = "mobile" ]; then
-            cd mobile && npx expo export --platform web
+            npm run mobile:build
           fi
         continue-on-error: true
         env:
@@ -110,7 +110,7 @@ jobs:
         with:
           name: ${{ matrix.app }}-build
           path: |
-            ${{ matrix.app == 'web' && 'dist' || 'mobile/dist' }}
+            ${{ matrix.app == 'web' && 'web/dist' || 'mobile/dist' }}
           retention-days: 7
 
   # Security audit
