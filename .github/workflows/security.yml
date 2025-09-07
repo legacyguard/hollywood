@@ -57,22 +57,21 @@ jobs:
           path: npm-audit.json
           retention-days: 30
 
-      - name: Snyk vulnerability scan (conditional)
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Snyk vulnerability scan
+        if: ${{ github.secrets.SNYK_TOKEN != '' }}
         run: |
           # Install Snyk
           npm install -g snyk
-          
-          # Run only if token is set
-          if [ -n "$SNYK_TOKEN" ]; then
-            snyk auth "$SNYK_TOKEN"
-            snyk test --json > snyk-report.json || true
-            echo "Snyk scan completed"
-          else
-            echo "Snyk scan skipped (SNYK_TOKEN not configured)"
-            echo '{}' > snyk-report.json
-          fi
+          # Authenticate and run scan
+          snyk auth "${{ secrets.SNYK_TOKEN }}"
+          snyk test --json > snyk-report.json || true
+          echo "Snyk scan completed"
+
+      - name: Snyk scan skipped (no token)
+        if: ${{ github.secrets.SNYK_TOKEN == '' }}
+        run: |
+          echo "Snyk scan skipped (SNYK_TOKEN not configured)"
+          echo '{}' > snyk-report.json
 
       - name: Check for high-severity vulnerabilities
         run: |
