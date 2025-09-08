@@ -46,7 +46,7 @@ function App() {
               <div>
                 <h3 className="text-lg font-semibold mb-3">Progress Bar</h3>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                  <div 
+                  <div
                     className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   />
@@ -87,8 +87,8 @@ function App() {
                   </button>
                   {emailValid !== null && (
                     <div className={`p-4 rounded-lg ${
-                      emailValid 
-                        ? 'bg-green-100 text-green-800 border border-green-300' 
+                      emailValid
+                        ? 'bg-green-100 text-green-800 border border-green-300'
                         : 'bg-red-100 text-red-800 border border-red-300'
                     }`}>
                       {emailValid
