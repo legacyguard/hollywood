@@ -41,3 +41,6 @@ yarn-error.*
 
 *storybook.log
 storybook-static
+
+# Performance reports
+performance-report.json
