@@ -327,27 +327,6 @@
       }
     }
   },
-  "security": {
-    "dashboard": {
-      "title": "Security Dashboard",
-      "securityScore": "Security Score",
-      "auditLogs": "Audit Logs",
-      "activeSessions": "Active Sessions",
-      "keyRotation": "Key Rotation",
-      "factors": {
-        "encryptionEnabled": "Encryption Enabled",
-        "twoFactorEnabled": "Two-Factor Authentication",
-        "backupRecent": "Recent Backup",
-        "recoverySetup": "Recovery Setup",
-        "passwordStrength": "Password Strength"
-      },
-      "buttons": {
-        "rotateKeys": "Rotate Keys",
-        "viewDetails": "View Details",
-        "refresh": "Refresh"
-      }
-    }
-  },
   "forms": {
     "validation": {
       "required": "This field is required",
@@ -491,7 +470,6 @@
         "guardian": "Guardian",
         "emergencyContact": "Emergency Contact"
       },
-      "recommendations": "Recommendations",
       "suggested": "Suggested",
       "reason": "Reason"
     }
@@ -589,7 +567,7 @@
       "retry": "Retry"
     }
   },
-  "security": {
+  "securitySettings": {
     "title": "Security",
     "encryption": "Encryption",
     "backup": "Backup",
