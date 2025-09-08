@@ -5,9 +5,11 @@
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FamilyProtectionDashboard } from '@/components/emergency/FamilyProtectionDashboard';
+import { useTranslation } from 'react-i18next';
 
 export default function FamilyProtectionPage() {
-  usePageTitle('Family Protection');
+  const { t } = useTranslation('common/page-titles');
+  usePageTitle(t('familyProtection'));
 
   return (
     <DashboardLayout>

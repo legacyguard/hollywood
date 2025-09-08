@@ -1,5 +1,6 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -157,6 +158,7 @@ export function FamilyViralGrowth({
   documentsCount,
   onInviteFamily,
 }: FamilyViralGrowthProps) {
+  const { t } = useTranslation('components/family-viral-growth');
   const [showInvitePrompt, setShowInvitePrompt] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState<InvitationPrompt | null>(
     null

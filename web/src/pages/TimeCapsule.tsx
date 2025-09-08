@@ -13,9 +13,12 @@ import type { TimeCapsule, TimeCapsuleStats } from '@/types/timeCapsule';
 import type { Guardian } from '@/types/guardian';
 import { TimeCapsuleWizard } from '@/components/time-capsule/TimeCapsuleWizard';
 import { TimeCapsuleList } from '@/components/time-capsule/TimeCapsuleList';
+import { useTranslation } from 'react-i18next';
 
 export default function TimeCapsulePage() {
-  usePageTitle('Time Capsule');
+  const { t } = useTranslation('common/toast-messages');
+  const { t: tPages } = useTranslation('common/page-titles');
+  usePageTitle(tPages('timeCapsule'));
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
 
@@ -98,7 +101,7 @@ export default function TimeCapsulePage() {
       setStats(newStats);
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast.error('Failed to load time capsules');
+      toast.error(t('errors.loadFailed', { resource: t('resources.timeCapsules') }));
     } finally {
       setIsLoading(false);
     }
@@ -152,7 +155,7 @@ export default function TimeCapsulePage() {
       });
     } catch (error) {
       console.error('Failed to send test preview:', error);
-      toast.error('Failed to send test preview', {
+      toast.error(t('errors.sendFailed', { action: t('resources.testPreview') }), {
         description:
           'Please try again or contact support if the issue persists.',
       });
@@ -177,10 +180,10 @@ export default function TimeCapsulePage() {
       // Update local state
       setTimeCapsules(prev => prev.filter(c => c.id !== capsuleId));
       fetchData(); // Refresh stats
-      toast.success('Time Capsule deleted successfully');
+      toast.success(t('success.deleted', { resource: t('resources.timeCapsule') }));
     } catch (error) {
       console.error('Error deleting capsule:', error);
-      toast.error('Failed to delete time capsule');
+      toast.error(t('errors.deleteFailed', { resource: 'time capsule' }));
     }
   };
 

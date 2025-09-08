@@ -12,6 +12,7 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
 import type {
   CreateFamilyShieldSettingsRequest,
   FamilyShieldSettings,
@@ -19,7 +20,8 @@ import type {
 } from '@/types/guardian';
 
 export default function ProtocolSettingsPage() {
-  usePageTitle('Family Shield Settings');
+  const { t } = useTranslation('common/page-titles');
+  usePageTitle(t('familyShieldSettings'));
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
 

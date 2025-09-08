@@ -12,8 +12,10 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { OCRService } from '@/services/ocrService';
 import type { DocumentType, ProcessedDocument } from '@/types/ocr';
+import { useTranslation } from 'react-i18next';
 
 const TestOCRPage: React.FC = () => {
+  const { t } = useTranslation('pages/test-ocr');
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const [processing, setProcessing] = useState(false);
@@ -26,7 +28,7 @@ const TestOCRPage: React.FC = () => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
       if (!selectedFile.type.startsWith('image/')) {
-        setError('Please select an image file');
+        setError(t('errors.selectImageFile'));
         return;
       }
 
@@ -45,7 +47,7 @@ const TestOCRPage: React.FC = () => {
 
   const handleProcess = async () => {
     if (!file) {
-      setError('Please select a file first');
+      setError(t('errors.selectFileFirst'));
       return;
     }
 
@@ -83,7 +85,7 @@ const TestOCRPage: React.FC = () => {
       setResult(ocrResult);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Failed to process document'
+        err instanceof Error ? err.message : t('errors.processDocumentFailed')
       );
       console.error('OCR Error:', err);
     } finally {
@@ -92,16 +94,7 @@ const TestOCRPage: React.FC = () => {
   };
 
   const getDocumentTypeLabel = (type: DocumentType): string => {
-    const labels: Record<DocumentType, string> = {
-      passport: 'Passport',
-      drivers_license: "Driver's License",
-      birth_certificate: 'Birth Certificate',
-      marriage_certificate: 'Marriage Certificate',
-      life_insurance: 'Life Insurance Policy',
-      bank_statement: 'Bank Statement',
-      tax_document: 'Tax Document',
-      medical_record: 'Medical Record',
-      property_deed: 'Property Deed',
+    return t(`documentTypes.${type}`, { defaultValue: type });
       will: 'Will',
       contract: 'Contract',
       receipt: 'Receipt',

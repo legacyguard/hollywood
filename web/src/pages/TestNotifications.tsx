@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Icon } from '@/components/ui/icon-library';
 import { toast } from 'sonner';
 import { useUser } from '@clerk/clerk-react';
+import { useTranslation } from 'react-i18next';
 
 interface TestResult {
   emailId?: string;
@@ -15,6 +16,7 @@ interface TestResult {
 }
 
 export function TestNotifications() {
+  const { t } = useTranslation('common/toast-messages');
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState(
@@ -26,7 +28,7 @@ export function TestNotifications() {
 
   const sendTestNotification = async () => {
     if (!email) {
-      toast.error('Please enter an email address');
+      toast.error(t('errors.validationRequired', { field: t('fields.email') }));
       return;
     }
 
@@ -60,11 +62,11 @@ export function TestNotifications() {
           success: false,
           message: result.message || 'Failed to send test notification',
         });
-        toast.error(result.message || 'Failed to send test notification');
+        toast.error(result.message || t('errors.sendFailed', { action: t('resources.notification') }));
       }
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Network error';
+        error instanceof Error ? error.message : t('errors.networkError');
       setTestResult({
         success: false,
         message: errorMessage,

@@ -12,6 +12,7 @@ import {
 import { useAuth } from '@clerk/clerk-react';
 import { encryptionService } from '../../lib/encryption-v2';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface EncryptionContextType {
   checkKeyStatus: () => Promise<void>;
@@ -50,6 +51,7 @@ interface EncryptionProviderProps {
 }
 
 export function EncryptionProvider({ children }: EncryptionProviderProps) {
+  const { t } = useTranslation('hooks/encryption');
   const { isSignedIn, userId } = useAuth();
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -126,7 +128,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
   const initializeKeys = useCallback(
     async (password: string): Promise<boolean> => {
       if (!userId) {
-        toast.error('You must be signed in to initialize encryption');
+        toast.error(t('errors.mustBeSignedIn', { action: t('actions.initializeEncryption') }));
         return false;
       }
 
@@ -137,15 +139,15 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
         if (result.success) {
           setIsInitialized(true);
           setIsUnlocked(true);
-          toast.success('Encryption keys initialized successfully');
+          toast.success(t('success.keysInitialized'));
           return true;
         } else {
-          toast.error(result.error || 'Failed to initialize encryption keys');
+          toast.error(result.error || t('errors.initializationFailed'));
           return false;
         }
       } catch (error) {
         console.error('Key initialization error:', error);
-        toast.error('An error occurred while initializing encryption');
+        toast.error(t('errors.genericError', { action: 'initializing encryption' }));
         return false;
       } finally {
         setIsLoading(false);
@@ -157,7 +159,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
   const unlockKeys = useCallback(
     async (password: string): Promise<boolean> => {
       if (!userId) {
-        toast.error('You must be signed in to unlock encryption');
+        toast.error(t('errors.mustBeSignedIn', { action: t('actions.unlockEncryption') }));
         return false;
       }
 
@@ -167,7 +169,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
 
         if (result.success) {
           setIsUnlocked(true);
-          toast.success('Encryption unlocked successfully');
+          toast.success(t('success.unlocked'));
           setPasswordPromptVisible(false);
           return true;
         } else {
@@ -175,13 +177,13 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
           if (result.error?.includes('locked')) {
             toast.error('Too many failed attempts. Please try again later.');
           } else {
-            toast.error(result.error || 'Incorrect password');
+            toast.error(result.error || t('errors.incorrectPassword'));
           }
           return false;
         }
       } catch (error) {
         console.error('Key unlock error:', error);
-        toast.error('An error occurred while unlocking encryption');
+        toast.error(t('errors.unlockFailed'));
         return false;
       } finally {
         setIsLoading(false);
@@ -193,13 +195,13 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
   const lockKeys = useCallback(async () => {
     await encryptionService.lockKeys();
     setIsUnlocked(false);
-    toast.info('Encryption locked');
+    toast.info(t('success.locked'));
   }, []);
 
   const migrateKeys = useCallback(
     async (password: string): Promise<boolean> => {
       if (!userId) {
-        toast.error('You must be signed in to migrate encryption keys');
+        toast.error(t('errors.mustBeSignedIn', { action: t('actions.migrateKeys') }));
         return false;
       }
 
@@ -212,15 +214,15 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
           setIsInitialized(true);
           setIsUnlocked(true);
           setNeedsMigration(false);
-          toast.success('Encryption keys migrated successfully');
+          toast.success(t('success.keysMigrated'));
           return true;
         } else {
-          toast.error(result.error || 'Failed to migrate encryption keys');
+          toast.error(result.error || t('errors.migrationFailed'));
           return false;
         }
       } catch (error) {
         console.error('Key migration error:', error);
-        toast.error('An error occurred while migrating encryption');
+        toast.error(t('errors.genericError', { action: 'migrating encryption' }));
         return false;
       } finally {
         setIsLoading(false);
@@ -232,7 +234,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
   const rotateKeys = useCallback(
     async (currentPassword: string, newPassword?: string): Promise<boolean> => {
       if (!userId) {
-        toast.error('You must be signed in to rotate encryption keys');
+        toast.error(t('errors.mustBeSignedIn', { action: t('actions.rotateKeys') }));
         return false;
       }
 
@@ -244,15 +246,15 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
         );
 
         if (result.success) {
-          toast.success('Encryption keys rotated successfully');
+          toast.success(t('success.keysRotated'));
           return true;
         } else {
-          toast.error(result.error || 'Failed to rotate encryption keys');
+          toast.error(result.error || t('errors.rotationFailed'));
           return false;
         }
       } catch (error) {
         console.error('Key rotation error:', error);
-        toast.error('An error occurred while rotating encryption keys');
+        toast.error(t('errors.genericError', { action: 'rotating encryption keys' }));
         return false;
       } finally {
         setIsLoading(false);

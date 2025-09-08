@@ -19,7 +19,7 @@ interface TestScenario {
 }
 
 const WillTranslationShowcase: React.FC = () => {
-  const { i18n } = useTranslation();
+  const { t } = useTranslation('components/will-translation-showcase');
   const [selectedScenario, setSelectedScenario] = useState<null | TestScenario>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,23 +28,23 @@ const WillTranslationShowcase: React.FC = () => {
     // Czech Republic scenarios
     {
       id: 'cz-cs',
-      name: 'Czech in Czech Republic',
+      name: t('testScenarios.csCZ.name'),
       language: 'cs',
       jurisdiction: 'CZ',
-      description: 'Native Czech speaker creating will under Czech law',
+      description: t('testScenarios.csCZ.description'),
       expectedFile: 'cs_CZ.json'
     },
     {
       id: 'cz-sk',
-      name: 'Slovak in Czech Republic',
+      name: t('testScenarios.skCZ.name'),
       language: 'sk',
       jurisdiction: 'CZ',
-      description: 'Slovak speaker living in Czech Republic',
+      description: t('testScenarios.skCZ.description'),
       expectedFile: 'sk_CZ.json'
     },
     {
       id: 'cz-en',
-      name: 'English in Czech Republic',
+      name: t('testScenarios.enCZ.name'),
       language: 'en',
       jurisdiction: 'CZ',
       description: 'English speaker (expat/international) in Czech Republic',
@@ -52,7 +52,7 @@ const WillTranslationShowcase: React.FC = () => {
     },
     {
       id: 'cz-de',
-      name: 'German in Czech Republic',
+      name: t('testScenarios.deCZ.name'),
       language: 'de',
       jurisdiction: 'CZ',
       description: 'German speaker (expat/business) in Czech Republic',
@@ -61,15 +61,15 @@ const WillTranslationShowcase: React.FC = () => {
     // Slovakia scenarios
     {
       id: 'sk-sk',
-      name: 'Slovak in Slovakia',
+      name: t('testScenarios.skSK.name'),
       language: 'sk',
       jurisdiction: 'SK',
-      description: 'Native Slovak speaker creating will under Slovak law',
+      description: t('testScenarios.skSK.description'),
       expectedFile: 'sk_SK.json'
     },
     {
       id: 'sk-cs',
-      name: 'Czech in Slovakia',
+      name: t('testScenarios.csSK.name'),
       language: 'cs',
       jurisdiction: 'SK',
       description: 'Czech speaker living in Slovakia',
