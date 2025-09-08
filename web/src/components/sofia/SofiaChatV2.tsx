@@ -10,6 +10,7 @@ import { useSofiaStore } from '@/stores/sofiaStore';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from '@/i18n/useTranslation';
 
 import { getSofiaMemory } from '@/lib/sofia-memory';
 import {
@@ -29,12 +30,15 @@ import {
 import SofiaActionButtons from './SofiaActionButtons';
 
 // Smart contextual suggestions based on current page
-const getContextualSuggestions = (currentPage: string): ActionButton[] => {
+const getContextualSuggestions = (
+  currentPage: string,
+  t: (key: string) => string
+): ActionButton[] => {
   const suggestions: Record<string, ActionButton[]> = {
     dashboard: [
       {
         id: 'suggest_next_step',
-        text: 'Suggest my next step',
+        text: t('sofia.suggestions.dashboard.suggestNextStep'),
         icon: 'arrowRight',
         category: 'ui_action',
         cost: 'free',
@@ -42,14 +46,14 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
       },
       {
         id: 'faq_security',
-        text: 'How secure is my data?',
+        text: t('sofia.suggestions.dashboard.howSecureData'),
         icon: 'shield',
         category: 'ai_query',
         cost: 'low_cost',
       },
       {
         id: 'getting_started',
-        text: 'How do I get started?',
+        text: t('sofia.suggestions.dashboard.gettingStarted'),
         icon: 'help',
         category: 'ai_query',
         cost: 'low_cost',
@@ -58,7 +62,7 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
     vault: [
       {
         id: 'trigger_upload',
-        text: 'Help me add documents',
+        text: t('sofia.suggestions.vault.helpAddDocuments'),
         icon: 'upload',
         category: 'ui_action',
         cost: 'free',
@@ -66,14 +70,14 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
       },
       {
         id: 'faq_documents',
-        text: 'What documents should I upload?',
+        text: t('sofia.suggestions.vault.whatDocumentsUpload'),
         icon: 'help',
         category: 'ai_query',
         cost: 'low_cost',
       },
       {
         id: 'upload_help',
-        text: 'How do I organize my files?',
+        text: t('sofia.suggestions.vault.organizeFiles'),
         icon: 'info',
         category: 'ai_query',
         cost: 'low_cost',
@@ -82,21 +86,21 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
     guardians: [
       {
         id: 'add_guardian_help',
-        text: 'How do I add a guardian?',
+        text: t('sofia.suggestions.guardians.howAddGuardian'),
         icon: 'help',
         category: 'ai_query',
         cost: 'low_cost',
       },
       {
         id: 'faq_guardians',
-        text: 'What are guardians?',
+        text: t('sofia.suggestions.guardians.whatAreGuardians'),
         icon: 'info',
         category: 'ai_query',
         cost: 'low_cost',
       },
       {
         id: 'navigate_vault',
-        text: 'Show me my documents',
+        text: t('sofia.suggestions.guardians.showDocuments'),
         icon: 'vault',
         category: 'navigation',
         cost: 'free',
@@ -106,23 +110,23 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
     legacy: [
       {
         id: 'generate_legacy_letter',
-        text: 'Help me write a personal message',
+        text: t('sofia.suggestions.legacy.writePersonalMessage'),
         icon: 'heart',
         category: 'premium_feature',
         cost: 'premium',
         requiresConfirmation: true,
-        description: 'Create a heartfelt message for your loved ones',
+        description: t('sofia.suggestions.legacy.createHeartfeltMessage'),
       },
       {
         id: 'faq_documents',
-        text: 'What legal documents do I need?',
+        text: t('sofia.suggestions.legacy.whatLegalDocuments'),
         icon: 'help',
         category: 'ai_query',
         cost: 'low_cost',
       },
       {
         id: 'navigate_vault',
-        text: 'Review my documents',
+        text: t('sofia.suggestions.legacy.reviewDocuments'),
         icon: 'vault',
         category: 'navigation',
         cost: 'free',
@@ -152,6 +156,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   currentPage = 'dashboard',
   pendingAction = null,
 }) => {
+  const { t } = useTranslation();
   const { userId } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -222,7 +227,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
   // Move getDefaultWelcome to prevent dependency issues
   const getDefaultWelcome = useCallback((): string => {
-    if (!context) return 'Hello! I am Sofia and I am here to help you.';
+    if (!context) return t('sofia.chat.welcome');
 
     // Check if we have conversation memory
     if (memoryServiceRef.current) {
@@ -233,7 +238,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
     const name = context.userName || 'there';
     return `Hello, ${name}! I am Sofia and I am here to help you protect your family. How can I help you today?`;
-  }, [context]);
+  }, [context, t]);
 
   // Define initializeGuidedDialog early to prevent hoisting issues
   const initializeGuidedDialog = useCallback(async () => {
@@ -262,7 +267,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             ?.actions?.length ?? 0) > 0
             ? (result.payload as { actions?: ActionButton[]; message?: string })
                 .actions!
-            : getContextualSuggestions(currentPage);
+            : getContextualSuggestions(currentPage, t);
 
         const welcomeMessage: SofiaMessage = {
           id: crypto.randomUUID(),
@@ -288,8 +293,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       const errorMessage: SofiaMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content:
-          'I apologize, an error occurred during initialization. Please try again.',
+        content: t('sofia.chat.errorFallback'),
         timestamp: new Date(),
         responseType: 'error',
         metadata: { cost: 'free', source: 'predefined' },

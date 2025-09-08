@@ -10,6 +10,7 @@ import { AnimationSystem } from '@/lib/animation-system';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import type { PersonalityMode } from '@/lib/sofia-types';
 import { toast } from 'sonner';
+import { useTranslation } from '@/i18n/useTranslation';
 
 // Icons
 import {
@@ -70,6 +71,7 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
   // _onEmergencyTriggered, // Not used
   // _onHealthCheckMissed, // Not used
 }) => {
+  const { t } = useTranslation();
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   const personalityManager = usePersonalityManager();
@@ -179,15 +181,15 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
         // Show personality-aware success message
         const message =
           effectiveMode === 'empathetic'
-            ? "💚 Thank you for letting us know you're safe! Your family's protection is updated."
+            ? t('emergency.deadMansSwitch.messages.activityConfirmedEmpathetic')
             : effectiveMode === 'pragmatic'
-              ? '🛡️ Activity confirmed. Protection protocols updated.'
-              : '✅ Activity recorded. Your legacy protection is active.';
+              ? t('emergency.deadMansSwitch.messages.activityConfirmedPragmatic')
+              : t('emergency.deadMansSwitch.messages.activityConfirmedAdaptive');
 
         toast.success(message);
       } catch (err) {
         console.error('Error recording activity:', err);
-        toast.error('Failed to record activity. Please try again.');
+        toast.error(t('emergency.deadMansSwitch.messages.failedToRecordActivity'));
       }
     },
     [userId, createSupabaseClient, effectiveMode]
@@ -215,7 +217,7 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
         toast.success(`Emergency rule ${enabled ? 'enabled' : 'disabled'}`);
       } catch (err) {
         console.error('Error toggling rule:', err);
-        toast.error('Failed to update rule settings');
+        toast.error(t('emergency.deadMansSwitch.messages.failedToUpdateRule'));
       }
     },
     [createSupabaseClient]

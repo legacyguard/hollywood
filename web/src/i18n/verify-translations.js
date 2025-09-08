@@ -139,7 +139,7 @@ expectedCategories.forEach(category => {
 console.log('\n🧪 Test 4: File Structure');
 const expectedFiles = [
   'locale/en.json',
-  'useTranslation.ts',
+  'useTranslation.tsx',
   'README.md'
 ];
 

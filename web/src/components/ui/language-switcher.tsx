@@ -39,7 +39,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   variant = 'default',
   className = '',
 }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const currentLanguage =
@@ -55,9 +55,9 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       localStorage.setItem('legacyguard-language', languageCode);
 
       // Optional: Show success toast
-      console.log(`Language changed to ${languageCode}`);
+      console.log(t('languageSwitcher.languageChanged', { language: languageCode }));
     } catch (error) {
-      console.error('Failed to change language:', error);
+      console.error(t('languageSwitcher.failedToChange'), error);
     }
   };
 
@@ -155,7 +155,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       <DropdownMenuContent align='end' className='w-56'>
         <div className='p-2'>
           <div className='text-xs font-medium text-muted-foreground mb-2'>
-            Select Language
+            {t('languageSwitcher.selectLanguage')}
           </div>
           {SUPPORTED_LANGUAGES.map(language => (
             <DropdownMenuItem

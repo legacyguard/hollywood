@@ -194,6 +194,160 @@
     "more": "More",
     "ai": "AI"
   },
+  "languageSwitcher": {
+    "selectLanguage": "Select Language",
+    "changeLanguage": "Change Language",
+    "languageChanged": "Language changed to {{language}}",
+    "currentLanguage": "Current language: {{language}}",
+    "failedToChange": "Failed to change language"
+  },
+  "sofia": {
+    "chat": {
+      "placeholder": "Ask Sofia anything...",
+      "thinking": "Sofia is thinking...",
+      "noMessages": "Start a conversation with Sofia",
+      "errorFallback": "I apologize, an error occurred. Please try again.",
+      "welcome": "Hi! I'm Sofia, your AI assistant. How can I help you today?",
+      "loading": "Loading..."
+    },
+    "suggestions": {
+      "dashboard": {
+        "suggestNextStep": "Suggest my next step",
+        "howSecureData": "How secure is my data?",
+        "gettingStarted": "How do I get started?"
+      },
+      "vault": {
+        "helpAddDocuments": "Help me add documents",
+        "whatDocumentsUpload": "What documents should I upload?",
+        "organizeFiles": "How do I organize my files?"
+      },
+      "guardians": {
+        "howAddGuardian": "How do I add a guardian?",
+        "whatAreGuardians": "What are guardians?",
+        "showDocuments": "Show me my documents"
+      },
+      "legacy": {
+        "writePersonalMessage": "Help me write a personal message",
+        "whatLegalDocuments": "What legal documents do I need?",
+        "reviewDocuments": "Review my documents",
+        "createHeartfeltMessage": "Create a heartfelt message for your loved ones"
+      }
+    },
+    "actions": {
+      "send": "Send",
+      "clear": "Clear chat",
+      "minimize": "Minimize",
+      "maximize": "Maximize",
+      "close": "Close chat"
+    }
+  },
+  "professional": {
+    "review": {
+      "status": {
+        "requested": "Review Requested",
+        "assigned": "Attorney Assigned",
+        "inProgress": "Review In Progress",
+        "completed": "Review Complete",
+        "rejected": "Review Declined",
+        "processing": "Processing"
+      },
+      "messages": {
+        "matchingAttorney": "We're matching you with the perfect attorney for your document review.",
+        "attorneyAssigned": "{{name}} has been assigned and will begin review soon.",
+        "reviewInProgress": "{{name}} is conducting a thorough review of your document.",
+        "reviewComplete": "Your professional review is complete and results are available.",
+        "reviewDeclined": "This review was declined. We're finding an alternative attorney.",
+        "processing": "Your review is being processed."
+      },
+      "actions": {
+        "typicallyCompleted": "Typically completed within 2 hours",
+        "reviewWillBegin": "Review will begin within 24 hours",
+        "expectedCompletion": "Expected completion: {{date}}",
+        "viewDetailedReport": "View your detailed report and recommendations",
+        "newAssignment": "New assignment typically within 1 hour"
+      },
+      "steps": {
+        "reviewRequested": "Review Requested",
+        "professionalReviewRequested": "Professional review requested",
+        "attorneyAssigned": "Attorney Assigned",
+        "assignedTo": "Assigned to {{name}}",
+        "waitingForAssignment": "Waiting for assignment",
+        "reviewInProgress": "Review in Progress",
+        "attorneyConductingReview": "Attorney conducting review",
+        "reviewComplete": "Review Complete",
+        "reportsAvailable": "Reports and recommendations available"
+      },
+      "timeElapsed": {
+        "hoursAgo": "{{hours}} hours ago",
+        "dayAgo": "{{days}} day ago",
+        "daysAgo": "{{days}} days ago"
+      },
+      "buttons": {
+        "contactAttorney": "Contact Attorney",
+        "viewResults": "View Results",
+        "downloadReport": "Download Report",
+        "refresh": "Refresh Status"
+      }
+    }
+  },
+  "emergency": {
+    "contact": {
+      "title": "Emergency Contacts",
+      "addContact": "Add Emergency Contact",
+      "editContact": "Edit Emergency Contact",
+      "deleteContact": "Delete Emergency Contact",
+      "noContacts": "No emergency contacts added yet",
+      "priority": "Priority",
+      "relationship": "Relationship",
+      "canTriggerEmergency": "Can trigger emergency protocols",
+      "notificationPreferences": "Notification Preferences",
+      "email": "Email notifications",
+      "sms": "SMS notifications",
+      "push": "Push notifications"
+    },
+    "deadMansSwitch": {
+      "title": "Family Protection Monitor",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending",
+        "triggered": "Triggered"
+      },
+      "messages": {
+        "activityConfirmedEmpathetic": "💚 Thank you for letting us know you're safe! Your family's protection is updated.",
+        "activityConfirmedPragmatic": "🛡️ Activity confirmed. Protection protocols updated.",
+        "activityConfirmedAdaptive": "✅ Activity recorded. Your legacy protection is active.",
+        "failedToRecordActivity": "Failed to record activity. Please try again.",
+        "failedToUpdateRule": "Failed to update rule settings"
+      },
+      "buttons": {
+        "confirmActivity": "I'm Safe - Reset Monitor",
+        "toggleRule": "Toggle Rule",
+        "testRule": "Test Rule"
+      }
+    }
+  },
+  "security": {
+    "dashboard": {
+      "title": "Security Dashboard",
+      "securityScore": "Security Score",
+      "auditLogs": "Audit Logs",
+      "activeSessions": "Active Sessions",
+      "keyRotation": "Key Rotation",
+      "factors": {
+        "encryptionEnabled": "Encryption Enabled",
+        "twoFactorEnabled": "Two-Factor Authentication",
+        "backupRecent": "Recent Backup",
+        "recoverySetup": "Recovery Setup",
+        "passwordStrength": "Password Strength"
+      },
+      "buttons": {
+        "rotateKeys": "Rotate Keys",
+        "viewDetails": "View Details",
+        "refresh": "Refresh"
+      }
+    }
+  },
   "forms": {
     "validation": {
       "required": "This field is required",

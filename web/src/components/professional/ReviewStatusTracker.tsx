@@ -5,6 +5,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@/i18n/useTranslation';
 import {
   AlertTriangle,
   Calendar,
@@ -61,6 +62,7 @@ export function ReviewStatusTracker({
   onDownloadReport,
   className,
 }: ReviewStatusTrackerProps) {
+  const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState('');
 
@@ -86,10 +88,14 @@ export function ReviewStatusTracker({
       );
 
       if (diffInHours < 24) {
-        setTimeElapsed(`${diffInHours} hours ago`);
+        setTimeElapsed(t('professional.review.timeElapsed.hoursAgo', { hours: diffInHours }));
       } else {
         const days = Math.floor(diffInHours / 24);
-        setTimeElapsed(`${days} day${days === 1 ? '' : 's'} ago`);
+        setTimeElapsed(
+          days === 1
+            ? t('professional.review.timeElapsed.dayAgo', { days })
+            : t('professional.review.timeElapsed.daysAgo', { days })
+        );
       }
     };
 
@@ -119,41 +125,44 @@ export function ReviewStatusTracker({
     switch (review.status) {
       case 'requested':
         return {
-          title: 'Review Requested',
-          message:
-            "We're matching you with the perfect attorney for your document review.",
-          action: 'Typically completed within 2 hours',
+          title: t('professional.review.status.requested'),
+          message: t('professional.review.messages.matchingAttorney'),
+          action: t('professional.review.actions.typicallyCompleted'),
         };
       case 'assigned':
         return {
-          title: 'Attorney Assigned',
-          message: `${reviewer?.full_name || 'Your attorney'} has been assigned and will begin review soon.`,
-          action: 'Review will begin within 24 hours',
+          title: t('professional.review.status.assigned'),
+          message: t('professional.review.messages.attorneyAssigned', {
+            name: reviewer?.full_name || 'Your attorney'
+          }),
+          action: t('professional.review.actions.reviewWillBegin'),
         };
       case 'in_progress':
         return {
-          title: 'Review In Progress',
-          message: `${reviewer?.full_name || 'Your attorney'} is conducting a thorough review of your document.`,
-          action: `Expected completion: ${review.due_date ? new Date(review.due_date).toLocaleDateString() : '2-3 days'}`,
+          title: t('professional.review.status.inProgress'),
+          message: t('professional.review.messages.reviewInProgress', {
+            name: reviewer?.full_name || 'Your attorney'
+          }),
+          action: t('professional.review.actions.expectedCompletion', {
+            date: review.due_date ? new Date(review.due_date).toLocaleDateString() : '2-3 days'
+          }),
         };
       case 'completed':
         return {
-          title: 'Review Complete',
-          message:
-            'Your professional review is complete and results are available.',
-          action: 'View your detailed report and recommendations',
+          title: t('professional.review.status.completed'),
+          message: t('professional.review.messages.reviewComplete'),
+          action: t('professional.review.actions.viewDetailedReport'),
         };
       case 'rejected':
         return {
-          title: 'Review Declined',
-          message:
-            "This review was declined. We're finding an alternative attorney.",
-          action: 'New assignment typically within 1 hour',
+          title: t('professional.review.status.rejected'),
+          message: t('professional.review.messages.reviewDeclined'),
+          action: t('professional.review.actions.newAssignment'),
         };
       default:
         return {
-          title: 'Processing',
-          message: 'Your review is being processed.',
+          title: t('professional.review.status.processing'),
+          message: t('professional.review.messages.processing'),
           action: '',
         };
     }
@@ -163,26 +172,26 @@ export function ReviewStatusTracker({
     const steps: ReviewStep[] = [
       {
         id: 'requested',
-        title: 'Review Requested',
-        description: 'Professional review requested',
+        title: t('professional.review.steps.reviewRequested'),
+        description: t('professional.review.steps.professionalReviewRequested'),
         status: 'completed',
         timestamp: review.requested_at,
         icon: FileText,
       },
       {
         id: 'assigned',
-        title: 'Attorney Assigned',
+        title: t('professional.review.steps.attorneyAssigned'),
         description: reviewer
-          ? `Assigned to ${reviewer.full_name}`
-          : 'Waiting for assignment',
+          ? t('professional.review.steps.assignedTo', { name: reviewer.full_name })
+          : t('professional.review.steps.waitingForAssignment'),
         status: review.status === 'requested' ? 'pending' : 'completed',
         timestamp: review.assigned_at,
         icon: User,
       },
       {
         id: 'in_progress',
-        title: 'Review in Progress',
-        description: 'Attorney conducting review',
+        title: t('professional.review.steps.reviewInProgress'),
+        description: t('professional.review.steps.attorneyConductingReview'),
         status:
           review.status === 'completed'
             ? 'completed'
@@ -197,8 +206,8 @@ export function ReviewStatusTracker({
       },
       {
         id: 'completed',
-        title: 'Review Complete',
-        description: 'Results and recommendations available',
+        title: t('professional.review.steps.reviewComplete'),
+        description: t('professional.review.steps.reportsAvailable'),
         status: review.status === 'completed' ? 'completed' : 'pending',
         timestamp: review.completed_at,
         icon: CheckCircle,
