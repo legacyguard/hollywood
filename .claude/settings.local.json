@@ -51,7 +51,10 @@
       "Bash(timeout 30 npx tsc:*)",
       "Bash(for:*)",
       "Bash(do sed -i.bak 's/supabase\\.from(/\\(supabase as any\\).from(/g' \"$file\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(gh repo:*)",
+      "Bash(gh run list:*)",
+      "Bash(eslint:*)"
     ],
     "deny": [],
     "additionalDirectories": [

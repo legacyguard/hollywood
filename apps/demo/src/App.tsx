@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { formatDate } from '@legacyguard/logic';
 
 function App() {
