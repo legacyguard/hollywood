@@ -6,17 +6,12 @@
  * and background sync for the Progressive Web App.
  */
 
-const CACHE_NAME = 'legacyguard-v1.0.0';
+const CACHE_NAME = 'legacyguard-v1.0.1';
 const OFFLINE_URL = '/offline.html';
 
-// Resources to cache immediately
+// Resources to cache immediately - removed paths that might not exist
 const STATIC_CACHE_URLS = [
   '/',
-  '/dashboard',
-  '/vault',
-  '/analytics',
-  '/family-protection',
-  '/offline.html',
   '/manifest.json',
   '/shield-icon.svg',
   '/favicon-16x16.svg',
@@ -24,6 +19,10 @@ const STATIC_CACHE_URLS = [
 
 // Resources to cache on first use
 const RUNTIME_CACHE_URLS = [
+  '/dashboard',
+  '/vault',
+  '/analytics',
+  '/family-protection',
   '/intelligent-organizer',
   '/settings',
   '/family',
@@ -55,7 +54,14 @@ self.addEventListener('install', event => {
       .open(CACHE_NAME)
       .then(cache => {
         console.log('Service Worker: Caching static resources');
-        return cache.addAll(STATIC_CACHE_URLS);
+        // Cache each resource individually to avoid failing on missing resources
+        return Promise.allSettled(
+          STATIC_CACHE_URLS.map(url => 
+            cache.add(url).catch(err => {
+              console.warn(`Failed to cache ${url}:`, err);
+            })
+          )
+        );
       })
       .then(() => {
         console.log('Service Worker: Installation complete');

@@ -10,6 +10,7 @@ import {
   type IconMap,
   type IconName,
 } from '@/components/ui/icon-library';
+import { useTranslation } from '@/i18n/useTranslation';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
@@ -341,14 +342,17 @@ export const LoadingButton = React.forwardRef<
     isLoading: boolean;
     loadingText?: string;
   }
->(({ isLoading, loadingText = 'Loading...', ...props }, ref) => (
-  <EnhancedButton
-    ref={ref}
-    loading={isLoading}
-    loadingText={loadingText}
-    {...props}
-  />
-));
+>(({ isLoading, loadingText, ...props }, ref) => {
+  const { t } = useTranslation();
+  return (
+    <EnhancedButton
+      ref={ref}
+      loading={isLoading}
+      loadingText={loadingText || t('ui.enhancedButton.loading')}
+      {...props}
+    />
+  );
+});
 
 LoadingButton.displayName = 'LoadingButton';
 

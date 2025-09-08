@@ -15,6 +15,53 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
+    plugins: [
+      react({
+        babel: {
+          plugins: [
+            // Ensure React is properly transformed
+          ],
+        },
+      }),
+    ],
+    // Resolve configuration to fix React issues
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+        '@components': path.resolve(__dirname, './src/components'),
+        '@hooks': path.resolve(__dirname, './src/hooks'),
+        '@lib': path.resolve(__dirname, './src/lib'),
+        '@features': path.resolve(__dirname, './src/features'),
+        '@pages': path.resolve(__dirname, './src/pages'),
+        '@types': path.resolve(__dirname, './src/types'),
+        '@utils': path.resolve(__dirname, './src/lib/utils'),
+        '@config': path.resolve(__dirname, './src/config'),
+        '@integrations': path.resolve(__dirname, './src/integrations'),
+        // Ensure single React instance
+        'react': path.resolve(__dirname, '../node_modules/react'),
+        'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
+      },
+      dedupe: ['react', 'react-dom'],
+      // Extensions to resolve
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
+    },
+    // Optimize dependencies
+    optimizeDeps: {
+      include: [
+        'react',
+        'react-dom',
+        'react-router-dom',
+        '@clerk/clerk-react',
+        'framer-motion',
+        '@supabase/supabase-js',
+      ],
+      exclude: [],
+      esbuildOptions: {
+        target: 'esnext',
+      },
+      // Force optimization of these dependencies
+      force: true,
+    },
     // Server Configuration
     server: {
       // Use IPv6 host to listen on all network interfaces
@@ -74,7 +121,14 @@ export default defineConfig(({ mode }) => {
         maxParallelFileOps: 2,
         // Reduce memory usage by limiting concurrent processing
         experimentalCacheExpiry: 10,
+        // Ensure React is externalized properly
+        external: [],
         output: {
+          // Ensure proper global names for UMD builds
+          globals: {
+            react: 'React',
+            'react-dom': 'ReactDOM',
+          },
           // Manual chunking for better caching and performance
           manualChunks: id => {
             // Core React libraries
@@ -266,42 +320,6 @@ export default defineConfig(({ mode }) => {
       },
     },
 
-    // Plugin Configuration
-    plugins: [
-      // React plugin with SWC for fast compilation
-      react(),
-      // Sentry plugin for error reporting and source maps
-      mode === 'production' &&
-        env.VITE_SENTRY_DSN && {
-          name: 'sentry-upload',
-          writeBundle() {
-            // Sentry source map upload will be handled by CI/CD
-            console.log(
-              '📊 Build completed - ready for Sentry source map upload'
-            );
-          },
-        },
-    ].filter(Boolean),
-
-    // Module Resolution
-    resolve: {
-      // Aliases for cleaner imports
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-        '@components': path.resolve(__dirname, './src/components'),
-        '@hooks': path.resolve(__dirname, './src/hooks'),
-        '@lib': path.resolve(__dirname, './src/lib'),
-        '@features': path.resolve(__dirname, './src/features'),
-        '@pages': path.resolve(__dirname, './src/pages'),
-        '@types': path.resolve(__dirname, './src/types'),
-        '@utils': path.resolve(__dirname, './src/lib/utils'),
-        '@config': path.resolve(__dirname, './src/config'),
-        '@integrations': path.resolve(__dirname, './src/integrations'),
-      },
-      // Extensions to resolve
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
-    },
-
     // CSS Configuration
     css: {
       // CSS modules configuration
@@ -321,21 +339,6 @@ export default defineConfig(({ mode }) => {
         //   additionalData: `@import "@/styles/variables.scss";`
         // }
       },
-    },
-
-    // Optimization Configuration
-    optimizeDeps: {
-      // Pre-bundle these dependencies for faster cold start
-      include: [
-        'react',
-        'react-dom',
-        'react-router-dom',
-        '@clerk/clerk-react',
-        'framer-motion',
-        '@supabase/supabase-js',
-      ],
-      // Force optimization of these dependencies
-      force: true,
     },
 
     // Environment Variables

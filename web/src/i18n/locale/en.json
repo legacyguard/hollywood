@@ -35,7 +35,8 @@
       "help": "Help",
       "settings": "Settings",
       "logout": "Logout",
-      "login": "Login"
+      "login": "Login",
+      "add": "Add"
     },
     "labels": {
       "name": "Name",
@@ -316,6 +317,70 @@
     "personalBelongings": "Personal Belongings",
     "realEstate": "Real Estate",
     "financialAssets": "Financial Assets"
+  },
+  "ui": {
+    "enhancedButton": {
+      "loading": "Loading...",
+      "loadingDefault": "Please wait...",
+      "success": "Success",
+      "error": "Error",
+      "retry": "Try again",
+      "processing": "Processing...",
+      "saving": "Saving...",
+      "uploading": "Uploading...",
+      "downloading": "Downloading...",
+      "submitting": "Submitting..."
+    },
+    "enhancedInput": {
+      "characterCount": "{{current}}/{{max}} characters",
+      "charactersRemaining": "{{remaining}} characters remaining",
+      "required": "Required",
+      "optional": "Optional",
+      "loading": "Loading...",
+      "success": "Valid",
+      "error": "Invalid",
+      "warning": "Warning"
+    },
+    "dialog": {
+      "close": "Close",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "yes": "Yes",
+      "no": "No",
+      "ok": "OK",
+      "apply": "Apply",
+      "save": "Save Changes",
+      "discard": "Discard Changes",
+      "continue": "Continue",
+      "abort": "Abort"
+    },
+    "table": {
+      "noData": "No data available",
+      "loading": "Loading data...",
+      "empty": "No results found",
+      "rowsPerPage": "Rows per page",
+      "page": "Page",
+      "of": "of",
+      "first": "First",
+      "previous": "Previous",
+      "next": "Next",
+      "last": "Last",
+      "search": "Search...",
+      "filter": "Filter",
+      "sort": "Sort",
+      "actions": "Actions",
+      "selectAll": "Select all",
+      "selected": "{{count}} selected"
+    },
+    "toast": {
+      "success": "Success",
+      "error": "Error",
+      "warning": "Warning",
+      "info": "Information",
+      "close": "Close",
+      "undo": "Undo",
+      "retry": "Retry"
+    }
   },
   "security": {
     "title": "Security",
