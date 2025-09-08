@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    /* Language and Environment */
     "target": "ES2020",
     "lib": [
       "ES2020",
@@ -7,14 +8,15 @@
       "DOM.Iterable"
     ],
     "jsx": "react-jsx",
+    
+    /* Module Resolution */
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    
+    /* Type Checking */
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -27,39 +29,46 @@
     "noUnusedParameters": false,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true,
+    
+    /* Emit */
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noEmit": false,
+    
+    /* JavaScript Support */
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    
+    /* Interop Constraints */
     "isolatedModules": true,
-    "allowImportingTsExtensions": false,
-    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    
+    /* Skip Type Checking for Libraries */
+    "skipLibCheck": true,
+    
+    /* Projects */
+    "composite": true,
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
+    
+    /* Path Mapping */
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./web/src/*"
-      ],
-      "@shared/*": [
-        "./packages/shared/src/*"
-      ],
-      "@logic/*": [
-        "./packages/logic/src/*"
-      ],
-      "@ui/*": [
-        "./packages/ui/src/*"
-      ]
+      "@hollywood/shared": ["./packages/shared/src"],
+      "@hollywood/shared/*": ["./packages/shared/src/*"],
+      "@legacyguard/logic": ["./packages/logic/src"],
+      "@legacyguard/logic/*": ["./packages/logic/src/*"],
+      "@legacyguard/ui": ["./packages/ui/src"],
+      "@legacyguard/ui/*": ["./packages/ui/src/*"]
     }
   },
-  "include": [
-    "web/src/**/*",
-    "packages/*/src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "mobile",
-    "**/*.stories.*",
-    "**/*.test.*",
-    "**/*.spec.*",
-    "**/test/**",
-    "**/tests/**",
-    "**/examples/**"
+  "files": [],
+  "references": [
+    { "path": "./packages/shared" },
+    { "path": "./packages/logic" },
+    { "path": "./packages/ui" },
+    { "path": "./web" },
+    { "path": "./mobile" }
   ]
 }

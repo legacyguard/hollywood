@@ -1,14 +1,19 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "strict": true,
     "jsx": "react-native",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@legacyguard/ui": ["../packages/ui"],
-      "@legacyguard/logic": ["../packages/logic"],
-      "@hollywood/shared": ["../packages/shared"]
+      "@hollywood/shared": ["../packages/shared/src"],
+      "@hollywood/shared/*": ["../packages/shared/src/*"],
+      "@legacyguard/logic": ["../packages/logic/src"],
+      "@legacyguard/logic/*": ["../packages/logic/src/*"],
+      "@legacyguard/ui": ["../packages/ui/src"],
+      "@legacyguard/ui/*": ["../packages/ui/src/*"]
     },
     "noEmit": true,
     "esModuleInterop": true,
@@ -23,5 +28,10 @@
     "../components/**/*",
     "../hooks/**/*",
     "../lib/**/*"
+  ],
+  "references": [
+    { "path": "../packages/shared" },
+    { "path": "../packages/logic" },
+    { "path": "../packages/ui" }
   ]
 }

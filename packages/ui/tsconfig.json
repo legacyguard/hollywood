@@ -1,16 +1,14 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "composite": false,
-    "rootDir": "src",
-    "outDir": "dist",
-    "strict": false,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
-    "noEmit": false,
+    "composite": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "declaration": true,
     "declarationMap": true,
-    "emitDeclarationOnly": false
+    "sourceMap": true,
+    "noEmit": false
   },
   "include": [
     "src/**/*"
@@ -18,6 +16,12 @@
   "exclude": [
     "node_modules",
     "dist",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.stories.tsx"
+  ],
+  "references": [
+    { "path": "../shared" },
+    { "path": "../logic" }
   ]
 }

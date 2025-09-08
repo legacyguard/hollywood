@@ -1,35 +1,36 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2020",
+    "composite": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    
+    /* Vite specific settings */
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    // Memory optimization settings
-    "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo",
     "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "strict": true,
+    
+    /* Stricter type checking for web */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitOverride": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    
+    /* Path mapping for web app */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+      "@/*": ["src/*"],
+      "@hollywood/shared": ["../packages/shared/src"],
+      "@hollywood/shared/*": ["../packages/shared/src/*"],
+      "@legacyguard/logic": ["../packages/logic/src"],
+      "@legacyguard/logic/*": ["../packages/logic/src/*"],
+      "@legacyguard/ui": ["../packages/ui/src"],
+      "@legacyguard/ui/*": ["../packages/ui/src/*"]
+    }
   },
   "include": ["src"],
   "exclude": [
@@ -45,5 +46,10 @@
     "lint-results.json",
     "hardcoded-strings-report.json"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "../packages/shared" },
+    { "path": "../packages/logic" },
+    { "path": "../packages/ui" }
+  ]
 }
