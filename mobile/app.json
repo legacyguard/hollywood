@@ -59,11 +59,6 @@
       "expo-local-authentication",
       "expo-secure-store"
     ],
-    "extra": {
-      "eas": {
-        "projectId": "your-project-id"
-      }
-    },
     "owner": "legacyguard"
   }
 }

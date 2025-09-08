@@ -261,7 +261,32 @@
     "pendingInvitation": "Pending Invitation",
     "accepted": "Accepted",
     "declined": "Declined",
-    "resendInvitation": "Resend Invitation"
+    "resendInvitation": "Resend Invitation",
+    "roleAssignment": {
+      "currentStatus": "Current Status:",
+      "heir": "heir",
+      "executor": "executor", 
+      "guardian": "guardian",
+      "recommendations": {
+        "spouseHeir": "Spouse typically inherits a significant portion of the estate",
+        "childHeir": "Children are often primary beneficiaries",
+        "spouseExecutor": "Spouse is often the most trusted person to manage the estate",
+        "siblingGuardian": "Siblings often serve as guardians for minor children"
+      },
+      "contactInformation": "Contact Information",
+      "legacyMessage": "Legacy Message",
+      "guardianNotes": "Guardian Notes",
+      "inheritancePercentage": "Inheritance Percentage",
+      "roles": {
+        "heir": "Heir",
+        "executor": "Executor", 
+        "guardian": "Guardian",
+        "emergencyContact": "Emergency Contact"
+      },
+      "recommendations": "Recommendations",
+      "suggested": "Suggested",
+      "reason": "Reason"
+    }
   },
   "will": {
     "title": "Will",

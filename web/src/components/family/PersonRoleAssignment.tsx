@@ -22,6 +22,7 @@ import {
   X,
 } from 'lucide-react';
 import type { WillData } from '@/types/will';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface FamilyMember {
   contactInfo?: {
@@ -57,6 +58,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
   onRoleUpdate,
   willData,
 }) => {
+  const { t } = useTranslation();
   const [roles, setRoles] = useState<FamilyMember['roles']>({});
   const [heirPercentage, setHeirPercentage] = useState(0);
   const [_legacyMessage, _setLegacyMessage] = useState('');
@@ -120,16 +122,16 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
     // Inheritance recommendations
     if (person.relationship === 'spouse' && !roles.isHeir) {
       recommendations.push({
-        role: 'heir',
-        reason: 'Spouse typically inherits a significant portion of the estate',
+        role: t('family.roleAssignment.heir'),
+        reason: t('family.roleAssignment.recommendations.spouseHeir'),
         suggested: true,
       });
     }
 
     if (person.relationship === 'child' && !roles.isHeir) {
       recommendations.push({
-        role: 'heir',
-        reason: 'Children are often primary beneficiaries',
+        role: t('family.roleAssignment.heir'),
+        reason: t('family.roleAssignment.recommendations.childHeir'),
         suggested: true,
       });
     }
@@ -137,8 +139,8 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
     // Executor recommendations
     if (person.relationship === 'spouse' && !roles.isExecutor) {
       recommendations.push({
-        role: 'executor',
-        reason: 'Spouse is often the most trusted person to manage the estate',
+        role: t('family.roleAssignment.executor'),
+        reason: t('family.roleAssignment.recommendations.spouseExecutor'),
         suggested: true,
       });
     }
@@ -154,8 +156,8 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
 
       if (hasMinorChildren) {
         recommendations.push({
-          role: 'guardian',
-          reason: 'Siblings often serve as guardians for minor children',
+          role: t('family.roleAssignment.guardian'),
+          reason: t('family.roleAssignment.recommendations.siblingGuardian'),
           suggested: true,
         });
       }
@@ -182,7 +184,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
         <CardContent className='space-y-6'>
           {/* Current Status */}
           <div className='flex items-center space-x-2'>
-            <span className='text-sm font-medium'>Current Status:</span>
+            <span className='text-sm font-medium'>{t('family.roleAssignment.currentStatus')}</span>
             <Badge
               variant={
                 person.status === 'complete'
