@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: '20.19.0'
+  NODE_VERSION: '20.19.1'
 
 jobs:
   lint-and-test:
@@ -65,7 +65,17 @@ jobs:
           fi
 
       - name: Build web application
-        run: npm run build:web
+        run: |
+          echo "🔨 Starting production build..."
+          npm run build:web || {
+            echo "❌ Production build failed. Analyzing..."
+            echo "Node version: $(node --version)"
+            echo "Build environment: $NODE_ENV"
+            echo "Available environment variables:"
+            env | grep -E "^(VITE_|NODE_)" | head -10
+            exit 1
+          }
+          echo "✅ Production build completed successfully"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

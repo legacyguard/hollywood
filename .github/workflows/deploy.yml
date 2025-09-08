@@ -28,7 +28,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  NODE_VERSION: '20.19.0'
+  NODE_VERSION: '20.19.1'
 
 jobs:
   # Pre-deployment validation
@@ -127,22 +127,56 @@ jobs:
 
       - name: Build application
         run: |
-          npm run build:web
+          echo "🔨 Starting build process..."
+          npm run build:web || {
+            echo "❌ Build failed. Checking for common issues..."
+            echo "Node version: $(node --version)"
+            echo "NPM version: $(npm --version)"
+            echo "Available memory: $(free -h | grep Mem: | awk '{print $2}')"
+            echo "Disk space: $(df -h . | tail -1 | awk '{print $4}')"
+            exit 1
+          }
+          echo "✅ Build completed successfully"
         env:
           NODE_ENV: production
 
       - name: Optimize build
         run: |
-          # Additional optimization steps
-          echo "Build optimization completed"
+          echo "🔧 Running build optimization..."
+          
+          # Check for empty chunks and warn about them
+          echo "📊 Analyzing build artifacts..."
+          if [ -d web/dist/assets/js ]; then
+            EMPTY_CHUNKS=$(find web/dist/assets/js -name "*.js" -size -100c | wc -l)
+            if [ "$EMPTY_CHUNKS" -gt 0 ]; then
+              echo "⚠️  Found $EMPTY_CHUNKS potentially empty chunks:"
+              find web/dist/assets/js -name "*.js" -size -100c -exec echo "  - {}" \;
+            fi
+          fi
 
           # Show build stats
           echo "📦 Build Statistics:"
-          du -sh web/dist/ || echo "web/dist not found"
+          du -sh web/dist/ || echo "❌ web/dist not found"
           if [ -d web/dist/assets ]; then
-            find web/dist/assets -name "*.js" -exec echo "JS: {}" \; -exec du -h {} \;
-            find web/dist/assets -name "*.css" -exec echo "CSS: {}" \; -exec du -h {} \;
+            echo "JavaScript files:"
+            find web/dist/assets -name "*.js" -exec du -h {} \; | sort -hr | head -10
+            echo "CSS files:"
+            find web/dist/assets -name "*.css" -exec du -h {} \; | sort -hr | head -5
           fi
+          
+          # Validate critical files exist
+          echo "🔍 Validating critical build files..."
+          CRITICAL_FILES=("web/dist/index.html" "web/dist/assets")
+          for file in "${CRITICAL_FILES[@]}"; do
+            if [ -e "$file" ]; then
+              echo "✅ $file exists"
+            else
+              echo "❌ $file missing"
+              exit 1
+            fi
+          done
+          
+          echo "✅ Build optimization completed"
 
       - name: Create deployment package
         run: |

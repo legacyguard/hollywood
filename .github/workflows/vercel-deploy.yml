@@ -8,7 +8,7 @@ on:
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  NODE_VERSION: '20.19.0'
+  NODE_VERSION: '20.19.1'
 
 jobs:
   Deploy-Production:
@@ -31,7 +31,15 @@ jobs:
           npm ci --legacy-peer-deps
 
       - name: Build Project
-        run: npm run build:web
+        run: |
+          echo "🔨 Starting Vercel build..."
+          npm run build:web || {
+            echo "❌ Vercel build failed. Analyzing error..."
+            echo "Node version: $(node --version)"
+            echo "Build environment: $NODE_ENV"
+            exit 1
+          }
+          echo "✅ Vercel build completed successfully"
         env:
           NODE_ENV: production
           CI: true

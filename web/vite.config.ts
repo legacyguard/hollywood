@@ -20,8 +20,11 @@ export default defineConfig(({ mode }) => {
         babel: {
           plugins: [
             // Ensure React is properly transformed
+            '@babel/plugin-transform-react-jsx',
           ],
         },
+        // Ensure React is properly handled
+        jsxRuntime: 'automatic',
       }),
     ],
     // Resolve configuration to fix React issues
@@ -37,13 +40,17 @@ export default defineConfig(({ mode }) => {
         '@utils': path.resolve(__dirname, './src/lib/utils'),
         '@config': path.resolve(__dirname, './src/config'),
         '@integrations': path.resolve(__dirname, './src/integrations'),
-        // Ensure single React instance
-        'react': path.resolve(__dirname, '../node_modules/react'),
-        'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
+        // Ensure single React instance - use absolute paths
+        'react': path.resolve(__dirname, '../../node_modules/react'),
+        'react-dom': path.resolve(__dirname, '../../node_modules/react-dom'),
+        'react/jsx-runtime': path.resolve(__dirname, '../../node_modules/react/jsx-runtime'),
+        'react/jsx-dev-runtime': path.resolve(__dirname, '../../node_modules/react/jsx-dev-runtime'),
       },
-      dedupe: ['react', 'react-dom'],
+      dedupe: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
       // Extensions to resolve
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
+      // Ensure main fields are properly resolved
+      mainFields: ['module', 'jsnext:main', 'jsnext', 'main'],
     },
     // Optimize dependencies
     optimizeDeps: {
@@ -124,13 +131,20 @@ export default defineConfig(({ mode }) => {
         // Ensure React is externalized properly
         external: [],
         output: {
+          // Ensure proper sourcemap generation
+          sourcemapExcludeSources: false,
+          // Generate accurate sourcemaps
+          sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
+            // Fix relative paths in sourcemaps
+            return relativeSourcePath.replace(/^..\//, './');
+          },
           // Ensure proper global names for UMD builds
           globals: {
             react: 'React',
             'react-dom': 'ReactDOM',
           },
           // Manual chunking for better caching and performance
-          manualChunks: id => {
+          manualChunks: (id: string) => {
             // Core React libraries
             if (
               id.includes('react') ||
@@ -267,22 +281,85 @@ export default defineConfig(({ mode }) => {
               const chunks = id.split('node_modules/')[1];
               const packageName = chunks.split('/')[0];
 
-              // Group small packages together
+              // Group small/empty packages together to prevent empty chunks
               const smallPackages = [
                 'crypto-js',
                 'tweetnacl',
                 'buffer',
                 'process',
+                'cookie',
+                'detect-node-es',
+                'html-parse-stringify',
+                'micromark-util-encode',
+                'sentry-internal',
+                'set-cookie-parser',
+                'tiny-invariant',
+                'void-elements',
+                'web-vitals',
+                'bail',
+                'space-separated-tokens',
+                'comma-separated-tokens',
+                'is-plain-obj',
+                'mdast-util-to-string',
+                'style-to-object',
+                'inline-style-parser',
+                'trough',
+                'unist-util-is',
+                'unist-util-visit-parents',
+                'prop-types',
+                'tslib',
+                'extend',
+                'devlop',
+                'ms',
+                'dequal',
+                'vfile-message',
+                'attr-accept',
               ];
+              
               if (smallPackages.includes(packageName)) {
-                return 'crypto-vendor';
+                return 'utils-vendor';
+              }
+
+              // Group very small packages into a single chunk
+              const microPackages = [
+                'get-nonce',
+                'redux-thunk',
+                'remark-rehype',
+                'micromark-util-resolve-all',
+                'hast-util-whitespace',
+                'decode-named-character-reference',
+                'micromark-util-normalize-identifier',
+                'estree-util-is-identifier-name',
+                'micromark-util-html-tag-name',
+                'micromark-util-decode-string',
+                'micromark-util-character',
+                'micromark-util-sanitize-uri',
+                'unist-util-stringify-position',
+                'micromark-util-decode-numeric-character-reference',
+                'html-url-attributes',
+                'unist-util-position',
+                'micromark-factory-whitespace',
+                'trim-lines',
+                'micromark-factory-title',
+                'micromark-factory-label',
+                'micromark-factory-destination',
+                'micromark-factory-space',
+                'micromark-util-chunked',
+                'micromark-util-combine-extensions',
+                'micromark-util-subtokenize',
+                'micromark-util-symbol',
+                'internmap',
+              ];
+              
+              if (microPackages.includes(packageName)) {
+                return 'micro-utils-vendor';
               }
 
               return `vendor-${packageName.replace('@', '').replace('/', '-')}`;
             }
           },
           // Asset file naming
-          assetFileNames: assetInfo => {
+          assetFileNames: (assetInfo: any) => {
             const info = assetInfo.name?.split('.');
             const ext = info?.[info.length - 1];
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext || '')) {
