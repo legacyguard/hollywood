@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { expect, test } from '@playwright/test';
 import { generateTestUser, waitForClerk } from './helpers/auth';
 
@@ -298,7 +297,7 @@ test.describe('Will Generation Flow', () => {
       ) {
         // Document the wizard flow
         const stepCount = await wizardSteps.count();
-        // console.log(`Will wizard has ${stepCount} steps`);
+        // console.error(`Will wizard has ${stepCount} steps`);
       }
     }
   });
@@ -361,7 +360,7 @@ test.describe('MicroTask Engine', () => {
           '.task-content, [data-testid="task-content"]'
         );
         const taskText = await taskContent.textContent();
-        // console.log('Current task:', taskText);
+        // console.error('Current task:', taskText);
       }
     }
   });

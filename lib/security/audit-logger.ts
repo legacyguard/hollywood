@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Audit logging system for security events
  * Tracks all sensitive operations and security events

@@ -198,7 +198,7 @@ export function VaultScreenV2() {
     try {
       const docs = await DocumentService.getDocuments(user.id);
       setDocuments(docs);
-    } catch (error) {
+    } catch (_error) {
       console.error('Error loading documents:', error);
       Alert.alert('Error', 'Failed to load documents');
     } finally {
@@ -255,7 +255,7 @@ export function VaultScreenV2() {
             try {
               await DocumentService.deleteDocument(documentId);
               setDocuments(docs => docs.filter(d => d.id !== documentId));
-            } catch (error) {
+            } catch (_error) {
               Alert.alert('Error', 'Failed to delete document');
             }
           },

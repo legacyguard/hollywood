@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { Page } from '@playwright/test';
 import { setupClerkTestingToken } from '@clerk/testing/playwright';
 

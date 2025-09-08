@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { supabase } from '../supabase/client';
 
 export type SubscriptionPlan = 'essential' | 'family' | 'free' | 'premium';

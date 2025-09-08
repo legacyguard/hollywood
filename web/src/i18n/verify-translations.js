@@ -19,7 +19,7 @@ let translations;
 try {
   const translationsContent = fs.readFileSync(translationsPath, 'utf8');
   translations = JSON.parse(translationsContent);
-  console.log('✅ Successfully loaded English translations');
+  // console.log('✅ Successfully loaded English translations');
 } catch (error) {
   console.error('❌ Failed to load English translations:', error.message);
   process.exit(1);
@@ -48,7 +48,7 @@ function interpolate(text, params = {}) {
   });
 }
 
-console.log('\n📋 Running Translation Tests...\n');
+// console.log('\n📋 Running Translation Tests...\n');
 
 // Test 1: Basic key access
 const testKeys = [
@@ -64,20 +64,20 @@ const testKeys = [
 let passedTests = 0;
 let totalTests = 0;
 
-console.log('🧪 Test 1: Basic Key Access');
+// console.log('🧪 Test 1: Basic Key Access');
 testKeys.forEach(key => {
   totalTests++;
   const translation = getTranslation(key);
   if (translation) {
-    console.log(`  ✅ ${key} → "${translation}"`);
+    // console.log(`  ✅ ${key} → "${translation}"`);
     passedTests++;
   } else {
-    console.log(`  ❌ ${key} → undefined`);
+    // console.log(`  ❌ ${key} → undefined`);
   }
 });
 
 // Test 2: Interpolation
-console.log('\n🧪 Test 2: Interpolation');
+// console.log('\n🧪 Test 2: Interpolation');
 const interpolationTests = [
   {
     key: 'accessibility.screenReader.pageOf',
@@ -102,18 +102,18 @@ interpolationTests.forEach(test => {
   if (template) {
     const result = interpolate(template, test.params);
     if (result === test.expected) {
-      console.log(`  ✅ ${test.key} with params → "${result}"`);
+      // console.log(`  ✅ ${test.key} with params → "${result}"`);
       passedTests++;
     } else {
-      console.log(`  ❌ ${test.key} → Expected: "${test.expected}", Got: "${result}"`);
+      // console.log(`  ❌ ${test.key} → Expected: "${test.expected}", Got: "${result}"`);
     }
   } else {
-    console.log(`  ❌ ${test.key} → Template not found`);
+    // console.log(`  ❌ ${test.key} → Template not found`);
   }
 });
 
 // Test 3: Category completeness
-console.log('\n🧪 Test 3: Category Completeness');
+// console.log('\n🧪 Test 3: Category Completeness');
 const expectedCategories = [
   'common',
   'accessibility', 
@@ -128,15 +128,15 @@ const expectedCategories = [
 expectedCategories.forEach(category => {
   totalTests++;
   if (translations[category]) {
-    console.log(`  ✅ Category "${category}" exists`);
+    // console.log(`  ✅ Category "${category}" exists`);
     passedTests++;
   } else {
-    console.log(`  ❌ Category "${category}" missing`);
+    // console.log(`  ❌ Category "${category}" missing`);
   }
 });
 
 // Test 4: File structure
-console.log('\n🧪 Test 4: File Structure');
+// console.log('\n🧪 Test 4: File Structure');
 const expectedFiles = [
   'locale/en.json',
   'useTranslation.tsx',
@@ -147,24 +147,24 @@ expectedFiles.forEach(file => {
   totalTests++;
   const filePath = path.join(__dirname, file);
   if (fs.existsSync(filePath)) {
-    console.log(`  ✅ File "${file}" exists`);
+    // console.log(`  ✅ File "${file}" exists`);
     passedTests++;
   } else {
-    console.log(`  ❌ File "${file}" missing`);
+    // console.log(`  ❌ File "${file}" missing`);
   }
 });
 
 // Summary
-console.log('\n📊 Test Summary');
-console.log(`Total Tests: ${totalTests}`);
-console.log(`Passed: ${passedTests}`);
-console.log(`Failed: ${totalTests - passedTests}`);
-console.log(`Success Rate: ${((passedTests / totalTests) * 100).toFixed(1)}%`);
+// console.log('\n📊 Test Summary');
+// console.log(`Total Tests: ${totalTests}`);
+// console.log(`Passed: ${passedTests}`);
+// console.log(`Failed: ${totalTests - passedTests}`);
+// console.log(`Success Rate: ${((passedTests / totalTests) * 100).toFixed(1)}%`);
 
 if (passedTests === totalTests) {
-  console.log('\n🎉 All tests passed! Translation system is working correctly.');
+  // console.log('\n🎉 All tests passed! Translation system is working correctly.');
   process.exit(0);
 } else {
-  console.log('\n❌ Some tests failed. Please check the implementation.');
+  // console.log('\n❌ Some tests failed. Please check the implementation.');
   process.exit(1);
 }

@@ -200,7 +200,7 @@ export class EmergencyAccessService {
       this.setupRealtimeSubscriptions();
 
       console.log('Emergency access service initialized');
-    } catch (error) {
+    } catch (_error) {
       console.error('Emergency access service initialization failed:', error);
       captureError(error instanceof Error ? error : new Error(String(error)), {
         tags: { source: 'emergency_access_init' },
@@ -238,7 +238,7 @@ export class EmergencyAccessService {
 
       console.log('Emergency protocol created:', protocol.id);
       return protocol as any;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to create emergency protocol:', error);
       throw error;
     }
@@ -271,7 +271,7 @@ export class EmergencyAccessService {
 
       console.log('Emergency contact added:', (contact as any)?.email);
       return contact as any;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to add emergency contact:', error);
       throw error;
     }
@@ -352,7 +352,7 @@ export class EmergencyAccessService {
 
       console.log('Emergency access triggered:', emergency.id);
       return emergency as any;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to trigger emergency access:', error);
       throw error;
     }
@@ -390,7 +390,7 @@ export class EmergencyAccessService {
         evidence: data.evidence,
         expedite: data.urgency === 'high' || data.urgency === 'critical',
       });
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to request emergency access:', error);
       throw error;
     }
@@ -458,7 +458,7 @@ export class EmergencyAccessService {
 
         return false;
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to verify emergency access:', error);
       throw error;
     }
@@ -477,7 +477,7 @@ export class EmergencyAccessService {
 
       if (error) throw error;
       return (contacts as any) || [];
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get emergency contacts:', error);
       return [];
     }
@@ -501,7 +501,7 @@ export class EmergencyAccessService {
 
       if (error && error.code !== 'PGRST116') throw error;
       return (emergency as any) || null;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get emergency access status:', error);
       return null;
     }
@@ -535,7 +535,7 @@ export class EmergencyAccessService {
       await this.notifyEmergencyResolution(emergency as any, reason);
 
       console.log('Emergency access resolved:', emergencyId);
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to resolve emergency access:', error);
       throw error;
     }
@@ -561,7 +561,7 @@ export class EmergencyAccessService {
       emergencies?.forEach((emergency: any) => {
         this.activeEmergencies.set(emergency.user_id, emergency);
       });
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to load active emergencies:', error);
     }
   }
@@ -604,7 +604,7 @@ export class EmergencyAccessService {
           });
         }
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to check inactivity triggers:', error);
     }
   }
@@ -644,7 +644,7 @@ export class EmergencyAccessService {
 
       if (error && error.code !== 'PGRST116') throw error;
       return (protocol as any) || null;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -746,7 +746,7 @@ export class EmergencyAccessService {
 
       if (error) throw error;
       return documents?.map(doc => doc.id) || [];
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get accessible documents:', error);
       return [];
     }
@@ -781,7 +781,7 @@ export class EmergencyAccessService {
       for (const contact of targetContacts) {
         await this.sendEmergencyNotification(emergency, contact, step);
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to execute notification step:', error);
     }
   }
@@ -852,7 +852,7 @@ export class EmergencyAccessService {
         .single();
 
       return !error && !!contact;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -962,7 +962,7 @@ export class EmergencyAccessService {
     this.emergencyListeners.forEach(listener => {
       try {
         listener(emergency);
-      } catch (error) {
+      } catch (_error) {
         console.error('Emergency listener error:', error);
       }
     });
@@ -1018,7 +1018,7 @@ export class EmergencyAccessService {
 
       console.log('Emergency protocol tested:', protocolId);
       return true;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to test emergency protocol:', error);
       return false;
     }

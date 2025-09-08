@@ -137,7 +137,7 @@ export const encryptionServiceV2 = {
   lockKeys: async (): Promise<void> => {
     // For now, this is a no-op since keys are stored in localStorage
     // In a real implementation, this would clear session keys
-    console.log('Keys locked');
+    // console.log('Keys locked');
   },
 
   migrateFromLocalStorage: async (

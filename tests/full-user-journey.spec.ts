@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { expect, type Page, test } from '@playwright/test';
 import { generateTestUser, waitForClerk } from './helpers/auth';
 import * as path from 'path';
@@ -36,7 +35,7 @@ test.describe('🎭 Guardian of Memories - Complete User Journey', () => {
   });
 
   test('Act 1, Scene 1: Registration - Beginning the Journey', async () => {
-    // console.log('🚀 Starting Guardian Journey with user:', testUser.email);
+    // console.error('🚀 Starting Guardian Journey with user:', testUser.email);
 
     // Navigate to sign-up page
     await page.goto('/sign-up');
@@ -107,7 +106,7 @@ test.describe('🎭 Guardian of Memories - Complete User Journey', () => {
       timeout: 15000,
     });
 
-    // console.log('✅ Registration completed, proceeding to onboarding');
+    // console.error('✅ Registration completed, proceeding to onboarding');
   });
 
   test('Act 1, Scene 2: The Promise of Calm - Onboarding Introduction', async () => {
@@ -138,7 +137,7 @@ test.describe('🎭 Guardian of Memories - Complete User Journey', () => {
       await startButton.click();
     }
 
-    // console.log('✅ Onboarding introduction completed');
+    // console.error('✅ Onboarding introduction completed');
   });
 
   test('Act 1, Scene 3: The Box of Certainty - Emotional Prompt', async () => {
@@ -179,7 +178,7 @@ Access to our financial accounts`;
       await page.waitForTimeout(2000); // Wait for animation
     }
 
-    // console.log('✅ Box of Certainty completed');
+    // console.error('✅ Box of Certainty completed');
   });
 
   test('Act 1, Scene 4: The Key of Trust - Trusted Person', async () => {
@@ -218,7 +217,7 @@ Access to our financial accounts`;
       .first();
     await continueButton.click();
 
-    // console.log('✅ Key of Trust completed');
+    // console.error('✅ Key of Trust completed');
   });
 
   test('Act 1, Scene 5: Preparing the Path - Loading & Redirect', async () => {
@@ -255,10 +254,10 @@ Access to our financial accounts`;
     });
 
     if (isOnboardingComplete) {
-      // console.log('✅ Onboarding metadata confirmed in Clerk');
+      // console.error('✅ Onboarding metadata confirmed in Clerk');
     }
 
-    // console.log('✅ Path prepared, redirected to dashboard');
+    // console.error('✅ Path prepared, redirected to dashboard');
   });
 
   test('Act 2, Scene 1: First Dashboard Interaction - 5-Minute Challenge', async () => {
@@ -301,7 +300,7 @@ Access to our financial accounts`;
       await page.waitForURL(/\/vault|\/documents|\/papers/, { timeout: 10000 });
     }
 
-    // console.log('✅ First dashboard challenge accepted');
+    // console.error('✅ First dashboard challenge accepted');
   });
 
   test('Act 2, Scene 2: Document Upload - First Mosaic Stone', async () => {
@@ -388,7 +387,7 @@ Access to our financial accounts`;
       });
     }
 
-    // console.log('✅ First document uploaded - mosaic stone placed');
+    // console.error('✅ First document uploaded - mosaic stone placed');
   });
 
   test('Act 2, Scene 3: Path of Peace - Milestone Unlocked', async () => {
@@ -413,7 +412,7 @@ Access to our financial accounts`;
       fullPage: true,
     });
 
-    // console.log('✅ Foundation milestone unlocked, next challenge available');
+    // console.error('✅ Foundation milestone unlocked, next challenge available');
   });
 
   test('Act 2, Scene 4: Adding a Guardian - Circle of Trust', async () => {
@@ -514,7 +513,7 @@ Access to our financial accounts`;
       fullPage: true,
     });
 
-    // console.log('✅ Guardian added to Circle of Trust');
+    // console.error('✅ Guardian added to Circle of Trust');
   });
 
   test('Act 3: Journey Complete - Sign Out', async () => {
@@ -555,8 +554,8 @@ Access to our financial accounts`;
       fullPage: true,
     });
 
-    // console.log('✅ User successfully signed out');
-    // console.log('🎉 Guardian Journey Complete! User:', testUser.email);
+    // console.error('✅ User successfully signed out');
+    // console.error('🎉 Guardian Journey Complete! User:', testUser.email);
   });
 });
 
@@ -578,7 +577,7 @@ test.describe('🔄 Returning Guardian Experience', () => {
     // - Document count
     // - Guardian count
 
-    // console.log('✅ Returning user experience verified');
+    // console.error('✅ Returning user experience verified');
   });
 });
 

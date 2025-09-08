@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 // Export all services
 export * from './services/auth.service';
 export { DocumentService } from './services/documentService';

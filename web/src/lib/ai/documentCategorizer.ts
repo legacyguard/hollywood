@@ -130,7 +130,7 @@ export class DocumentCategorizer {
       this.updateStatistics(performance.now() - startTime);
 
       return finalSuggestion;
-    } catch (error) {
+    } catch (_error) {
       throw new Error(
         `Document categorization failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -267,7 +267,7 @@ export class DocumentCategorizer {
 
         // Update rules based on training feedback
         this.updateRulesFromFeedback(sample, suggestion);
-      } catch (error) {
+      } catch (_error) {
         console.warn(`Training error on document: ${error}`);
       }
     }
@@ -762,7 +762,7 @@ export class DocumentCategorizer {
       const regex = new RegExp(pattern, 'gi');
       const matches = text.match(regex);
       return matches ? Math.min(matches.length, 5) : 0;
-    } catch (error) {
+    } catch (_error) {
       console.warn(`Invalid regex pattern: ${pattern}`);
       return 0;
     }

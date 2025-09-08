@@ -128,7 +128,7 @@ export const WillScreen = () => {
       // TODO: Save to localStorage or API
       console.log('Saving will progress:', willData);
       Alert.alert('Progress Saved', 'Your will progress has been saved.');
-    } catch (error) {
+    } catch (_error) {
       Alert.alert('Error', 'Failed to save progress. Please try again.');
     }
   };
@@ -157,7 +157,7 @@ export const WillScreen = () => {
       // TODO: Generate will document
       console.log('Generating will with data:', willData);
       Alert.alert('Success', 'Your will has been generated successfully!');
-    } catch (error) {
+    } catch (_error) {
       Alert.alert('Error', 'Failed to generate will. Please try again.');
     } finally {
       setIsLoading(false);

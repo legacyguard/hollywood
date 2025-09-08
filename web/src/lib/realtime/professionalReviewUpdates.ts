@@ -78,7 +78,7 @@ class ProfessionalReviewRealtimeService {
         .subscribe();
 
       console.log(`Subscribed to real-time reviews for user: ${userId}`);
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to subscribe to review updates:', error);
     }
   }
@@ -149,7 +149,7 @@ class ProfessionalReviewRealtimeService {
           this.showToastNotification(updateData);
         }
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error handling review update:', error);
     }
   }
@@ -181,7 +181,7 @@ class ProfessionalReviewRealtimeService {
           }
         });
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error handling professional review table update:', error);
     }
   }
@@ -267,7 +267,7 @@ class ProfessionalReviewRealtimeService {
         // Store notification in database (if notifications table exists)
         this.storeNotification(notification, newRecord.user_id);
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error creating notification:', error);
     }
   }
@@ -327,7 +327,7 @@ class ProfessionalReviewRealtimeService {
           duration: 5000,
         });
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error showing toast notification:', error);
     }
   }
@@ -355,7 +355,7 @@ class ProfessionalReviewRealtimeService {
       if (error && !error.message.includes('does not exist')) {
         console.error('Failed to store notification:', error);
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore errors if notifications table doesn't exist
       console.warn('Notifications table not available, skipping storage');
     }
@@ -374,7 +374,7 @@ class ProfessionalReviewRealtimeService {
         event: 'review_update',
         payload: data,
       });
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to broadcast update to user:', error);
     }
   }
@@ -405,7 +405,7 @@ class ProfessionalReviewRealtimeService {
       if (error) {
         console.error('Failed to update review progress:', error);
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error updating review progress:', error);
     }
   }
@@ -435,7 +435,7 @@ class ProfessionalReviewRealtimeService {
         console.error('Failed to complete review:', error);
         throw error;
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error completing review:', error);
       throw error;
     }

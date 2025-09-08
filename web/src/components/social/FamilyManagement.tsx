@@ -131,7 +131,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
           setSelectedFamily(familyGroups[0] || null);
         }
       }
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: t('messages.loadFamiliesError'),
@@ -150,7 +150,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
         selectedFamily.id
       );
       setMembers(familyMembers);
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: t('messages.loadMembersError'),
@@ -167,7 +167,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
         selectedFamily.id
       );
       setActivities(familyActivities);
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: t('messages.loadActivitiesError'),
@@ -340,7 +340,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
                       title: 'Success',
                       description: t('messages.memberRemovedSuccess'),
                     });
-                  } catch (error) {
+                  } catch (_error) {
                     toast({
                       title: 'Error',
                       description: t('messages.memberRemoveError'),
@@ -705,7 +705,7 @@ function InviteMemberDialog({
       setRole('collaborator');
       setRelationship('');
       setMessage('');
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: t('messages.invitationError'),
@@ -832,7 +832,7 @@ function CreateFamilyDialog({
       // Reset form
       setName('');
       setDescription('');
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: t('messages.familyCreateError'),

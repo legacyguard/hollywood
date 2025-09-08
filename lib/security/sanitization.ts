@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Security utilities for input sanitization and validation
  * Prevents XSS, SQL injection, and other injection attacks

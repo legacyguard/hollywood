@@ -1,34 +1,33 @@
-// @ts-nocheck
 #!/usr/bin/env tsx
 import fs from 'fs';
 import path from 'path';
 import { glob } from 'glob';
 
 interface TranslationModule {
-  namespace: string;
-  keys: Record<string, any>;
-  lineCount: number;
   dependencies: string[];
+  keys: Record<string, any>;
   language: string;
+  lineCount: number;
+  namespace: string;
   path: string;
 }
 
 interface TranslationReport {
+  issues: TranslationIssue[];
+  languages: string[];
+  namespaces: string[];
+  suggestions: string[];
   totalFiles: number;
   totalKeys: number;
   totalLines: number;
-  languages: string[];
-  namespaces: string[];
-  issues: TranslationIssue[];
-  suggestions: string[];
 }
 
 interface TranslationIssue {
-  type: 'missing' | 'duplicate' | 'unused' | 'size' | 'consistency';
-  severity: 'error' | 'warning' | 'info';
-  message: string;
   file?: string;
   key?: string;
+  message: string;
+  severity: 'error' | 'info' | 'warning';
+  type: 'consistency' | 'duplicate' | 'missing' | 'size' | 'unused';
 }
 
 class TranslationOrganizer {
@@ -278,9 +277,9 @@ class TranslationOrganizer {
 
     // Group keys into suggested files
     const suggestions: Array<{
+      estimatedLines: number;
       file: string;
       keys: string[];
-      estimatedLines: number;
     }> = [];
     let currentSuggestion = { file: '', keys: [], estimatedLines: 0 };
 

@@ -67,7 +67,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
         }
 
         return keyBytes;
-      } catch (error) {
+      } catch (_error) {
         // Failed to get/create encryption key
         throw new Error('Failed to initialize encryption');
       }
@@ -95,7 +95,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
           documentCount: vaultStats.documentCount,
           totalSize: vaultStats.totalSize,
         });
-      } catch (error) {
+      } catch (_error) {
         // Failed to initialize vault
         setError(
           error instanceof Error ? error.message : 'Failed to open vault'
@@ -132,7 +132,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
         documentCount: vaultStats.documentCount,
         totalSize: vaultStats.totalSize,
       });
-    } catch (error) {
+    } catch (_error) {
       if (__DEV__) console.error('Failed to load documents:', error);
       setError('Failed to load documents');
     }
@@ -151,7 +151,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
         await OfflineVaultService.addDocument(doc);
         await loadDocuments(); // Reload to update list
         if (__DEV__) console.log(`Document ${doc.fileName} added successfully`);
-      } catch (error) {
+      } catch (_error) {
         if (__DEV__) console.error('Failed to add document:', error);
         throw error;
       }
@@ -174,7 +174,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
           await loadDocuments(); // Reload to update list
           if (__DEV__) console.log(`Document ${id} removed successfully`);
         }
-      } catch (error) {
+      } catch (_error) {
         if (__DEV__) console.error('Failed to remove document:', error);
         throw error;
       }
@@ -193,7 +193,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
 
       try {
         return await OfflineVaultService.getDocument(id);
-      } catch (error) {
+      } catch (_error) {
         if (__DEV__) console.error('Failed to get document:', error);
         throw error;
       }
@@ -213,7 +213,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
       await OfflineVaultService.clearAll();
       await loadDocuments(); // Reload to update list
       if (__DEV__) console.log('Vault cleared successfully');
-    } catch (error) {
+    } catch (_error) {
       if (__DEV__) console.error('Failed to clear vault:', error);
       throw error;
     }
@@ -234,7 +234,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
       // 3. Download new/updated documents
       // 4. Upload local-only documents
       if (__DEV__) console.log('Cloud sync not yet implemented');
-    } catch (error) {
+    } catch (_error) {
       if (__DEV__) console.error('Failed to sync with cloud:', error);
       throw error;
     }

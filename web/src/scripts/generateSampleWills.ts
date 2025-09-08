@@ -317,7 +317,7 @@ const combinations: Array<{
  * Generate sample wills for all combinations
  */
 async function generateSampleWills() {
-  console.log('🚀 Starting sample will generation for all language-jurisdiction combinations...\n');
+  // console.log('🚀 Starting sample will generation for all language-jurisdiction combinations...\n');
 
   const testResultsDir = path.join(process.cwd(), '../../test-results');
 
@@ -326,7 +326,7 @@ async function generateSampleWills() {
     await fs.access(testResultsDir);
   } catch {
     await fs.mkdir(testResultsDir, { recursive: true });
-    console.log(`📁 Created test-results directory: ${testResultsDir}`);
+    // console.log(`📁 Created test-results directory: ${testResultsDir}`);
   }
 
   let successCount = 0;
@@ -334,7 +334,7 @@ async function generateSampleWills() {
   const results: string[] = [];
 
   for (const combination of combinations) {
-    console.log(`\n📝 Generating will for ${combination.label} (${combination.language}-${combination.jurisdiction})...`);
+    // console.log(`\n📝 Generating will for ${combination.label} (${combination.language}-${combination.jurisdiction})...`);
 
     const exportOptions: ExportOptions = {
       format: 'pdf',
@@ -352,7 +352,7 @@ async function generateSampleWills() {
       const pdfPath = path.join(testResultsDir, pdfFilename);
 
       await fs.writeFile(pdfPath, pdfBuffer);
-      console.log(`✅ PDF saved: ${pdfFilename}`);
+      // console.log(`✅ PDF saved: ${pdfFilename}`);
 
       // Generate DOCX
       const docxOptions: ExportOptions = { ...exportOptions, format: 'docx' };
@@ -362,7 +362,7 @@ async function generateSampleWills() {
       const docxPath = path.join(testResultsDir, docxFilename);
 
       await fs.writeFile(docxPath, docxBuffer);
-      console.log(`✅ DOCX saved: ${docxFilename}`);
+      // console.log(`✅ DOCX saved: ${docxFilename}`);
 
       // Generate Markdown
       const mdOptions: ExportOptions = { ...exportOptions, format: 'markdown' };
@@ -372,7 +372,7 @@ async function generateSampleWills() {
       const mdPath = path.join(testResultsDir, mdFilename);
 
       await fs.writeFile(mdPath, mdBuffer);
-      console.log(`✅ MD saved: ${mdFilename}`);
+      // console.log(`✅ MD saved: ${mdFilename}`);
 
       successCount++;
       results.push(`✅ ${combination.label}: PDF, DOCX, MD generated successfully`);
@@ -479,27 +479,27 @@ ${results.map(result => `- ${result}`).join('\n')}
   await fs.writeFile(readmePath, readmeContent);
 
   // Final summary
-  console.log('\n' + '='.repeat(80));
-  console.log('📋 GENERATION COMPLETE');
-  console.log('='.repeat(80));
-  console.log(`✅ Successfully generated: ${successCount}/${combinations.length} combinations`);
-  console.log(`❌ Failed generations: ${errorCount}`);
-  console.log(`📁 Files saved to: ${testResultsDir}`);
-  console.log(`📊 Summary report: ${reportPath}`);
-  console.log(`📖 Documentation: ${readmePath}`);
+  // console.log('\n' + '='.repeat(80));
+  // console.log('📋 GENERATION COMPLETE');
+  // console.log('='.repeat(80));
+  // console.log(`✅ Successfully generated: ${successCount}/${combinations.length} combinations`);
+  // console.log(`❌ Failed generations: ${errorCount}`);
+  // console.log(`📁 Files saved to: ${testResultsDir}`);
+  // console.log(`📊 Summary report: ${reportPath}`);
+  // console.log(`📖 Documentation: ${readmePath}`);
 
   if (errorCount === 0) {
-    console.log('\n🎉 All language-jurisdiction combinations generated successfully!');
+    // console.log('\n🎉 All language-jurisdiction combinations generated successfully!');
   } else {
-    console.log(`\n⚠️  ${errorCount} combinations failed. Check the error messages above.`);
+    // console.log(`\n⚠️  ${errorCount} combinations failed. Check the error messages above.`);
   }
 
-  console.log('\n🔍 Manual Testing Instructions:');
+  // console.log('\n🔍 Manual Testing Instructions:');
   summaryReport.testingInstructions.forEach((instruction, index) => {
-    console.log(`   ${index + 1}. ${instruction}`);
+    // console.log(`   ${index + 1}. ${instruction}`);
   });
 
-  console.log('\n✨ Export functionality is ready for production use!');
+  // console.log('\n✨ Export functionality is ready for production use!');
 }
 
 // Run the generator if this script is executed directly

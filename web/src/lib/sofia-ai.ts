@@ -141,7 +141,7 @@ class SofiaAI {
     }
 
     try {
-      console.log(
+      // console.log(
         'Calling Sofia AI API:',
         `${this.supabaseUrl}/functions/v1/sofia-ai`
       );
@@ -179,7 +179,7 @@ class SofiaAI {
       );
     } catch (error) {
       console.error('Error generating Sofia response:', error);
-      console.log('Falling back to mock response');
+      // console.log('Falling back to mock response');
       return this.getMockResponse(message, context);
     }
   }

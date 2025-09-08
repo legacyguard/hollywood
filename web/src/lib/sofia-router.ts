@@ -32,7 +32,7 @@ export class SofiaRouter {
   async processCommand(command: SofiaCommand): Promise<CommandResult> {
     const { command: commandText, category, context } = command;
 
-    console.log(
+    // console.log(
       `[Sofia Router] Processing command: ${commandText}, category: ${category}`
     );
 

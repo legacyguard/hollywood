@@ -103,7 +103,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
       };
 
       this.templates.set(templateId, template);
-      console.log(`Loaded template: ${templateId}`);
+      // console.log(`Loaded template: ${templateId}`);
     } catch (error) {
       console.error(
         `Failed to load template ${jurisdiction}-${type}-${language}:`,

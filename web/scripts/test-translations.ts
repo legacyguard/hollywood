@@ -275,7 +275,7 @@ class TranslationTester {
   }
 
   public runAllTests(): void {
-    console.log('🧪 Running Translation Tests for LegacyGuard...\n');
+    console.error('🧪 Running Translation Tests for LegacyGuard...\n');
 
     this.testFileStructure();
     this.testI18nConfiguration();
@@ -288,29 +288,29 @@ class TranslationTester {
     const warnings = this.results.filter(r => r.status === 'WARNING').length;
     const failed = this.results.filter(r => r.status === 'FAIL').length;
 
-    console.log('📊 Test Results Summary:');
-    console.log(`   ✅ PASSED: ${passed}`);
-    console.log(`   ⚠️  WARNINGS: ${warnings}`);
-    console.log(`   ❌ FAILED: ${failed}`);
-    console.log(`   📝 TOTAL: ${this.results.length}\n`);
+    console.error('📊 Test Results Summary:');
+    console.error(`   ✅ PASSED: ${passed}`);
+    console.error(`   ⚠️  WARNINGS: ${warnings}`);
+    console.error(`   ❌ FAILED: ${failed}`);
+    console.error(`   📝 TOTAL: ${this.results.length}\n`);
 
     // Display detailed results
     this.results.forEach(result => {
       const icon = result.status === 'PASS' ? '✅' : result.status === 'WARNING' ? '⚠️' : '❌';
-      console.log(`${icon} ${result.test}: ${result.message}`);
+      console.error(`${icon} ${result.test}: ${result.message}`);
       if (result.details) {
-        console.log(`   Details: ${result.details}`);
+        console.error(`   Details: ${result.details}`);
       }
     });
 
     // Overall assessment
     if (failed === 0) {
-      console.log('\n🎉 Translation system is working correctly!');
+      console.error('\n🎉 Translation system is working correctly!');
       if (warnings > 0) {
-        console.log(`⚠️  Address ${warnings} warnings to improve the implementation.`);
+        console.error(`⚠️  Address ${warnings} warnings to improve the implementation.`);
       }
     } else {
-      console.log(`\n🔧 ${failed} critical issues need to be addressed.`);
+      console.error(`\n🔧 ${failed} critical issues need to be addressed.`);
     }
 
     // Save detailed report
@@ -321,7 +321,7 @@ class TranslationTester {
     };
 
     fs.writeFileSync('/Users/luborfedak/Documents/Github/hollywood/web/translation-test-report.json', JSON.stringify(report, null, 2));
-    console.log('\n📄 Detailed report saved to translation-test-report.json');
+    console.error('\n📄 Detailed report saved to translation-test-report.json');
   }
 }
 

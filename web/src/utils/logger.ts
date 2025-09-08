@@ -198,7 +198,7 @@ export class Logger {
       if (this.config.enableRemote) {
         await this.writeToRemote(entry);
       }
-    } catch (error) {
+    } catch (_error) {
       // Failed to write log - error handling will be implemented
     }
   }

@@ -67,9 +67,9 @@ export const useSecureEncryption = () => {
         isLoading: false,
       }));
 
-      console.log('🔐 Secure encryption initialized');
+      // console.log('🔐 Secure encryption initialized');
       return true;
-    } catch (error) {
+    } catch (_error) {
       const errorMessage =
         error instanceof SecureKeyError
           ? error.message
@@ -115,7 +115,7 @@ export const useSecureEncryption = () => {
         });
 
         return true;
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
           error instanceof SecureKeyError
             ? error.message
@@ -171,7 +171,7 @@ export const useSecureEncryption = () => {
           toast.error('Invalid password');
           return false;
         }
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
           error instanceof SecureKeyError
             ? error.message
@@ -220,7 +220,7 @@ export const useSecureEncryption = () => {
               ? new ArrayBuffer((data as any).byteLength)
               : (data as ArrayBuffer);
         return await keyManager.encryptData(bufferData);
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
           error instanceof SecureKeyError ? error.message : 'Encryption failed';
 
@@ -246,7 +246,7 @@ export const useSecureEncryption = () => {
 
       try {
         return await keyManager.decryptData(encryptedData, iv);
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
           error instanceof SecureKeyError ? error.message : 'Decryption failed';
 
@@ -304,7 +304,7 @@ export const useSecureEncryption = () => {
           encryptedFile,
           metadata,
         };
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
           error instanceof SecureKeyError
             ? error.message
@@ -339,7 +339,7 @@ export const useSecureEncryption = () => {
 
         // Decrypt the data
         return await keyManager.decryptData(encryptedData, iv);
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
           error instanceof SecureKeyError
             ? error.message
@@ -384,7 +384,7 @@ export const useSecureEncryption = () => {
           toast.error('Failed to change password');
           return false;
         }
-      } catch (error) {
+      } catch (_error) {
         setState(prev => ({ ...prev, isLoading: false }));
         toast.error('Password change failed');
         return false;

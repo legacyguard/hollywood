@@ -117,7 +117,7 @@ export class WillTranslationService {
       }
 
       return true;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to load will translations:', error);
       return false;
     }
@@ -167,7 +167,7 @@ export class WillTranslationService {
       if (!NamespaceLoader.isLoaded(namespace)) {
         try {
           await NamespaceLoader.loadWills(language as SupportedLanguageCode, jurisdiction);
-        } catch (error) {
+        } catch (_error) {
           missing.push(`${language}_${jurisdiction}`);
         }
       }

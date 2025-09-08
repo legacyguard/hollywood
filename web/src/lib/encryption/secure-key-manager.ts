@@ -103,7 +103,7 @@ export class SecureKeyManager {
       this.cleanupOldKeys();
 
       console.log('🔐 Secure Key Manager initialized successfully');
-    } catch (error) {
+    } catch (_error) {
       throw new SecureKeyError(
         'Failed to initialize secure key manager',
         'INIT_FAILED'
@@ -150,7 +150,7 @@ export class SecureKeyManager {
       );
 
       return { key, salt };
-    } catch (error) {
+    } catch (_error) {
       throw new SecureKeyError(
         'Failed to derive key from password',
         'KEY_DERIVATION_FAILED'
@@ -173,7 +173,7 @@ export class SecureKeyManager {
       );
 
       return key;
-    } catch (error) {
+    } catch (_error) {
       throw new SecureKeyError(
         `Failed to generate ${purpose} key`,
         'KEY_GENERATION_FAILED'
@@ -241,7 +241,7 @@ export class SecureKeyManager {
       this.activeKeys.set('master', masterKey);
 
       console.log('🔐 Master keys created and stored securely');
-    } catch (error) {
+    } catch (_error) {
       throw new SecureKeyError(
         'Failed to create user keys',
         'KEY_CREATION_FAILED'
@@ -298,7 +298,7 @@ export class SecureKeyManager {
 
       console.log('🔓 Keys unlocked successfully');
       return true;
-    } catch (error) {
+    } catch (_error) {
       console.error('🔐 Failed to unlock keys:', error);
       return false;
     }
@@ -339,7 +339,7 @@ export class SecureKeyManager {
         iv,
         version: ENCRYPTION_CONFIG.version,
       };
-    } catch (error) {
+    } catch (_error) {
       throw new SecureKeyError('Failed to encrypt data', 'ENCRYPTION_FAILED');
     }
   }
@@ -370,7 +370,7 @@ export class SecureKeyManager {
       );
 
       return decryptedData;
-    } catch (error) {
+    } catch (_error) {
       throw new SecureKeyError('Failed to decrypt data', 'DECRYPTION_FAILED');
     }
   }
@@ -404,7 +404,7 @@ export class SecureKeyManager {
         iv: result.iv,
         keyId,
       };
-    } catch (error) {
+    } catch (_error) {
       throw new SecureKeyError(
         'Failed to generate file key',
         'FILE_KEY_GENERATION_FAILED'
@@ -448,7 +448,7 @@ export class SecureKeyManager {
       }
 
       console.log('🧹 Old keys cleaned up');
-    } catch (error) {
+    } catch (_error) {
       console.warn('Failed to cleanup old keys:', error);
     }
   }
@@ -512,7 +512,7 @@ export class SecureKeyManager {
 
       console.log('🔑 Password changed successfully');
       return true;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to change password:', error);
       return false;
     }

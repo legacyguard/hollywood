@@ -59,7 +59,7 @@ function fixUnusedVar(filePath, lineNum, columnNum, varName) {
   const fullPath = path.join(__dirname, filePath);
   
   if (!fs.existsSync(fullPath)) {
-    console.log(`File not found: ${fullPath}`);
+    // console.log(`File not found: ${fullPath}`);
     return false;
   }
   
@@ -67,7 +67,7 @@ function fixUnusedVar(filePath, lineNum, columnNum, varName) {
   const lines = content.split('\n');
   
   if (lineNum > lines.length) {
-    console.log(`Line ${lineNum} not found in ${filePath}`);
+    // console.log(`Line ${lineNum} not found in ${filePath}`);
     return false;
   }
   
@@ -104,15 +104,15 @@ function fixUnusedVar(filePath, lineNum, columnNum, varName) {
   }
   
   if (!wasReplaced) {
-    console.log(`Could not fix variable "${varName}" in ${filePath}:${lineNum}`);
-    console.log(`Line: ${line.trim()}`);
+    // console.log(`Could not fix variable "${varName}" in ${filePath}:${lineNum}`);
+    // console.log(`Line: ${line.trim()}`);
     return false;
   }
   
   if (LOG_CHANGES) {
-    console.log(`${filePath}:${lineNum} - ${varName} -> ${newVarName}`);
-    console.log(`  OLD: ${line.trim()}`);
-    console.log(`  NEW: ${newLine.trim()}`);
+    // console.log(`${filePath}:${lineNum} - ${varName} -> ${newVarName}`);
+    // console.log(`  OLD: ${line.trim()}`);
+    // console.log(`  NEW: ${newLine.trim()}`);
   }
   
   if (!DRY_RUN) {
@@ -127,13 +127,13 @@ function fixUnusedVar(filePath, lineNum, columnNum, varName) {
  * Main execution
  */
 function main() {
-  console.log('🔧 Fixing unused variables...\n');
+  // console.log('🔧 Fixing unused variables...\n');
   
   const unusedVars = getLintResults();
-  console.log(`Found ${unusedVars.length} unused variables to fix\n`);
+  // console.log(`Found ${unusedVars.length} unused variables to fix\n`);
   
   if (unusedVars.length === 0) {
-    console.log('✅ No unused variables found!');
+    // console.log('✅ No unused variables found!');
     return;
   }
   
@@ -143,18 +143,18 @@ function main() {
     if (fixUnusedVar(file, line, column, variable)) {
       fixedCount++;
     }
-    console.log(''); // Empty line for readability
+    // console.log(''); // Empty line for readability
   }
   
-  console.log(`\n${DRY_RUN ? '🔍 DRY RUN:' : '✅'} Fixed ${fixedCount}/${unusedVars.length} unused variables`);
+  // console.log(`\n${DRY_RUN ? '🔍 DRY RUN:' : '✅'} Fixed ${fixedCount}/${unusedVars.length} unused variables`);
   
   if (!DRY_RUN && fixedCount > 0) {
-    console.log('\n🧪 Running lint again to verify fixes...');
+    // console.log('\n🧪 Running lint again to verify fixes...');
     try {
       execSync('npm run lint', { stdio: 'inherit' });
-      console.log('✅ All fixes successful!');
+      // console.log('✅ All fixes successful!');
     } catch (error) {
-      console.log('⚠️  Some issues may remain. Run script again if needed.');
+      // console.log('⚠️  Some issues may remain. Run script again if needed.');
     }
   }
   

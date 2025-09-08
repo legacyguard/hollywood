@@ -60,7 +60,7 @@ export const IntelligentDocumentScanner = ({
           // Show error message in real implementation
           // Document quality validation failed - handle in UI
         }
-      } catch (error) {
+      } catch (_error) {
         // Error taking photo - handle in UI
       } finally {
         setIsProcessing(false);

@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * Tests for unified encryption service (TweetNaCl)
  */

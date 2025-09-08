@@ -71,7 +71,7 @@ export default function FamilyShieldAccessPage() {
       // that validates the token and returns the appropriate data based on guardian permissions
 
       // For now, we'll simulate the response
-      console.log('Verifying emergency access token:', token);
+      // console.log('Verifying emergency access token:', token);
 
       // Call emergency access verification function
       const { data, error } = await supabase.functions.invoke(

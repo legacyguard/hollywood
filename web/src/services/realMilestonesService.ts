@@ -35,7 +35,7 @@ class RealMilestonesService {
       if (error) throw error;
 
       return (data || []).map(this.mapDbToMilestone);
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to fetch user milestones:', error);
       return [];
     }
@@ -81,7 +81,7 @@ class RealMilestonesService {
       if (error) throw error;
 
       return this.mapDbToMilestone(data);
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to create milestone:', error);
       throw error;
     }
@@ -139,7 +139,7 @@ class RealMilestonesService {
       if (error) throw error;
 
       return this.mapDbToMilestone(data);
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to update milestone:', error);
       throw error;
     }
@@ -153,7 +153,7 @@ class RealMilestonesService {
         .eq('id', milestoneId);
 
       if (error) throw error;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to delete milestone:', error);
       throw error;
     }
@@ -202,7 +202,7 @@ class RealMilestonesService {
       }
 
       return completedMilestones;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to check milestones:', error);
       return [];
     }
@@ -267,7 +267,7 @@ class RealMilestonesService {
         pendingCelebrations,
         recommendations,
       };
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get milestone progress:', error);
       return {
         userId,
@@ -373,7 +373,7 @@ class RealMilestonesService {
       }
 
       // console.log(`Initialized ${initialMilestones.length} milestones for user ${userId}`);
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to initialize user milestones:', error);
     }
   }
@@ -460,7 +460,7 @@ class RealMilestonesService {
         recommendationFollowRate: 0.7, // Would track actual follow-through
         averageGapBetweenMilestones: this.calculateAverageGap(completed),
       };
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get milestone analytics:', error);
       return {
         userId,
@@ -641,7 +641,7 @@ class RealMilestonesService {
 
       // Send celebration email
       await this.sendCelebrationEmail(milestone);
-    } catch (error) {
+    } catch (_error) {
       // console.error('Failed to trigger milestone celebration:', error);
     }
   }
@@ -664,7 +664,7 @@ class RealMilestonesService {
           },
         },
       });
-    } catch (error) {
+    } catch (_error) {
       // console.error('Failed to send celebration email:', error);
     }
   }
@@ -678,7 +678,7 @@ class RealMilestonesService {
 
       if (error) throw error;
       return count || 0;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get document count:', error);
       return 0;
     }
@@ -697,7 +697,7 @@ class RealMilestonesService {
         return 0;
       }
       return count || 0;
-    } catch (error) {
+    } catch (_error) {
       console.warn('Failed to get family member count, using fallback:', error);
       return 0;
     }
@@ -713,7 +713,7 @@ class RealMilestonesService {
       const familyScore = Math.min(40, familyCount * 10);
 
       return Math.round(documentScore + familyScore);
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to calculate protection level:', error);
       return 0;
     }

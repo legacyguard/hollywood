@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Secure Encryption Service v2
  * Uses server-side key management instead of localStorage

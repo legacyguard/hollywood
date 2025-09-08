@@ -13,7 +13,7 @@ export const guardianService = {
   async getGuardians(userId?: string): Promise<Guardian[]> {
     // Stub implementation - return empty array for now
     // TODO: Implement actual guardian retrieval logic using userId
-    console.log('Getting guardians for user:', userId);
+    // console.log('Getting guardians for user:', userId);
     return [];
   },
 
@@ -57,6 +57,6 @@ export const guardianService = {
   ): Promise<void> {
     // Stub implementation
     // TODO: Implement actual guardian update logic
-    console.log('Updating guardian:', guardianId, 'with updates:', updates);
+    // console.log('Updating guardian:', guardianId, 'with updates:', updates);
   },
 };

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useContext, useEffect } from 'react';
 
 // This context is defined in useEncryption.tsx

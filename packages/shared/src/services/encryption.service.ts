@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * Encryption Service (NaCl standardization)
  * Unifies encryption across codebase using TweetNaCl secretbox (XSalsa20-Poly1305)

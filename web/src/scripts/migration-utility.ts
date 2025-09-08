@@ -205,7 +205,7 @@ function generateTranslationSuggestions(hardcodedStrings: HardcodedString[]): st
  * Main migration analysis function
  */
 async function analyzeMigration(): Promise<MigrationResult> {
-  console.log('🔍 Scanning for hardcoded strings...\n');
+  // console.log('🔍 Scanning for hardcoded strings...\n');
 
   const patterns = [
     'src/**/*.{ts,tsx,js,jsx}',
@@ -222,7 +222,7 @@ async function analyzeMigration(): Promise<MigrationResult> {
   // Filter out excluded files
   const validFiles = files.filter(file => !shouldExcludeFile(file));
 
-  console.log(`📁 Found ${validFiles.length} files to analyze`);
+  // console.log(`📁 Found ${validFiles.length} files to analyze`);
 
   const hardcodedStrings: HardcodedString[] = [];
   let filesWithHardcodedStrings = 0;
@@ -232,7 +232,7 @@ async function analyzeMigration(): Promise<MigrationResult> {
     if (fileResults.length > 0) {
       filesWithHardcodedStrings++;
       hardcodedStrings.push(...fileResults);
-      console.log(`🔍 ${file}: ${fileResults.length} hardcoded strings found`);
+      // console.log(`🔍 ${file}: ${fileResults.length} hardcoded strings found`);
     }
   });
 
@@ -297,7 +297,7 @@ function generateReport(result: MigrationResult): void {
   report += `5. **Test**: Verify that all translations display correctly\n\n`;
 
   fs.writeFileSync(reportPath, report);
-  console.log(`📄 Report generated: ${reportPath}`);
+  // console.log(`📄 Report generated: ${reportPath}`);
 }
 
 /**
@@ -305,17 +305,17 @@ function generateReport(result: MigrationResult): void {
  */
 async function main() {
   try {
-    console.log('🌐 Translation Migration Utility\n');
+    // console.log('🌐 Translation Migration Utility\n');
 
     const result = await analyzeMigration();
 
-    console.log('\n📊 Results:');
-    console.log(`   📁 Files analyzed: ${result.totalFiles}`);
-    console.log(`   🔍 Files with hardcoded strings: ${result.filesWithHardcodedStrings}`);
-    console.log(`   📝 Total hardcoded strings: ${result.hardcodedStrings.length}\n`);
+    // console.log('\n📊 Results:');
+    // console.log(`   📁 Files analyzed: ${result.totalFiles}`);
+    // console.log(`   🔍 Files with hardcoded strings: ${result.filesWithHardcodedStrings}`);
+    // console.log(`   📝 Total hardcoded strings: ${result.hardcodedStrings.length}\n`);
 
     if (result.hardcodedStrings.length > 0) {
-      console.log('📋 Top 10 files with most hardcoded strings:');
+      // console.log('📋 Top 10 files with most hardcoded strings:');
 
       // Count strings per file
       const fileCount: { [file: string]: number } = {};
@@ -328,16 +328,16 @@ async function main() {
         .sort(([, a], [, b]) => b - a)
         .slice(0, 10)
         .forEach(([file, count]) => {
-          console.log(`   ${count.toString().padStart(3)} strings in ${file}`);
+          // console.log(`   ${count.toString().padStart(3)} strings in ${file}`);
         });
 
-      console.log('\n🔧 Generating detailed report...');
+      // console.log('\n🔧 Generating detailed report...');
       generateReport(result);
 
-      console.log('\n✅ Migration analysis complete!');
-      console.log('📖 Check the generated report for detailed migration instructions.');
+      // console.log('\n✅ Migration analysis complete!');
+      // console.log('📖 Check the generated report for detailed migration instructions.');
     } else {
-      console.log('🎉 No hardcoded strings found! Your codebase is well internationalized.');
+      // console.log('🎉 No hardcoded strings found! Your codebase is well internationalized.');
     }
 
   } catch (error) {

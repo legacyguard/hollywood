@@ -122,7 +122,7 @@ export default function DocumentSharing({
         setSharedByMe(byMe);
         setSharedWithMe(withMe);
       }
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: t('messages.loadError'),
@@ -140,7 +140,7 @@ export default function DocumentSharing({
         const members = await collaborationService.getFamilyMembers(familyId);
         setFamilyMemberTypes(members);
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to load family members:', error);
     }
   };
@@ -166,7 +166,7 @@ export default function DocumentSharing({
 
       setShowShareDialog(false);
       await loadSharedDocuments();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: t('messages.shareError'),

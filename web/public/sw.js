@@ -47,13 +47,13 @@ const BYPASS_CACHE_PATTERNS = [
 ];
 
 self.addEventListener('install', event => {
-  console.log('Service Worker: Installing...');
+  // console.log('Service Worker: Installing...');
 
   event.waitUntil(
     caches
       .open(CACHE_NAME)
       .then(cache => {
-        console.log('Service Worker: Caching static resources');
+        // console.log('Service Worker: Caching static resources');
         // Cache each resource individually to avoid failing on missing resources
         return Promise.allSettled(
           STATIC_CACHE_URLS.map(url => 
@@ -64,7 +64,7 @@ self.addEventListener('install', event => {
         );
       })
       .then(() => {
-        console.log('Service Worker: Installation complete');
+        // console.log('Service Worker: Installation complete');
         return self.skipWaiting();
       })
       .catch(error => {
@@ -74,7 +74,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  console.log('Service Worker: Activating...');
+  // console.log('Service Worker: Activating...');
 
   event.waitUntil(
     caches
@@ -83,14 +83,14 @@ self.addEventListener('activate', event => {
         return Promise.all(
           cacheNames.map(cacheName => {
             if (cacheName !== CACHE_NAME) {
-              console.log('Service Worker: Clearing old cache', cacheName);
+              // console.log('Service Worker: Clearing old cache', cacheName);
               return caches.delete(cacheName);
             }
           })
         );
       })
       .then(() => {
-        console.log('Service Worker: Activation complete');
+        // console.log('Service Worker: Activation complete');
         return self.clients.claim();
       })
   );
@@ -260,7 +260,7 @@ async function fetchAndUpdateCache(request) {
 
 // Handle push notifications
 self.addEventListener('push', event => {
-  console.log('Service Worker: Push notification received');
+  // console.log('Service Worker: Push notification received');
 
   if (!event.data) {
     return;
@@ -299,7 +299,7 @@ self.addEventListener('push', event => {
 
 // Handle notification clicks
 self.addEventListener('notificationclick', event => {
-  console.log('Service Worker: Notification clicked');
+  // console.log('Service Worker: Notification clicked');
 
   event.notification.close();
 
@@ -334,7 +334,7 @@ self.addEventListener('notificationclick', event => {
 
 // Handle background sync
 self.addEventListener('sync', event => {
-  console.log('Service Worker: Background sync triggered', event.tag);
+  // console.log('Service Worker: Background sync triggered', event.tag);
 
   if (event.tag === 'document-upload') {
     event.waitUntil(handleDocumentUploadSync());
@@ -401,7 +401,7 @@ async function handleAnalyticsSync() {
 
       if (response.ok) {
         await clearPendingAnalyticsEvents();
-        console.log('Service Worker: Analytics sync completed');
+        // console.log('Service Worker: Analytics sync completed');
       }
     }
   } catch (error) {
@@ -435,7 +435,7 @@ self.addEventListener('message', event => {
       break;
 
     default:
-      console.log('Service Worker: Unknown message type', type);
+      // console.log('Service Worker: Unknown message type', type);
   }
 });
 
@@ -445,7 +445,7 @@ self.addEventListener('message', event => {
 async function clearAllCaches() {
   const cacheNames = await caches.keys();
   await Promise.all(cacheNames.map(name => caches.delete(name)));
-  console.log('Service Worker: All caches cleared');
+  // console.log('Service Worker: All caches cleared');
 }
 
 /**
@@ -454,7 +454,7 @@ async function clearAllCaches() {
 async function cacheUrls(urls) {
   const cache = await caches.open(CACHE_NAME);
   await cache.addAll(urls);
-  console.log('Service Worker: URLs cached', urls);
+  // console.log('Service Worker: URLs cached', urls);
 }
 
 // Utility functions for IndexedDB operations (simplified)
@@ -476,4 +476,4 @@ async function clearPendingAnalyticsEvents() {
   // Clear analytics events from IndexedDB
 }
 
-console.log('Service Worker: Script loaded successfully');
+// console.log('Service Worker: Script loaded successfully');

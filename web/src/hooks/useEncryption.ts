@@ -59,7 +59,7 @@ export function useEncryption() {
           hasKey: false,
         }));
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error checking encryption status: ', error);
       setState(prev => ({
         ...prev,
@@ -112,7 +112,7 @@ export function useEncryption() {
       }));
 
       return true;
-    } catch (error) {
+    } catch (_error) {
       console.error('Error initializing encryption:', error);
       return false;
     }
@@ -125,7 +125,7 @@ export function useEncryption() {
         const success = await initializeEncryption(password);
         setState(prev => ({ ...prev, isLoading: false }));
         return success;
-      } catch (error) {
+      } catch (_error) {
         setState(prev => ({ ...prev, isLoading: false }));
         return false;
       }
@@ -170,7 +170,7 @@ export function useEncryption() {
           iv: btoa(String.fromCharCode(...iv)),
           salt: btoa(String.fromCharCode(...salt)),
         };
-      } catch (error) {
+      } catch (_error) {
         console.error('Encryption error:', error);
         return null;
       }
@@ -202,7 +202,7 @@ export function useEncryption() {
         );
 
         return decrypted;
-      } catch (error) {
+      } catch (_error) {
         console.error('Decryption error:', error);
         return null;
       }
@@ -238,7 +238,7 @@ export function useEncryption() {
           encryptedFile: encryptedBlob,
           metadata: encryptionResult,
         };
-      } catch (error) {
+      } catch (_error) {
         console.error('File encryption error:', error);
         return null;
       }
@@ -279,7 +279,7 @@ export function useEncryption() {
         return new File([decrypted], 'decrypted-file', {
           type: 'application/octet-stream',
         });
-      } catch (error) {
+      } catch (_error) {
         console.error('File decryption error:', error);
         return null;
       }
@@ -313,7 +313,7 @@ export function useEncryption() {
         const success = await initializeEncryption(password);
         setState(prev => ({ ...prev, isLoading: false }));
         return success;
-      } catch (error) {
+      } catch (_error) {
         setState(prev => ({ ...prev, isLoading: false }));
         return false;
       }
@@ -337,7 +337,7 @@ export function useEncryption() {
           }));
         }
         return success;
-      } catch (error) {
+      } catch (_error) {
         setState(prev => ({ ...prev, isLoading: false }));
         return false;
       }

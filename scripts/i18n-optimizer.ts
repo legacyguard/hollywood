@@ -1,4 +1,3 @@
-// @ts-nocheck
 #!/usr/bin/env tsx
 /**
  * i18n Translation Files Optimizer
@@ -27,21 +26,21 @@ const CONFIG = {
 };
 
 interface TranslationFile {
-  path: string;
-  lines: number;
-  keys: number;
-  size: number;
   depth: number;
+  keys: number;
+  lines: number;
   namespace: string;
+  path: string;
+  size: number;
 }
 
 interface SplitSuggestion {
   file: string;
   reason: string;
   suggestedSplits: {
-    newFile: string;
-    keys: string[];
     estimatedLines: number;
+    keys: string[];
+    newFile: string;
   }[];
 }
 
@@ -371,4 +370,4 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-export { I18nOptimizer, CONFIG };
+export { CONFIG, I18nOptimizer };

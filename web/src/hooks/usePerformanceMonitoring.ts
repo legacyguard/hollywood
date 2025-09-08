@@ -237,8 +237,8 @@ export const usePerformanceMonitoring = () => {
       import.meta.env.DEV &&
       Object.values(metrics).some(metric => metric !== null)
     ) {
-      console.log('🚀 Performance Metrics:', metrics);
-      console.log('💡 Performance Insights:', insights);
+      // console.log('🚀 Performance Metrics:', metrics);
+      // console.log('💡 Performance Insights:', insights);
     }
   }, [metrics, insights]);
 

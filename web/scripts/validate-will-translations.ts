@@ -156,8 +156,8 @@ function validateTranslationFile(filePath: string): ValidationResult {
 }
 
 function main() {
-  console.log('🔍 Validating Will Translation Files\n');
-  console.log('=' .repeat(60));
+  // console.log('🔍 Validating Will Translation Files\n');
+  // console.log('=' .repeat(60));
 
   const baseDir = path.join(process.cwd(), 'public', 'locales', 'content', 'wills');
   const results: ValidationResult[] = [];
@@ -170,55 +170,55 @@ function main() {
 
     // Print result
     const status = result.exists && result.hasRequiredKeys && result.issues.length === 0 ? '✅' : '❌';
-    console.log(`${status} ${combo.lang.toUpperCase()}_${combo.jurisdiction}: ${combo.file}`);
+    // console.log(`${status} ${combo.lang.toUpperCase()}_${combo.jurisdiction}: ${combo.file}`);
 
     if (result.issues.length > 0) {
       result.issues.forEach(issue => {
-        console.log(`   ⚠️  ${issue}`);
+        // console.log(`   ⚠️  ${issue}`);
       });
     }
   }
 
-  console.log('\n' + '=' .repeat(60));
-  console.log('📊 Summary:\n');
+  // console.log('\n' + '=' .repeat(60));
+  // console.log('📊 Summary:\n');
 
   const totalFiles = results.length;
   const existingFiles = results.filter(r => r.exists).length;
   const validFiles = results.filter(r => r.exists && r.hasRequiredKeys && r.issues.length === 0).length;
 
-  console.log(`Total expected combinations: ${totalFiles}`);
-  console.log(`Files found: ${existingFiles}/${totalFiles}`);
-  console.log(`Valid files: ${validFiles}/${totalFiles}`);
+  // console.log(`Total expected combinations: ${totalFiles}`);
+  // console.log(`Files found: ${existingFiles}/${totalFiles}`);
+  // console.log(`Valid files: ${validFiles}/${totalFiles}`);
 
   if (validFiles === totalFiles) {
-    console.log('\n✅ All translation files are valid and complete!');
+    // console.log('\n✅ All translation files are valid and complete!');
   } else {
-    console.log('\n❌ Some translation files have issues. Please review above.');
+    // console.log('\n❌ Some translation files have issues. Please review above.');
   }
 
   // Check language coverage
-  console.log('\n📚 Language Coverage:');
+  // console.log('\n📚 Language Coverage:');
   const languages = ['cs', 'sk', 'en', 'de'];
   for (const lang of languages) {
     const langFiles = results.filter(r => r.combination.startsWith(lang) && r.exists);
-    console.log(`  ${lang.toUpperCase()}: ${langFiles.length}/2 jurisdictions`);
+    // console.log(`  ${lang.toUpperCase()}: ${langFiles.length}/2 jurisdictions`);
   }
 
   // Check jurisdiction coverage
-  console.log('\n🏛️ Jurisdiction Coverage:');
+  // console.log('\n🏛️ Jurisdiction Coverage:');
   const jurisdictions = ['CZ', 'SK'];
   for (const jur of jurisdictions) {
     const jurFiles = results.filter(r => r.combination.endsWith(jur) && r.exists);
-    console.log(`  ${jur}: ${jurFiles.length}/4 languages`);
+    // console.log(`  ${jur}: ${jurFiles.length}/4 languages`);
   }
 
   // Test configuration matrix
-  console.log('\n📋 Configuration Matrix:');
-  console.log('     CZ   SK');
+  // console.log('\n📋 Configuration Matrix:');
+  // console.log('     CZ   SK');
   for (const lang of languages) {
     const czExists = results.find(r => r.combination === `${lang}_CZ`)?.exists ? '✅' : '❌';
     const skExists = results.find(r => r.combination === `${lang}_SK`)?.exists ? '✅' : '❌';
-    console.log(`${lang.toUpperCase().padEnd(4)} ${czExists}   ${skExists}`);
+    // console.log(`${lang.toUpperCase().padEnd(4)} ${czExists}   ${skExists}`);
   }
 }
 

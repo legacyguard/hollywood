@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * Security Metrics Service
  * Provides security-related metrics and analytics

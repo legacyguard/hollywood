@@ -29,7 +29,7 @@ function fixPropertyTypos() {
     const filePath = path.resolve(fix.file);
 
     if (!fs.existsSync(filePath)) {
-      console.log(`File not found: ${filePath}`);
+      // console.log(`File not found: ${filePath}`);
       continue;
     }
 
@@ -43,17 +43,17 @@ function fixPropertyTypos() {
 
       if (originalLine !== fixedLine) {
         lines[fix.line - 1] = fixedLine;
-        console.log(`Fixed ${fix.file}:${fix.line} - ${fix.propertyName} → ${fix.correctName}`);
+        // console.log(`Fixed ${fix.file}:${fix.line} - ${fix.propertyName} → ${fix.correctName}`);
 
         // Write back the fixed content
         fs.writeFileSync(filePath, lines.join('\n'));
       } else {
-        console.log(`No change needed for ${fix.file}:${fix.line}`);
+        // console.log(`No change needed for ${fix.file}:${fix.line}`);
       }
     }
   }
 }
 
-console.log('Fixing property name typos...');
+// console.log('Fixing property name typos...');
 fixPropertyTypos();
-console.log('Done!');
+// console.log('Done!');

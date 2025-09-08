@@ -282,7 +282,7 @@ export default defineConfig(function (_a) {
                                         : ((_c = asset.source) === null || _c === void 0 ? void 0 : _c.length) || 0,
                                 });
                             });
-                            console.log('📦 Bundle Analysis:', sizes);
+                            // console.log('📦 Bundle Analysis:', sizes);
                         },
                     },
                 ],

@@ -172,7 +172,7 @@ export class CollaborationService {
       this.setupRealtimeSubscriptions();
 
       console.log('Collaboration service initialized');
-    } catch (error) {
+    } catch (_error) {
       console.error('Collaboration service initialization failed:', error);
       captureError(error instanceof Error ? error : new Error(String(error)), {
         tags: { source: 'collaboration_service_init' },
@@ -247,7 +247,7 @@ export class CollaborationService {
       });
 
       return family as FamilyGroup;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to create family:', error);
       throw error;
     }
@@ -323,7 +323,7 @@ export class CollaborationService {
             }) as unknown as FamilyGroup
         ) || []
       );
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get user families:', error);
       return [];
     }
@@ -370,7 +370,7 @@ export class CollaborationService {
             }) as FamilyMemberType
         ) || []
       );
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get family members:', error);
       return [];
     }
@@ -441,7 +441,7 @@ export class CollaborationService {
       });
 
       return invite as any;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to invite family member:', error);
       throw error;
     }
@@ -531,7 +531,7 @@ export class CollaborationService {
         avatar: member.users?.avatar_url || undefined,
         phone: member.users?.phone || null,
       } as FamilyMemberType;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to accept invitation:', error);
       throw error;
     }
@@ -591,7 +591,7 @@ export class CollaborationService {
       });
 
       return shares;
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to share document:', error);
       throw error;
     }
@@ -638,7 +638,7 @@ export class CollaborationService {
 
       if (error) throw error;
       return (shares || []) as any[];
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get shared documents:', error);
       return [];
     }
@@ -684,7 +684,7 @@ export class CollaborationService {
         message: `Member role updated to ${role}`,
         metadata: { role, permissions },
       });
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to update member role:', error);
       throw error;
     }
@@ -720,7 +720,7 @@ export class CollaborationService {
         message: 'Member removed from family',
         metadata: { action: 'removed' },
       });
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to remove family member:', error);
       throw error;
     }
@@ -752,7 +752,7 @@ export class CollaborationService {
 
       if (error) throw error;
       return (activities || []) as any[];
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to get family activity:', error);
       return [];
     }
@@ -790,7 +790,7 @@ export class CollaborationService {
         message: 'Family settings updated',
         metadata: { changes: Object.keys(settings) },
       });
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to update family settings:', error);
       throw error;
     }
@@ -808,7 +808,7 @@ export class CollaborationService {
 
       if (error) return null;
       return family as any;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -844,7 +844,7 @@ export class CollaborationService {
         name: (member as any).users?.name || '',
         avatar_url: (member as any).users?.avatar_url,
       } as any;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -905,7 +905,7 @@ export class CollaborationService {
 
       // Notify listeners
       this.notifyActivityListeners(activity as any);
-    } catch (error) {
+    } catch (_error) {
       console.error('Failed to log activity:', error);
     }
   }
@@ -951,7 +951,7 @@ export class CollaborationService {
     this.activityListeners.forEach(listener => {
       try {
         listener(activity);
-      } catch (error) {
+      } catch (_error) {
         console.error('Activity listener error:', error);
       }
     });

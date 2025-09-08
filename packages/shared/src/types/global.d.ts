@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 // Global type declarations to fix common issues
 declare global {
   // Allow any property on window

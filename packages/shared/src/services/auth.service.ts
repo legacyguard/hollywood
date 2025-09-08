@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * Authentication Service
  * Handles user authentication and session management

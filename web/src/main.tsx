@@ -16,14 +16,14 @@ function initializeMonitoring() {
   // Initialize error reporting
   if (import.meta.env.VITE_SENTRY_DSN) {
     initSentry();
-    console.log('✅ Sentry error reporting initialized');
+    // console.log('✅ Sentry error reporting initialized');
   }
 
   // Initialize analytics and performance monitoring
   if (import.meta.env.VITE_GA_MEASUREMENT_ID) {
     initAnalytics();
     initWebVitals();
-    console.log('✅ Analytics and Web Vitals initialized');
+    // console.log('✅ Analytics and Web Vitals initialized');
   }
 }
 
@@ -37,7 +37,7 @@ async function initializePWA() {
       pushNotificationService.initialize(),
     ]);
 
-    console.log('✅ PWA services initialized successfully');
+    // console.log('✅ PWA services initialized successfully');
   } catch (error) {
     console.error('❌ PWA initialization failed:', error);
   }

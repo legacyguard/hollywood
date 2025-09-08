@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { chromium, type FullConfig } from '@playwright/test';
 
 /**
@@ -6,7 +5,7 @@ import { chromium, type FullConfig } from '@playwright/test';
  * Prepares the test environment and ensures services are ready
  */
 async function globalSetup(config: FullConfig) {
-  // console.log('🚀 Setting up Guardian Journey test environment...');
+  // console.error('🚀 Setting up Guardian Journey test environment...');
 
   const browser = await chromium.launch();
   const context = await browser.newContext();
@@ -14,7 +13,7 @@ async function globalSetup(config: FullConfig) {
 
   try {
     // Wait for the application to be ready
-    // console.log('⏳ Waiting for application to be ready...');
+    // console.error('⏳ Waiting for application to be ready...');
 
     const baseURL = config.projects[0]?.use?.baseURL || 'http://localhost:8080';
 
@@ -32,7 +31,7 @@ async function globalSetup(config: FullConfig) {
       { timeout: 15000 }
     );
 
-    // console.log('✅ Application is ready for testing');
+    // console.error('✅ Application is ready for testing');
 
     // Optional: Pre-warm any necessary services or caches
     // You could add API health checks here
@@ -43,7 +42,7 @@ async function globalSetup(config: FullConfig) {
     await browser.close();
   }
 
-  // console.log('✅ Global setup complete');
+  // console.error('✅ Global setup complete');
 }
 
 export default globalSetup;

@@ -53,7 +53,7 @@ class TranslationValidator {
       }
     });
 
-    console.log(`Loaded ${this.translationKeys.size} translation keys`);
+    // console.log(`Loaded ${this.translationKeys.size} translation keys`);
   }
 
   private extractKeys(obj: any, prefix: string): void {
@@ -197,11 +197,11 @@ class TranslationValidator {
   }
 
   public validate(): void {
-    console.log('🔍 Validating translations in LegacyGuard components...\n');
+    // console.log('🔍 Validating translations in LegacyGuard components...\n');
 
     this.componentPaths.forEach(componentPath => {
       const fullPath = path.join('/Users/luborfedak/Documents/Github/hollywood/web', componentPath);
-      console.log(`📂 Scanning ${componentPath}...`);
+      // console.log(`📂 Scanning ${componentPath}...`);
       this.scanDirectory(fullPath);
     });
 
@@ -234,24 +234,24 @@ class TranslationValidator {
 
     fs.writeFileSync('/Users/luborfedak/Documents/Github/hollywood/web/translation-validation-report.json', JSON.stringify(report, null, 2));
 
-    console.log('\n📊 Validation Report:');
-    console.log(`   📝 Files with hardcoded strings: ${report.summary.filesScanned}`);
-    console.log(`   🔤 Total hardcoded strings found: ${report.summary.totalHardcodedStrings}`);
-    console.log(`   📚 Translation keys available: ${report.summary.translationKeysTotal}`);
-    console.log(`   ✅ Translation keys in use: ${report.summary.keysInUse}`);
-    console.log(`   🗑️  Unused translation keys: ${report.summary.unusedKeys}`);
+    // console.log('\n📊 Validation Report:');
+    // console.log(`   📝 Files with hardcoded strings: ${report.summary.filesScanned}`);
+    // console.log(`   🔤 Total hardcoded strings found: ${report.summary.totalHardcodedStrings}`);
+    // console.log(`   📚 Translation keys available: ${report.summary.translationKeysTotal}`);
+    // console.log(`   ✅ Translation keys in use: ${report.summary.keysInUse}`);
+    // console.log(`   🗑️  Unused translation keys: ${report.summary.unusedKeys}`);
 
     if (report.topFiles.length > 0) {
-      console.log('\n🔥 Top files needing attention:');
+      // console.log('\n🔥 Top files needing attention:');
       report.topFiles.forEach(file => {
-        console.log(`   ${file.file}: ${file.count} hardcoded strings`);
+        // console.log(`   ${file.file}: ${file.count} hardcoded strings`);
       });
     }
 
     if (report.summary.totalHardcodedStrings === 0) {
-      console.log('\n✨ Congratulations! No hardcoded strings found!');
+      // console.log('\n✨ Congratulations! No hardcoded strings found!');
     } else {
-      console.log('\n📄 Check translation-validation-report.json for detailed analysis.');
+      // console.log('\n📄 Check translation-validation-report.json for detailed analysis.');
     }
   }
 }

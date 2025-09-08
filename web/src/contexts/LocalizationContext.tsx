@@ -117,8 +117,8 @@ const detectCountryFromGeolocation = async (): Promise<CountryCode> => {
     sessionStorage.setItem('legacyguard-geo-country', result);
 
     return result;
-  } catch (error) {
-    console.log('Geolocation detection failed, using default');
+  } catch (_error) {
+    // console.log('Geolocation detection failed, using default');
     // Cache the default to avoid repeated failures
     sessionStorage.setItem('legacyguard-geo-country', 'en');
     return 'en';

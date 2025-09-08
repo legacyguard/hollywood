@@ -88,10 +88,10 @@ files.forEach(file => {
   if (modified) {
     fs.writeFileSync(filePath, content);
     modifiedFiles++;
-    console.log(`Fixed: ${file}`);
+    // console.log(`Fixed: ${file}`);
   }
   
   totalFiles++;
 });
 
-console.log(`\nProcessed ${totalFiles} files, modified ${modifiedFiles} files.`);
+// console.log(`\nProcessed ${totalFiles} files, modified ${modifiedFiles} files.`);

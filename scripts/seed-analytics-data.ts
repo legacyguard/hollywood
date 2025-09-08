@@ -1,4 +1,3 @@
-// @ts-nocheck
 #!/usr/bin/env node
 
 /**
@@ -24,64 +23,64 @@ if (!supabaseUrl || !supabaseServiceKey) {
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 interface QuickInsightSeed {
-  user_id: string;
-  document_id?: string;
-  type:
-    | 'document_analysis'
-    | 'family_impact'
-    | 'time_saved'
-    | 'protection_level'
-    | 'completion_gap'
-    | 'urgent_action';
-  title: string;
-  description: string;
-  value?: string;
-  impact: 'high' | 'medium' | 'low';
-  priority: 'urgent' | 'important' | 'nice_to_have';
-  actionable: boolean;
   action_text?: string;
   action_url?: string;
-  metadata: Record<string, any>;
+  actionable: boolean;
+  description: string;
+  document_id?: string;
   family_impact: Record<string, any>;
+  impact: 'high' | 'low' | 'medium';
+  metadata: Record<string, any>;
+  priority: 'important' | 'nice_to_have' | 'urgent';
+  title: string;
+  type:
+    | 'completion_gap'
+    | 'document_analysis'
+    | 'family_impact'
+    | 'protection_level'
+    | 'time_saved'
+    | 'urgent_action';
+  user_id: string;
+  value?: string;
 }
 
 interface LegacyMilestoneSeed {
-  user_id: string;
-  type:
-    | 'first_document'
-    | 'protection_threshold'
-    | 'family_complete'
-    | 'professional_review'
-    | 'annual_update'
-    | 'legacy_complete';
-  title: string;
-  description: string;
   category:
-    | 'foundation'
-    | 'protection'
     | 'family'
-    | 'professional'
+    | 'foundation'
     | 'maintenance'
-    | 'mastery';
-  criteria_type:
-    | 'document_count'
-    | 'protection_percentage'
-    | 'family_members'
-    | 'time_based'
-    | 'action_completed'
-    | 'review_score';
-  criteria_threshold: string;
+    | 'mastery'
+    | 'professional'
+    | 'protection';
+  celebration_should_show: boolean;
+  celebration_text?: string;
   criteria_current_value: string;
   criteria_is_complete: boolean;
+  criteria_threshold: string;
+  criteria_type:
+    | 'action_completed'
+    | 'document_count'
+    | 'family_members'
+    | 'protection_percentage'
+    | 'review_score'
+    | 'time_based';
+  description: string;
+  metadata: Record<string, any>;
+  progress_next_action?: string;
+  progress_next_action_url?: string;
   progress_percentage: number;
   progress_steps_completed: number;
   progress_total_steps: number;
-  progress_next_action?: string;
-  progress_next_action_url?: string;
-  celebration_should_show: boolean;
-  celebration_text?: string;
   rewards: Record<string, any>;
-  metadata: Record<string, any>;
+  title: string;
+  type:
+    | 'annual_update'
+    | 'family_complete'
+    | 'first_document'
+    | 'legacy_complete'
+    | 'professional_review'
+    | 'protection_threshold';
+  user_id: string;
 }
 
 async function seedQuickInsights(userId: string) {

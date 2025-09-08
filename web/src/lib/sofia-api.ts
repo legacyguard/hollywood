@@ -31,7 +31,7 @@ class SofiaAPI {
     this.initialized = !!(this.supabaseUrl && this.supabaseKey);
 
     if (this.initialized) {
-      console.log('[Sofia API] Initialized with Supabase Edge Function');
+      // console.log('[Sofia API] Initialized with Supabase Edge Function');
     } else {
       console.warn(
         '[Sofia API] Supabase credentials not found. Using mock responses only.'

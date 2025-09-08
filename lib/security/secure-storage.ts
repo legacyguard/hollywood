@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Secure storage utilities for sensitive data
  * Uses encryption and secure storage mechanisms

@@ -85,7 +85,7 @@ export function BackupRestore() {
       const now = new Date().toISOString();
       localStorage.setItem(`lastBackup_${userId}`, now);
       setLastBackupDate(new Date(now).toLocaleDateString());
-    } catch (error) {
+    } catch (_error) {
       console.error('Export error:', error);
       toast.error(t('errors.exportFailed'));
     } finally {
@@ -123,7 +123,7 @@ export function BackupRestore() {
           // Directly import if not encrypted
           handleImport(file);
         }
-      } catch (error) {
+      } catch (_error) {
         toast.error(t('errors.invalidFormat'));
       }
     };
@@ -146,7 +146,7 @@ export function BackupRestore() {
         userId,
         password || importPassword || undefined
       );
-    } catch (error) {
+    } catch (_error) {
       console.error('Import error:', error);
       toast.error(t('errors.importFailed'));
     } finally {
@@ -176,7 +176,7 @@ export function BackupRestore() {
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-    } catch (error) {
+    } catch (_error) {
       console.error('Clear data error:', error);
       toast.error(t('errors.clearDataFailed'));
     }

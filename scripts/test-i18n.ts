@@ -1,4 +1,3 @@
-// @ts-nocheck
 #!/usr/bin/env tsx
 /**
  * Test i18n Configuration
@@ -17,9 +16,9 @@ const colors = {
 };
 
 interface TestResult {
+  error?: string;
   name: string;
   passed: boolean;
-  error?: string;
 }
 
 class I18nTester {

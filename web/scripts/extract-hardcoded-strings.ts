@@ -229,9 +229,9 @@ class HardcodedStringExtractor {
     const skTemplate = this.generateSkeletonTranslations(groupedStrings);
     fs.writeFileSync('/Users/luborfedak/Documents/Github/hollywood/web/public/locales/ui/sk.json', JSON.stringify(skTemplate, null, 2));
 
-    console.log(`✅ Generated translation files:`);
-    console.log(`   📁 public/locales/ui/en.json (${Object.keys(this.extractedStrings).length} strings)`);
-    console.log(`   📁 public/locales/ui/sk.json (template for translation)`);
+    // console.log(`✅ Generated translation files:`);
+    // console.log(`   📁 public/locales/ui/en.json (${Object.keys(this.extractedStrings).length} strings)`);
+    // console.log(`   📁 public/locales/ui/sk.json (template for translation)`);
   }
 
   private generateSkeletonTranslations(obj: any): any {
@@ -276,33 +276,33 @@ class HardcodedStringExtractor {
 
     fs.writeFileSync('/Users/luborfedak/Documents/Github/hollywood/web/hardcoded-strings-report.json', JSON.stringify(report, null, 2));
 
-    console.log('\n📊 Extraction Report:');
-    console.log(`   📝 Total hardcoded strings found: ${report.totalStrings}`);
-    console.log(`   📂 Files processed: ${Object.keys(report.byFile).length}`);
-    console.log('\n📋 By Category:');
+    // console.log('\n📊 Extraction Report:');
+    // console.log(`   📝 Total hardcoded strings found: ${report.totalStrings}`);
+    // console.log(`   📂 Files processed: ${Object.keys(report.byFile).length}`);
+    // console.log('\n📋 By Category:');
     Object.entries(report.byCategory).forEach(([category, count]) => {
-      console.log(`   ${category}: ${count}`);
+      // console.log(`   ${category}: ${count}`);
     });
-    console.log('\n🔥 Top files with most hardcoded strings:');
+    // console.log('\n🔥 Top files with most hardcoded strings:');
     report.topFiles.forEach(([file, count]) => {
-      console.log(`   ${file}: ${count}`);
+      // console.log(`   ${file}: ${count}`);
     });
   }
 
   public run(): void {
-    console.log('🔍 Extracting hardcoded strings from LegacyGuard components...\n');
+    // console.log('🔍 Extracting hardcoded strings from LegacyGuard components...\n');
 
     this.componentPaths.forEach(componentPath => {
       const fullPath = path.join('/Users/luborfedak/Documents/Github/hollywood/web', componentPath);
-      console.log(`📂 Scanning ${componentPath}...`);
+      // console.log(`📂 Scanning ${componentPath}...`);
       this.scanDirectory(fullPath);
     });
 
     this.generateTranslationFiles();
     this.generateReport();
 
-    console.log('\n✨ Hardcoded string extraction completed successfully!');
-    console.log('📄 Check hardcoded-strings-report.json for detailed analysis.');
+    // console.log('\n✨ Hardcoded string extraction completed successfully!');
+    // console.log('📄 Check hardcoded-strings-report.json for detailed analysis.');
   }
 }
 

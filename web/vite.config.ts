@@ -312,7 +312,7 @@ export default defineConfig(({ mode }) => {
                       ? asset.code?.length || 0
                       : asset.source?.length || 0,
                 }));
-                console.log('📦 Bundle Analysis:', sizes);
+                // console.log('📦 Bundle Analysis:', sizes);
               },
             },
           ],

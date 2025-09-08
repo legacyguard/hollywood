@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * Stripe Service
  * Handles payment processing via Stripe

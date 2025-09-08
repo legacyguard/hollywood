@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { FullConfig } from '@playwright/test';
 import path from 'path';
 import fs from 'fs';
@@ -8,7 +7,7 @@ import fs from 'fs';
  * Cleans up test artifacts and generates reports
  */
 async function globalTeardown(_config: FullConfig) {
-  // console.log('🧹 Starting Guardian Journey test cleanup...');
+  // console.error('🧹 Starting Guardian Journey test cleanup...');
 
   try {
     // Create reports directory if it doesn't exist
@@ -26,9 +25,9 @@ async function globalTeardown(_config: FullConfig) {
         .sort();
 
       if (screenshots.length > 0) {
-        // console.log('📸 Screenshots captured:');
+        // console.error('📸 Screenshots captured:');
         screenshots.forEach(screenshot => {
-          // console.log(`  - ${screenshot}`);
+          // console.error(`  - ${screenshot}`);
         });
 
         // Create an index of screenshots
@@ -46,7 +45,7 @@ async function globalTeardown(_config: FullConfig) {
           JSON.stringify(screenshotIndex, null, 2)
         );
 
-        // console.log(`✅ Screenshot index created: ${screenshots.length} screenshots`);
+        // console.error(`✅ Screenshot index created: ${screenshots.length} screenshots`);
       }
     }
 
@@ -58,23 +57,23 @@ async function globalTeardown(_config: FullConfig) {
         .filter(file => file.endsWith('.webm'));
 
       if (videos.length > 0) {
-        // console.log('🎥 Videos recorded:');
+        // console.error('🎥 Videos recorded:');
         videos.forEach(video => {
-          // console.log(`  - ${video}`);
+          // console.error(`  - ${video}`);
         });
 
-        // console.log(`✅ Video recordings available: ${videos.length} videos`);
+        // console.error(`✅ Video recordings available: ${videos.length} videos`);
       }
     }
 
     // Optional: Clean up temporary test data
     // You could add cleanup of test users, uploaded files, etc.
-  } catch (error) {
+  } catch (_error) {
     // console.error('⚠️ Error during cleanup:', error);
     // Don't throw - cleanup failures shouldn't fail the entire test run
   }
 
-  // console.log('✅ Global teardown complete');
+  // console.error('✅ Global teardown complete');
 }
 
 export default globalTeardown;

@@ -326,10 +326,10 @@ export default function () {
 
 // Setup function - runs once before the test
 export function setup() {
-  console.log('🚀 Starting LegacyGuard Load Test');
-  console.log(`📍 Target URL: ${BASE_URL}`);
-  console.log(`🎯 Target: 10,000 concurrent users`);
-  console.log('⏱️  Total duration: ~105 minutes');
+  console.error('🚀 Starting LegacyGuard Load Test');
+  console.error(`📍 Target URL: ${BASE_URL}`);
+  console.error(`🎯 Target: 10,000 concurrent users`);
+  console.error('⏱️  Total duration: ~105 minutes');
 
   // Verify the target is accessible
   const response = http.get(BASE_URL);
@@ -349,8 +349,8 @@ export function setup() {
 // Teardown function - runs once after the test
 export function teardown(data) {
   const duration = (Date.now() - data.startTime) / 1000 / 60;
-  console.log(`✅ Load test completed in ${duration.toFixed(2)} minutes`);
-  console.log('📊 Check the k6 cloud or HTML report for detailed results');
+  console.error(`✅ Load test completed in ${duration.toFixed(2)} minutes`);
+  console.error('📊 Check the k6 cloud or HTML report for detailed results');
 }
 
 // Handle test summary

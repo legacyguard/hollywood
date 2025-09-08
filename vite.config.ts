@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -254,7 +253,7 @@ export default defineConfig(({ mode }) => {
                       ? asset.code?.length || 0
                       : asset.source?.length || 0,
                 }));
-                console.log('📦 Bundle Analysis:', sizes);
+                // console.log('📦 Bundle Analysis:', sizes);
               },
             },
           ],
