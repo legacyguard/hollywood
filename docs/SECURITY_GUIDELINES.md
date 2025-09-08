@@ -41,7 +41,8 @@ VITE_SUPABASE_ANON_KEY=test_key_only
    - Use test Clerk application
 
 2. **Production Setup**
-   ```
+
+   ```text
    Vercel Dashboard
    └── Your Project
        └── Settings
@@ -60,6 +61,7 @@ VITE_SUPABASE_ANON_KEY=test_key_only
 ## Different Environments
 
 ### Development (.env.local)
+
 ```env
 VITE_APP_ENV=development
 VITE_SUPABASE_URL=https://test-project.supabase.co
@@ -67,6 +69,7 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
 ```
 
 ### Staging (Vercel Preview)
+
 ```env
 # Set in Vercel with Environment = "Preview"
 VITE_APP_ENV=staging
@@ -75,6 +78,7 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
 ```
 
 ### Production (Vercel Production)
+
 ```env
 # Set in Vercel with Environment = "Production"
 VITE_APP_ENV=production
@@ -87,6 +91,7 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
 ### Pre-commit Checks
 
 Add to `.git/hooks/pre-commit`:
+
 ```bash
 #!/bin/sh
 # Check for API keys
@@ -98,7 +103,8 @@ fi
 ```
 
 ### .gitignore Must Include
-```
+
+```gitignore
 # Environment variables
 .env
 .env.local
@@ -117,12 +123,14 @@ Thumbs.db
 ## API Key Rotation
 
 ### When to Rotate
+
 - Every 90 days (scheduled)
 - After employee leaves
 - If key exposed in logs
 - If suspicious activity detected
 
 ### How to Rotate Safely
+
 1. Generate new key in service dashboard
 2. Update in Vercel Environment Variables
 3. Trigger redeploy
