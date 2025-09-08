@@ -142,9 +142,9 @@ class SofiaAI {
 
     try {
       // console.log(
-        'Calling Sofia AI API:',
-        `${this.supabaseUrl}/functions/v1/sofia-ai`
-      );
+      //   'Calling Sofia AI API:',
+      //   `${this.supabaseUrl}/functions/v1/sofia-ai`
+      // );
 
       // Call the secure server-side Sofia AI API
       const response = await fetch(

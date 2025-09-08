@@ -33,8 +33,8 @@ export class SofiaRouter {
     const { command: commandText, category, context } = command;
 
     // console.log(
-      `[Sofia Router] Processing command: ${commandText}, category: ${category}`
-    );
+    //   `[Sofia Router] Processing command: ${commandText}, category: ${category}`
+    // );
 
     try {
       // Category 1: Free predefined actions (80% of interactions)

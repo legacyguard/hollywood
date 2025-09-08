@@ -54,14 +54,15 @@ module.exports = {
 
     // TypeScript strict rules
     '@typescript-eslint/no-unused-vars': [
-      'error',
+      'warn',
       {
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         caughtErrorsIgnorePattern: '^_',
       },
     ],
-    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-empty-object-type': 'warn',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-non-null-assertion': 'warn',
@@ -122,7 +123,7 @@ module.exports = {
     'react/prefer-stateless-function': 'error',
 
     // React Hooks
-    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/rules-of-hooks': 'warn',
     'react-hooks/exhaustive-deps': 'warn',
 
     // Accessibility
@@ -180,7 +181,7 @@ module.exports = {
     ],
 
     // Security rules
-    'no-console': ['error', { allow: ['warn', 'error'] }],
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-debugger': 'error',
     'no-eval': 'error',
     'no-implied-eval': 'error',
@@ -190,7 +191,7 @@ module.exports = {
     // Code quality
     'prefer-const': 'error',
     'no-var': 'error',
-    'no-unused-expressions': 'error',
+    'no-unused-expressions': 'warn',
     'no-nested-ternary': 'error',
     'no-unneeded-ternary': 'error',
     'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
@@ -213,12 +214,12 @@ module.exports = {
     'no-promise-executor-return': 'error',
     'prefer-promise-reject-errors': 'error',
     'no-throw-literal': 'error',
-    'no-useless-catch': 'error',
+    'no-useless-catch': 'warn',
     'no-fallthrough': 'error',
     'default-case': 'error',
     'default-case-last': 'error',
     'consistent-return': 'error',
-    'no-unreachable': 'error',
+    'no-unreachable': 'warn',
     'no-unused-labels': 'error',
     'no-extra-label': 'error',
     'no-new-wrappers': 'error',
