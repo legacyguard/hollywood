@@ -25,6 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
     permissions:
       security-events: write
       actions: read
@@ -58,8 +61,6 @@ jobs:
           retention-days: 30
 
       - name: Snyk vulnerability scan
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           if [ -n "$SNYK_TOKEN" ]; then
             # Install Snyk

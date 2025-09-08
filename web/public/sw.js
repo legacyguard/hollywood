@@ -56,9 +56,19 @@ self.addEventListener('install', event => {
         // console.log('Service Worker: Caching static resources');
         // Cache each resource individually to avoid failing on missing resources
         return Promise.allSettled(
-          STATIC_CACHE_URLS.map(url => 
+          STATIC_CACHE_URLS.map(url =>
             cache.add(url).catch(err => {
               console.warn(`Failed to cache ${url}:`, err);
+              // For manifest.json, try without authentication if 401
+              if (url === '/manifest.json' && err.status === 401) {
+                return fetch(url, { credentials: 'omit' }).then(response => {
+                  if (response.ok) {
+                    return cache.put(url, response);
+                  }
+                }).catch(() => {
+                  console.warn('Manifest.json unavailable, skipping...');
+                });
+              }
             })
           )
         );
@@ -221,16 +231,30 @@ async function handleStaticRequest(request) {
       return cachedResponse;
     }
 
-    // Try network
-    const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
+    // Try network with proper error handling for manifest.json
+    let networkResponse;
+    try {
+      networkResponse = await fetch(request);
+    } catch (error) {
+      // For manifest.json, try without credentials if fetch fails
+      if (request.url.includes('manifest.json')) {
+        networkResponse = await fetch(request, {
+          credentials: 'omit',
+          mode: 'no-cors'
+        });
+      } else {
+        throw error;
+      }
+    }
+
+    if (networkResponse && networkResponse.ok) {
       // Cache the response
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());
       return networkResponse;
     }
 
-    return networkResponse;
+    return networkResponse || new Response('Resource not available', { status: 404 });
   } catch (error) {
     console.error('Service Worker: Static request failed', error);
 

@@ -21,6 +21,8 @@ export default defineConfig(({ mode }) => {
           plugins: [
             // Ensure React is properly transformed
             '@babel/plugin-transform-react-jsx',
+            // Fix for React 19 compatibility issues
+            ['@babel/plugin-proposal-decorators', { legacy: true }],
           ],
         },
         // Ensure React is properly handled
@@ -61,10 +63,19 @@ export default defineConfig(({ mode }) => {
         '@clerk/clerk-react',
         'framer-motion',
         '@supabase/supabase-js',
+        // Include use-sync-external-store to ensure proper bundling
+        'use-sync-external-store',
+        // Include React-related packages that might have issues
+        'react-is',
+        'react-error-boundary',
       ],
       exclude: [],
       esbuildOptions: {
         target: 'esnext',
+        // Ensure React 19 compatibility
+        define: {
+          global: 'globalThis',
+        },
       },
       // Force optimization of these dependencies
       force: true,
@@ -145,13 +156,44 @@ export default defineConfig(({ mode }) => {
           },
           // Manual chunking for better caching and performance
           manualChunks: (id: string) => {
-            // Core React libraries
+            // Add diagnostic logging
+            if (mode === 'development') {
+              console.log('[Vite Chunking] Processing:', id);
+            }
+            
+            // React 19 compatibility: Keep use-sync-external-store in main bundle
+            if (id.includes('use-sync-external-store')) {
+              if (mode === 'development') {
+                console.log('[Vite Chunking] Keeping use-sync-external-store in main bundle');
+              }
+              return undefined;
+            }
+            
+            // React 19 compatibility: Keep react-is in main bundle
+            if (id.includes('react-is')) {
+              if (mode === 'development') {
+                console.log('[Vite Chunking] Keeping react-is in main bundle');
+              }
+              return undefined;
+            }
+            
+            // Core React libraries - but handle React 19 carefully
             if (
-              id.includes('react') ||
-              id.includes('react-dom') ||
-              id.includes('react-router')
+              id.includes('react') &&
+              (id.includes('react-dom') || id.includes('react/'))
             ) {
+              if (mode === 'development') {
+                console.log('[Vite Chunking] Adding React core to react-vendor:', id);
+              }
               return 'react-vendor';
+            }
+            
+            // React Router - keep separate but ensure proper loading order
+            if (id.includes('react-router')) {
+              if (mode === 'development') {
+                console.log('[Vite Chunking] Adding React Router to router-vendor:', id);
+              }
+              return 'router-vendor';
             }
 
             // Animation libraries
@@ -426,6 +468,8 @@ export default defineConfig(({ mode }) => {
       __DEV__: mode === 'development',
       // Define process.env for browser compatibility
       'process.env.NODE_ENV': JSON.stringify(mode),
+      // Fix for React 19 global issues
+      global: 'globalThis',
     },
 
     // Performance options
