@@ -40,28 +40,35 @@ jobs:
         continue-on-error: true
 
       - name: Setup Turbo env
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
         run: |
-          if [ -n "${{ secrets.TURBO_TOKEN }}" ]; then
-            echo "TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}" >> $GITHUB_ENV
+          if [ -n "$TURBO_TOKEN" ]; then
+            echo "TURBO_TOKEN=$TURBO_TOKEN" >> $GITHUB_ENV
           fi
-          if [ -n "${{ secrets.TURBO_TEAM }}" ]; then
-            echo "TURBO_TEAM=${{ secrets.TURBO_TEAM }}" >> $GITHUB_ENV
+          if [ -n "$TURBO_TEAM" ]; then
+            echo "TURBO_TEAM=$TURBO_TEAM" >> $GITHUB_ENV
           fi
 
       - name: Build packages
         run: npm run build:packages
 
       - name: Setup web build env
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
         run: |
           echo "NODE_ENV=production" >> $GITHUB_ENV
-          if [ -n "${{ secrets.VITE_SUPABASE_URL }}" ]; then
-            echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> $GITHUB_ENV
+          if [ -n "$VITE_SUPABASE_URL" ]; then
+            echo "VITE_SUPABASE_URL=$VITE_SUPABASE_URL" >> $GITHUB_ENV
           fi
-          if [ -n "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ]; then
-            echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> $GITHUB_ENV
+          if [ -n "$VITE_SUPABASE_ANON_KEY" ]; then
+            echo "VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY" >> $GITHUB_ENV
           fi
-          if [ -n "${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" ]; then
-            echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" >> $GITHUB_ENV
+          if [ -n "$VITE_CLERK_PUBLISHABLE_KEY" ]; then
+            echo "VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY" >> $GITHUB_ENV
           fi
 
       - name: Build web application
@@ -150,9 +157,11 @@ jobs:
         continue-on-error: true
 
       - name: Setup Snyk token
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
-            echo "SNYK_TOKEN=${{ secrets.SNYK_TOKEN }}" >> $GITHUB_ENV
+          if [ -n "$SNYK_TOKEN" ]; then
+            echo "SNYK_TOKEN=$SNYK_TOKEN" >> $GITHUB_ENV
           fi
 
       - name: Run Snyk security scan
