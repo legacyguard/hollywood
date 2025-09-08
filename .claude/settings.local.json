@@ -54,7 +54,8 @@
       "Bash(done)",
       "Bash(gh repo:*)",
       "Bash(gh run list:*)",
-      "Bash(eslint:*)"
+      "Bash(eslint:*)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "additionalDirectories": [

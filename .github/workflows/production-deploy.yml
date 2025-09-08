@@ -46,9 +46,15 @@ jobs:
         run: |
           if [ -n "$TURBO_TOKEN" ]; then
             echo "TURBO_TOKEN=$TURBO_TOKEN" >> $GITHUB_ENV
+            echo "✅ TURBO_TOKEN configured"
+          else
+            echo "⚠️ TURBO_TOKEN not configured - Turbo caching disabled"
           fi
           if [ -n "$TURBO_TEAM" ]; then
             echo "TURBO_TEAM=$TURBO_TEAM" >> $GITHUB_ENV
+            echo "✅ TURBO_TEAM configured"
+          else
+            echo "⚠️ TURBO_TEAM not configured"
           fi
 
       - name: Build packages
@@ -63,12 +69,21 @@ jobs:
           echo "NODE_ENV=production" >> $GITHUB_ENV
           if [ -n "$VITE_SUPABASE_URL" ]; then
             echo "VITE_SUPABASE_URL=$VITE_SUPABASE_URL" >> $GITHUB_ENV
+            echo "✅ VITE_SUPABASE_URL configured"
+          else
+            echo "⚠️ VITE_SUPABASE_URL not configured"
           fi
           if [ -n "$VITE_SUPABASE_ANON_KEY" ]; then
             echo "VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY" >> $GITHUB_ENV
+            echo "✅ VITE_SUPABASE_ANON_KEY configured"
+          else
+            echo "⚠️ VITE_SUPABASE_ANON_KEY not configured"
           fi
           if [ -n "$VITE_CLERK_PUBLISHABLE_KEY" ]; then
             echo "VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY" >> $GITHUB_ENV
+            echo "✅ VITE_CLERK_PUBLISHABLE_KEY configured"
+          else
+            echo "⚠️ VITE_CLERK_PUBLISHABLE_KEY not configured"
           fi
 
       - name: Build web application
@@ -187,6 +202,9 @@ jobs:
         run: |
           if [ -n "$SNYK_TOKEN" ]; then
             echo "SNYK_TOKEN=$SNYK_TOKEN" >> $GITHUB_ENV
+            echo "✅ SNYK_TOKEN configured"
+          else
+            echo "⚠️ SNYK_TOKEN not configured - Snyk scan will be skipped"
           fi
 
       - name: Run Snyk security scan
@@ -223,6 +241,10 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "❌ VERCEL_TOKEN not configured"
+            exit 1
+          fi
           cd web
           echo "🚀 Deploying to Vercel production..."
           
@@ -285,7 +307,7 @@ jobs:
 
     steps:
       - name: Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v11
+        uses: treosh/lighthouse-ci-action@v12
         with:
           urls: |
             https://legacyguard.cz
