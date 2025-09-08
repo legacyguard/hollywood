@@ -323,6 +323,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [dependency-scan, sast-scan, license-scan, container-scan, iac-scan]
     if: always()
+    permissions:
+      contents: read
+      actions: read
 
     steps:
       - name: Download all security reports

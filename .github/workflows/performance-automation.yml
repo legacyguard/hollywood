@@ -13,6 +13,9 @@ jobs:
   performance-optimization:
     runs-on: ubuntu-latest
     name: Performance Optimization & Testing
+    permissions:
+      issues: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -136,6 +139,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Bundle Analysis
     needs: performance-optimization
+    permissions:
+      issues: write
+      pull-requests: write
 
     steps:
       - name: Checkout code

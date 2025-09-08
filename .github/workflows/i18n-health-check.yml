@@ -18,6 +18,9 @@ on:
 jobs:
   check-translation-health:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -110,6 +113,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule'
     needs: check-translation-health
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout code

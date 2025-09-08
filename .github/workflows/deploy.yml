@@ -37,6 +37,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      actions: read
 
     outputs:
       environment: ${{ steps.determine-env.outputs.environment }}
@@ -92,6 +95,9 @@ jobs:
     timeout-minutes: 15
     needs: validate
     if: needs.validate.outputs.should_deploy == 'true'
+    permissions:
+      contents: read
+      actions: write
 
     environment:
       name: ${{ needs.validate.outputs.environment }}
@@ -199,6 +205,9 @@ jobs:
     timeout-minutes: 10
     needs: [validate, build-deploy]
     if: needs.validate.outputs.environment == 'staging' && needs.validate.outputs.should_deploy == 'true'
+    permissions:
+      contents: read
+      actions: read
 
     environment:
       name: ${{ needs.validate.outputs.environment }}
@@ -254,6 +263,9 @@ jobs:
     timeout-minutes: 15
     needs: [validate, build-deploy]
     if: needs.validate.outputs.environment == 'production' && needs.validate.outputs.should_deploy == 'true'
+    permissions:
+      contents: read
+      actions: read
 
     environment:
       name: production

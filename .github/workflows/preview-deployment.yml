@@ -17,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Preview
+    permissions:
+      issues: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
