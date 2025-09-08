@@ -3,6 +3,7 @@ import { type BaseSyntheticEvent, useCallback, useEffect } from 'react';
 // import { type UseFormProps, type UseFormReturn, type FieldValues, useForm } from 'react-hook-form';
 // import { zodResolver } from '@hookform/resolvers/zod';
 // import type { ZodSchema, ZodTypeDef } from 'zod';
+import { useTranslation } from '../i18n/useTranslation';
 
 // Mock types for react-hook-form and zod
 type FieldValues = any;
@@ -80,6 +81,8 @@ export function useZodForm<TSchema extends ZodSchema<any, ZodTypeDef, any>>({
   disableOnSubmit = true,
   ...formOptions
 }: UseZodFormOptions<TSchema>): EnhancedFormReturn<TSchema> {
+  const { t } = useTranslation();
+  
   const form = useForm<any>({
     ...formOptions,
     resolver: zodResolver(schema),
@@ -132,13 +135,13 @@ export function useZodForm<TSchema extends ZodSchema<any, ZodTypeDef, any>>({
                 // Set root error for general errors
                 setError('root', {
                   type: 'manual',
-                  message: error.message || 'An error occurred',
+                  message: error.message || t('common.messages.operationFailed'),
                 });
               }
             } else {
               setError('root', {
                 type: 'manual',
-                message: 'An unexpected error occurred',
+                message: t('common.messages.operationFailed'),
               });
             }
             throw error; // Re-throw to maintain error state

@@ -178,7 +178,21 @@
     "privacy": "Privacy",
     "terms": "Terms of Service",
     "legal": "Legal",
-    "support": "Support"
+    "support": "Support",
+    "vault": "Vault",
+    "documents": "Documents",
+    "intelligentOrganizer": "AI Organizer",
+    "analytics": "Analytics",
+    "collaboration": "Collaboration",
+    "family": "Family",
+    "legacy": "Legacy",
+    "timeCapsule": "Time Capsule",
+    "timeline": "Timeline",
+    "wishes": "Wishes",
+    "familyProtection": "Family Shield",
+    "guardians": "Guardians",
+    "more": "More",
+    "ai": "AI"
   },
   "forms": {
     "validation": {
@@ -194,7 +208,46 @@
       "passwordStrength": "Password must contain at least 8 characters with uppercase, lowercase, and numbers",
       "passwordsMatch": "Passwords do not match",
       "phoneFormat": "Invalid phone number format",
-      "urlFormat": "Invalid URL format"
+      "urlFormat": "Invalid URL format",
+      "fieldRequired": "{{field}} is required",
+      "fieldInvalid": "Please enter a valid {{field}}",
+      "fieldTooShort": "{{field}} must be at least {{min}} characters",
+      "fieldTooLong": "{{field}} must be no more than {{max}} characters",
+      "pleaseResolveErrors": "Please resolve validation errors before proceeding"
+    },
+    "auth": {
+      "password": {
+        "minLength": "Password must be at least {{min}} characters",
+        "maxLength": "Password must be less than {{max}} characters",
+        "uppercase": "Password must contain at least one uppercase letter",
+        "lowercase": "Password must contain at least one lowercase letter",
+        "number": "Password must contain at least one number",
+        "specialChar": "Password must contain at least one special character",
+        "required": "Password is required",
+        "confirm": "Please confirm your password",
+        "noMatch": "Passwords do not match",
+        "current": "Current password is required",
+        "confirmNew": "Please confirm your new password",
+        "mustBeDifferent": "New password must be different from current password"
+      },
+      "email": {
+        "required": "Email is required",
+        "invalid": "Please enter a valid email address",
+        "maxLength": "Email must be less than {{max}} characters"
+      },
+      "name": {
+        "firstRequired": "First name is required",
+        "lastRequired": "Last name is required",
+        "firstMaxLength": "First name must be less than {{max}} characters",
+        "lastMaxLength": "Last name must be less than {{max}} characters",
+        "invalidChars": "Name contains invalid characters"
+      },
+      "terms": {
+        "mustAccept": "You must accept the terms and conditions"
+      },
+      "token": {
+        "resetRequired": "Reset token is required"
+      }
     },
     "placeholders": {
       "enterText": "Enter text...",
@@ -404,5 +457,80 @@
     "suspicious": "Suspicious",
     "verified": "Verified",
     "unverified": "Unverified"
+  },
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "network": "Network error occurred. Please try again.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "notFound": "The requested resource was not found.",
+    "serverError": "Server error occurred. Please try again later.",
+    "validationFailed": "Please check your input and try again.",
+    "loadFailed": "Failed to load {{resource}}",
+    "saveFailed": "Failed to save {{resource}}. Please try again.",
+    "deleteFailed": "Failed to delete {{resource}}",
+    "uploadFailed": "Failed to upload {{resource}}",
+    "downloadFailed": "Failed to download {{resource}}",
+    "encryptionFailed": "Failed to encrypt data. Please try again.",
+    "decryptionFailed": "Failed to decrypt data. Please check your password.",
+    "connectionTimeout": "Connection timed out. Please try again.",
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "permissionDenied": "Permission denied. Please contact support.",
+    "quotaExceeded": "Storage quota exceeded. Please free up space.",
+    "fileTooBig": "File is too large. Maximum size is {{maxSize}}.",
+    "invalidFileType": "Invalid file type. Only {{allowedTypes}} are allowed.",
+    "processingFailed": "Failed to process {{resource}}. Please try again."
+  },
+  "success": {
+    "generic": "Operation completed successfully.",
+    "saved": "{{resource}} saved successfully",
+    "deleted": "{{resource}} deleted successfully",
+    "uploaded": "{{resource}} uploaded successfully",
+    "downloaded": "{{resource}} downloaded successfully",
+    "created": "{{resource}} created successfully",
+    "updated": "{{resource}} updated successfully",
+    "sent": "{{resource}} sent successfully",
+    "shared": "{{resource}} shared successfully",
+    "copied": "{{resource}} copied successfully",
+    "imported": "{{resource}} imported successfully",
+    "exported": "{{resource}} exported successfully",
+    "synchronized": "{{resource}} synchronized successfully",
+    "restored": "{{resource}} restored successfully",
+    "archived": "{{resource}} archived successfully",
+    "published": "{{resource}} published successfully"
+  },
+  "warnings": {
+    "generic": "Please review the information carefully.",
+    "unsavedChanges": "You have unsaved changes that will be lost.",
+    "permanentAction": "This action cannot be undone.",
+    "securityRisk": "This action may pose a security risk.",
+    "dataLoss": "This action may result in data loss.",
+    "connectionIssues": "Connection issues detected. Some features may not work properly.",
+    "storageAlmostFull": "Storage is almost full. Consider removing some files.",
+    "expiringSoon": "{{resource}} will expire soon.",
+    "maintenanceMode": "System maintenance is scheduled. Some features may be temporarily unavailable.",
+    "deprecatedFeature": "This feature is deprecated and will be removed in a future update."
+  },
+  "info": {
+    "generic": "Information updated.",
+    "loading": "Loading...",
+    "processing": "Processing...",
+    "saving": "Saving...",
+    "uploading": "Uploading...",
+    "downloading": "Downloading...",
+    "synchronizing": "Synchronizing...",
+    "analyzing": "Analyzing...",
+    "encrypting": "Encrypting...",
+    "decrypting": "Decrypting...",
+    "connecting": "Connecting...",
+    "initializing": "Initializing...",
+    "finalizing": "Finalizing...",
+    "preparing": "Preparing...",
+    "validating": "Validating...",
+    "optimizing": "Optimizing...",
+    "backingUp": "Backing up...",
+    "restoring": "Restoring...",
+    "updating": "Updating...",
+    "installing": "Installing...",
+    "configuring": "Configuring..."
   }
 }

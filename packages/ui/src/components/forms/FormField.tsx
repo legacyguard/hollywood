@@ -11,6 +11,8 @@ import {
 import { Paragraph } from '../Typography';
 import { AlertCircle, CheckCircle } from 'lucide-react-native';
 import { View } from 'tamagui';
+// Note: Translation hook would typically be imported from a shared location
+// For now using a mock implementation until proper i18n setup
 
 export interface FormFieldProps {
   children?: ReactNode;

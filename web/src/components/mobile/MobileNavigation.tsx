@@ -8,6 +8,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { useTranslation } from '@/i18n/useTranslation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -48,19 +49,20 @@ interface MobileNavigationProps {
   showLabels?: boolean;
 }
 
-const primaryNavItems: NavigationItem[] = [
-  { title: 'Dashboard', url: '/dashboard', icon: Home },
-  { title: 'Vault', url: '/vault', icon: FolderOpen },
-  { title: 'AI', url: '/intelligent-organizer', icon: Brain },
-  { title: 'Analytics', url: '/analytics', icon: BarChart3 },
-  { title: 'Family', url: '/family', icon: Users },
+// Navigation items with translation keys
+const primaryNavConfig = [
+  { titleKey: 'navigation.dashboard', url: '/dashboard', icon: Home },
+  { titleKey: 'navigation.vault', url: '/vault', icon: FolderOpen },
+  { titleKey: 'navigation.ai', url: '/intelligent-organizer', icon: Brain },
+  { titleKey: 'navigation.analytics', url: '/analytics', icon: BarChart3 },
+  { titleKey: 'navigation.family', url: '/family', icon: Users },
 ];
 
-const secondaryNavItems: NavigationItem[] = [
-  { title: 'Legacy', url: '/legacy', icon: Heart },
-  { title: 'Time Capsule', url: '/time-capsule', icon: Heart },
-  { title: 'Family Shield', url: '/family-protection', icon: Shield },
-  { title: 'Settings', url: '/settings', icon: Settings },
+const secondaryNavConfig = [
+  { titleKey: 'navigation.legacy', url: '/legacy', icon: Heart },
+  { titleKey: 'navigation.timeCapsule', url: '/time-capsule', icon: Heart },
+  { titleKey: 'navigation.familyProtection', url: '/family-protection', icon: Shield },
+  { titleKey: 'navigation.settings', url: '/settings', icon: Settings },
 ];
 
 export default function MobileNavigation({
@@ -69,9 +71,21 @@ export default function MobileNavigation({
   showLabels = true,
   hapticFeedback = true,
 }: MobileNavigationProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string>('');
+
+  // Build translated navigation items
+  const primaryNavItems: NavigationItem[] = primaryNavConfig.map(item => ({
+    ...item,
+    title: t(item.titleKey)
+  }));
+
+  const secondaryNavItems: NavigationItem[] = secondaryNavConfig.map(item => ({
+    ...item,
+    title: t(item.titleKey)
+  }));
 
   useEffect(() => {
     const currentPath = location.pathname;
@@ -81,7 +95,7 @@ export default function MobileNavigation({
         (currentPath.startsWith(item.url) && item.url !== '/')
     );
     setActiveItem(activeNav?.url || '');
-  }, [location.pathname]);
+  }, [location.pathname, primaryNavItems, secondaryNavItems]);
 
   const triggerHaptic = () => {
     if (hapticFeedback && 'vibrate' in navigator) {
@@ -186,7 +200,7 @@ export default function MobileNavigation({
                 <Menu className='w-5 h-5' />
                 {showLabels && (
                   <span className='text-xs mt-1 font-medium text-gray-500'>
-                    More
+                    {t('navigation.more')}
                   </span>
                 )}
 

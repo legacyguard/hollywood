@@ -1,55 +1,56 @@
 
 import { z } from 'zod';
+import { ValidationMessages, createValidationMessage } from '../validation-messages';
 
 // Password validation rules
 const passwordSchema = z
   .string()
-  .min(8, 'Password must be at least 8 characters')
-  .max(100, 'Password must be less than 100 characters')
-  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-  .regex(/[0-9]/, 'Password must contain at least one number')
+  .min(8, createValidationMessage(ValidationMessages.password.minLength(8)))
+  .max(100, createValidationMessage(ValidationMessages.password.maxLength(100)))
+  .regex(/[A-Z]/, createValidationMessage(ValidationMessages.password.uppercase()))
+  .regex(/[a-z]/, createValidationMessage(ValidationMessages.password.lowercase()))
+  .regex(/[0-9]/, createValidationMessage(ValidationMessages.password.number()))
   .regex(
     /[^A-Za-z0-9]/,
-    'Password must contain at least one special character'
+    createValidationMessage(ValidationMessages.password.specialChar())
   );
 
 // Email validation
 const emailSchema = z
   .string()
-  .email('Please enter a valid email address')
-  .min(1, 'Email is required')
-  .max(255, 'Email must be less than 255 characters');
+  .email(createValidationMessage(ValidationMessages.email.invalid()))
+  .min(1, createValidationMessage(ValidationMessages.email.required()))
+  .max(255, createValidationMessage(ValidationMessages.email.maxLength(255)));
 
 // Sign up form schema
 export const signUpSchema = z
   .object({
     email: emailSchema,
     password: passwordSchema,
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    confirmPassword: z.string().min(1, createValidationMessage(ValidationMessages.password.confirm())),
     firstName: z
       .string()
-      .min(1, 'First name is required')
-      .max(50, 'First name must be less than 50 characters')
-      .regex(/^[a-zA-Z\s-']+$/, 'First name contains invalid characters'),
+      .min(1, createValidationMessage(ValidationMessages.name.firstRequired()))
+      .max(50, createValidationMessage(ValidationMessages.name.firstMaxLength(50)))
+      .regex(/^[a-zA-Z\s-']+$/, createValidationMessage(ValidationMessages.name.invalidChars())),
     lastName: z
       .string()
-      .min(1, 'Last name is required')
-      .max(50, 'Last name must be less than 50 characters')
-      .regex(/^[a-zA-Z\s-']+$/, 'Last name contains invalid characters'),
+      .min(1, createValidationMessage(ValidationMessages.name.lastRequired()))
+      .max(50, createValidationMessage(ValidationMessages.name.lastMaxLength(50)))
+      .regex(/^[a-zA-Z\s-']+$/, createValidationMessage(ValidationMessages.name.invalidChars())),
     acceptTerms: z
       .boolean()
-      .refine(val => val === true, 'You must accept the terms and conditions'),
+      .refine(val => val === true, createValidationMessage(ValidationMessages.terms.mustAccept())),
   })
   .refine(data => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: createValidationMessage(ValidationMessages.password.noMatch()),
     path: ['confirmPassword'],
   });
 
 // Sign in form schema
 export const signInSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().min(1, createValidationMessage(ValidationMessages.password.required())),
   rememberMe: z.boolean().optional(),
 });
 
@@ -62,27 +63,27 @@ export const forgotPasswordSchema = z.object({
 export const resetPasswordSchema = z
   .object({
     password: passwordSchema,
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
-    token: z.string().min(1, 'Reset token is required'),
+    confirmPassword: z.string().min(1, createValidationMessage(ValidationMessages.password.confirm())),
+    token: z.string().min(1, createValidationMessage(ValidationMessages.token.resetRequired())),
   })
   .refine(data => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: createValidationMessage(ValidationMessages.password.noMatch()),
     path: ['confirmPassword'],
   });
 
 // Change password schema (for authenticated users)
 export const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, 'Current password is required'),
+    currentPassword: z.string().min(1, createValidationMessage(ValidationMessages.password.current())),
     newPassword: passwordSchema,
-    confirmNewPassword: z.string().min(1, 'Please confirm your new password'),
+    confirmNewPassword: z.string().min(1, createValidationMessage(ValidationMessages.password.confirmNew())),
   })
   .refine(data => data.newPassword === data.confirmNewPassword, {
-    message: 'Passwords do not match',
+    message: createValidationMessage(ValidationMessages.password.noMatch()),
     path: ['confirmNewPassword'],
   })
   .refine(data => data.currentPassword !== data.newPassword, {
-    message: 'New password must be different from current password',
+    message: createValidationMessage(ValidationMessages.password.mustBeDifferent()),
     path: ['newPassword'],
   });
 
