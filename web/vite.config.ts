@@ -123,15 +123,15 @@ export default defineConfig(({ mode }) => {
       // Enable source maps for production debugging
       sourcemap: mode === 'development',
       // Enable CSS minification
-      cssMinify: mode === 'production',
+      cssMinification: mode === 'production',
       // Report bundle size
       reportCompressedSize: true,
       // Minification options
       minify: mode === 'production' ? 'terser' : false,
       // Chunk size warning limit (in KB) - increased for large app
       chunkSizeWarningLimit: 1500,
-      // Target browsers
-      target: 'esnext',
+      // Target browsers - use ES2020 for better compatibility
+      target: 'es2020',
       // CSS code splitting
       cssCodeSplit: true,
       // Assets inline limit (4kb)
@@ -139,6 +139,25 @@ export default defineConfig(({ mode }) => {
       // Optimize chunk loading with preloading
       modulePreload: {
         polyfill: true,
+      },
+      // Ensure proper MIME types for production
+      manifest: true,
+      // Fix for MIME type issues in production
+      rollupOptions: {
+        output: {
+          // Ensure proper file extensions and MIME types
+          entryFileNames: 'assets/js/[name]-[hash].js',
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+          // Fix for React 19 module issues
+          format: 'es',
+          // Ensure proper module loading
+          generatedCode: {
+            preset: 'es2015',
+            arrowFunctions: true,
+            constBindings: true,
+          },
+        },
       },
       // Rollup options for advanced configuration
       rollupOptions: {
@@ -161,32 +180,45 @@ export default defineConfig(({ mode }) => {
             react: 'React',
             'react-dom': 'ReactDOM',
           },
+          // Fix for React 19 module issues and MIME types
+          format: 'es',
+          // Ensure proper module loading
+          generatedCode: {
+            preset: 'es2015',
+            arrowFunctions: true,
+            constBindings: true,
+          },
+          // Ensure proper file extensions and MIME types
+          entryFileNames: 'assets/js/[name]-[hash].js',
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
           // Manual chunking for better caching and performance
           manualChunks: (id: string) => {
+            // CRITICAL: React 19 compatibility - keep problematic packages in main bundle
+            const problematicPackages = [
+              'use-sync-external-store',
+              'react-is',
+              'react-redux',
+              '@tanstack/react-query',
+              'zustand',
+              'jotai',
+              'recoil',
+            ];
+            
+            if (problematicPackages.some(pkg => id.includes(pkg))) {
+              return undefined; // Keep in main bundle to avoid React undefined issues
+            }
+            
             // Add diagnostic logging
             if (mode === 'development') {
               console.log('[Vite Chunking] Processing:', id);
             }
             
-            // React 19 compatibility: Keep use-sync-external-store in main bundle
-            if (id.includes('use-sync-external-store')) {
-              if (mode === 'development') {
-                console.log('[Vite Chunking] Keeping use-sync-external-store in main bundle');
-              }
-              return undefined;
-            }
-            
-            // React 19 compatibility: Keep react-is in main bundle
-            if (id.includes('react-is')) {
-              if (mode === 'development') {
-                console.log('[Vite Chunking] Keeping react-is in main bundle');
-              }
-              return undefined;
-            }
-            
             // Core React libraries - but handle React 19 carefully
             if (
               id.includes('react') &&
+              !id.includes('use-sync-external-store') &&
+              !id.includes('react-is') &&
               (id.includes('react-dom') || id.includes('react/'))
             ) {
               if (mode === 'development') {
@@ -196,7 +228,7 @@ export default defineConfig(({ mode }) => {
             }
             
             // React Router - keep separate but ensure proper loading order
-            if (id.includes('react-router')) {
+            if (id.includes('react-router') && !id.includes('use-sync-external-store')) {
               if (mode === 'development') {
                 console.log('[Vite Chunking] Adding React Router to router-vendor:', id);
               }
@@ -407,22 +439,6 @@ export default defineConfig(({ mode }) => {
               return `vendor-${packageName.replace('@', '').replace('/', '-')}`;
             }
           },
-          // Asset file naming
-          assetFileNames: (assetInfo: any) => {
-            const info = assetInfo.name?.split('.');
-            const ext = info?.[info.length - 1];
-            if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext || '')) {
-              return `assets/images/[name]-[hash][extname]`;
-            }
-            if (/woff2?|ttf|otf|eot/i.test(ext || '')) {
-              return `assets/fonts/[name]-[hash][extname]`;
-            }
-            return `assets/[name]-[hash][extname]`;
-          },
-          // Chunk file naming
-          chunkFileNames: 'assets/js/[name]-[hash].js',
-          // Entry file naming
-          entryFileNames: 'assets/js/[name]-[hash].js',
         },
         // Add bundle analyzer plugin in production
         ...(mode === 'production' && {

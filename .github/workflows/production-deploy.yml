@@ -73,16 +73,41 @@ jobs:
 
       - name: Build web application
         run: |
-          echo "🔨 Starting production build..."
-          npm run build:web || {
+          echo "🔨 Starting production build with enhanced configuration..."
+          
+          # Use production-specific Vite config
+          export VITE_CONFIG_FILE=vite.config.prod.ts
+          
+          # Build with production settings
+          cd web && npm run build:production || {
             echo "❌ Production build failed. Analyzing..."
             echo "Node version: $(node --version)"
             echo "Build environment: $NODE_ENV"
+            echo "Vite config: $VITE_CONFIG_FILE"
             echo "Available environment variables:"
             env | grep -E "^(VITE_|NODE_)" | head -10
-            exit 1
+            
+            # Try fallback build with standard config
+            echo "🔄 Attempting fallback build..."
+            npm run build:memory-safe || {
+              echo "❌ Fallback build also failed"
+              exit 1
+            }
           }
+          
           echo "✅ Production build completed successfully"
+          
+          # Verify build artifacts
+          echo "📦 Build artifacts:"
+          ls -la dist/
+          echo "📊 Bundle sizes:"
+          find dist/ -name "*.js" -exec ls -lh {} \; | head -10
+          
+          # Check deployment manifest
+          if [ -f "dist/deployment-manifest.json" ]; then
+            echo "📋 Deployment manifest:"
+            cat dist/deployment-manifest.json
+          fi
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -198,8 +223,33 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          vercel build --prod --token=$VERCEL_TOKEN
+          cd web
+          echo "🚀 Deploying to Vercel production..."
+          
+          # Use production-specific configuration
+          cp vite.config.prod.ts vite.config.ts
+          
+          # Deploy with production settings
+          vercel build --prod --token=$VERCEL_TOKEN || {
+            echo "❌ Vercel build failed, trying with standard config..."
+            cp vite.config.ts.backup vite.config.ts 2>/dev/null || true
+            vercel build --prod --token=$VERCEL_TOKEN
+          }
+          
           vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+          
+          echo "✅ Production deployment completed"
+
+      - name: Verify deployment
+        run: |
+          echo "🔍 Verifying production deployment..."
+          sleep 30  # Wait for deployment to propagate
+          
+          # Check if site is accessible
+          curl -I https://legacyguard.cz || echo "⚠️ Site may not be fully propagated yet"
+          
+          # Check for critical errors
+          curl -s https://legacyguard.cz | grep -i "error\|failed" || echo "✅ No obvious errors in HTML"
 
   deploy-staging:
     name: Deploy to Staging

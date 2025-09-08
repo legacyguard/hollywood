@@ -7,6 +7,7 @@
     "dev": "cross-env NODE_OPTIONS='--max-old-space-size=4096 --max_semi_space_size=64' vite",
     "build": "cross-env NODE_OPTIONS='--max-old-space-size=4096 --max_semi_space_size=64' vite build",
     "build:memory-safe": "cross-env NODE_OPTIONS='--max-old-space-size=6144 --max_semi_space_size=128 --optimize-for-size' vite build",
+    "build:production": "bash scripts/production-build.sh",
     "preview": "cross-env NODE_OPTIONS='--max-old-space-size=3072' vite preview",
     "type-check": "cross-env NODE_OPTIONS='--max-old-space-size=4096' tsc --noEmit",
     "lint": "cross-env NODE_OPTIONS='--max-old-space-size=4096' eslint . --report-unused-disable-directives --max-warnings 0",

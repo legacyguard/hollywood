@@ -62,19 +62,7 @@ self.addEventListener('install', event => {
         // Cache each resource individually to avoid failing on missing resources
         return Promise.allSettled(
           STATIC_CACHE_URLS.map(url =>
-            cache.add(url).catch(err => {
-              console.warn(`Failed to cache ${url}:`, err);
-              // For manifest.json, try without authentication if 401
-              if (url === '/manifest.json' && err.status === 401) {
-                return fetch(url, { credentials: 'omit' }).then(response => {
-                  if (response.ok) {
-                    return cache.put(url, response);
-                  }
-                }).catch(() => {
-                  console.warn('Manifest.json unavailable, skipping...');
-                });
-              }
-            })
+            this.cacheResourceWithFallback(cache, url)
           )
         );
       })
@@ -159,6 +147,38 @@ self.addEventListener('fetch', event => {
 });
 
 /**
+ * Cache resource with fallback strategies
+ */
+async function cacheResourceWithFallback(cache, url) {
+  try {
+    // Try normal fetch first
+    const response = await fetch(url);
+    if (response.ok) {
+      await cache.put(url, response.clone());
+      return;
+    }
+  } catch (error) {
+    console.warn(`Initial cache attempt failed for ${url}:`, error);
+  }
+
+  // Try without credentials for auth issues
+  try {
+    const response = await fetch(url, {
+      credentials: 'omit',
+      mode: 'no-cors'
+    });
+    if (response && response.status === 200) {
+      await cache.put(url, response.clone());
+      return;
+    }
+  } catch (error) {
+    console.warn(`Fallback cache attempt failed for ${url}:`, error);
+  }
+
+  console.warn(`Failed to cache ${url} - resource may be unavailable`);
+}
+
+/**
  * Handle navigation requests with cache-first strategy and offline fallback
  */
 async function handleNavigationRequest(request) {
@@ -171,9 +191,16 @@ async function handleNavigationRequest(request) {
       return cachedResponse;
     }
 
-    // Try network
-    const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
+    // Try network with proper error handling
+    let networkResponse;
+    try {
+      networkResponse = await fetch(request);
+    } catch (error) {
+      console.error('Network request failed:', error);
+      return await caches.match(OFFLINE_URL);
+    }
+
+    if (networkResponse && networkResponse.ok) {
       // Cache the response
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());
