@@ -264,7 +264,7 @@ export default function EnhancedDocumentList({
       {filteredAndSortedDocuments.length === 0 ? (
         <Card className='p-12 text-center'>
           <Icon
-            name={'search' as any}
+            name="search"
             className='w-16 h-16 text-muted-foreground mx-auto mb-6'
           />
           <h3 className='text-xl font-semibold mb-4'>No Documents Found</h3>

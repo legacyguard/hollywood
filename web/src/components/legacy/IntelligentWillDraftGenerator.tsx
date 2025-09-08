@@ -419,7 +419,7 @@ export const IntelligentWillDraftGenerator: React.FC<
         >
           <div className='space-y-4'>
             <div className='w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto'>
-              <Icon name={'sparkles' as any} className='w-8 h-8 text-primary' />
+              <Icon name="sparkles" className='w-8 h-8 text-primary' />
             </div>
             <h2 className='text-2xl font-semibold'>
               Sofia's Intelligent Will Assistant
@@ -435,7 +435,7 @@ export const IntelligentWillDraftGenerator: React.FC<
           <Card className='p-6 bg-gradient-to-r from-primary/5 to-blue/5 border-primary/20'>
             <div className='flex items-start gap-4'>
               <Icon
-                name={'magic-wand' as any}
+                name="magic-wand"
                 className='w-6 h-6 text-primary mt-1'
               />
               <div className='text-left'>
@@ -461,14 +461,14 @@ export const IntelligentWillDraftGenerator: React.FC<
               {isAnalyzing ? (
                 <>
                   <Icon
-                    name={'loader' as any}
+                    name="loader"
                     className='w-5 h-5 mr-2 animate-spin'
                   />
                   Analyzing Your Data...
                 </>
               ) : (
                 <>
-                  <Icon name={'sparkles' as any} className='w-5 h-5 mr-2' />
+                  <Icon name="sparkles" className='w-5 h-5 mr-2' />
                   Yes, Create Intelligent Draft
                 </>
               )}
@@ -480,7 +480,7 @@ export const IntelligentWillDraftGenerator: React.FC<
               size='lg'
               className='px-8'
             >
-              <Icon name={'edit' as any} className='w-5 h-5 mr-2' />
+              <Icon name="edit" className='w-5 h-5 mr-2' />
               No Thanks, Start from Scratch
             </Button>
           </div>
@@ -499,7 +499,7 @@ export const IntelligentWillDraftGenerator: React.FC<
             <div className='text-center space-y-4'>
               <div className='flex items-center justify-center gap-2'>
                 <Icon
-                  name={'check-circle' as any}
+                  name="check-circle"
                   className='w-6 h-6 text-green-600'
                 />
                 <h2 className='text-xl font-semibold'>
@@ -530,7 +530,7 @@ export const IntelligentWillDraftGenerator: React.FC<
             {analysis.suggestedBeneficiaries.length > 0 && (
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
-                  <Icon name={'users' as any} className='w-5 h-5' />
+                  <Icon name="users" className='w-5 h-5' />
                   Suggested Beneficiaries
                 </h3>
                 <div className='space-y-3'>
@@ -565,7 +565,7 @@ export const IntelligentWillDraftGenerator: React.FC<
             {analysis.suggestedAssetDistribution.length > 0 && (
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
-                  <Icon name={'building-office' as any} className='w-5 h-5' />
+                  <Icon name="building-office" className='w-5 h-5' />
                   Asset Distribution Suggestions
                 </h3>
                 <div className='space-y-3'>
@@ -580,7 +580,7 @@ export const IntelligentWillDraftGenerator: React.FC<
                             {asset.bundleName}
                           </span>
                           <Icon
-                            name={'arrow-right' as any}
+                            name="arrow-right"
                             className='w-3 h-3 text-muted-foreground'
                           />
                           <span className='text-primary'>
@@ -602,7 +602,7 @@ export const IntelligentWillDraftGenerator: React.FC<
               {analysis.suggestedExecutor && (
                 <Card className='p-4'>
                   <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                    <Icon name={'shield-check' as any} className='w-4 h-4' />
+                    <Icon name="shield-check" className='w-4 h-4' />
                     Suggested Executor
                   </h4>
                   <div className='space-y-2'>
@@ -625,7 +625,7 @@ export const IntelligentWillDraftGenerator: React.FC<
                 analysis.suggestedGuardians.length > 0 && (
                   <Card className='p-4'>
                     <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                      <Icon name={'heart' as any} className='w-4 h-4' />
+                      <Icon name="heart" className='w-4 h-4' />
                       Suggested Guardians
                     </h4>
                     <div className='space-y-2'>
@@ -654,7 +654,7 @@ export const IntelligentWillDraftGenerator: React.FC<
             {analysis.missingInfo.length > 0 && (
               <Card className='p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2 text-amber-800 dark:text-amber-200'>
-                  <Icon name={'alert-triangle' as any} className='w-5 h-5' />
+                  <Icon name="alert-triangle" className='w-5 h-5' />
                   Areas to Consider
                 </h3>
                 <ul className='space-y-2 text-sm text-amber-700 dark:text-amber-300'>
@@ -675,7 +675,7 @@ export const IntelligentWillDraftGenerator: React.FC<
                 size='lg'
                 className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
               >
-                <Icon name={'check' as any} className='w-5 h-5 mr-2' />
+                <Icon name="check" className='w-5 h-5 mr-2' />
                 Use This Draft as Starting Point
               </Button>
 
@@ -685,7 +685,7 @@ export const IntelligentWillDraftGenerator: React.FC<
                 size='lg'
                 className='px-8'
               >
-                <Icon name={'edit' as any} className='w-5 h-5 mr-2' />
+                <Icon name="edit" className='w-5 h-5 mr-2' />
                 Start from Scratch Instead
               </Button>
             </div>

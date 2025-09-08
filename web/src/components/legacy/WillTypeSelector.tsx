@@ -302,7 +302,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                     variant='ghost'
                     size='sm'
                   >
-                    <Icon name={'x' as any} className='w-4 h-4' />
+                    <Icon name="x" className='w-4 h-4' />
                   </Button>
                 </div>
 
@@ -310,7 +310,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                   <div>
                     <h4 className='font-medium mb-3 flex items-center gap-2'>
                       <Icon
-                        name={'list' as any}
+                        name="list"
                         className='w-4 h-4 text-blue-600'
                       />
                       Requirements
@@ -354,7 +354,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                   <div>
                     <h4 className='font-medium mb-3 flex items-center gap-2'>
                       <Icon
-                        name={'alert-circle' as any}
+                        name="alert-circle"
                         className='w-4 h-4 text-amber-600'
                       />
                       Considerations
@@ -380,7 +380,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
           {/* Navigation */}
           <div className='flex justify-between mt-8'>
             <Button onClick={onBack} variant='outline'>
-              <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
+              <Icon name="arrow-left" className='w-4 h-4 mr-2' />
               Back
             </Button>
 
@@ -393,7 +393,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
               {selectedType
                 ? legalInfo.willTypes[selectedType].name
                 : 'Selected Type'}
-              <Icon name={'arrow-right' as any} className='w-4 h-4 ml-2' />
+              <Icon name="arrow-right" className='w-4 h-4 ml-2' />
             </Button>
           </div>
         </FadeIn>

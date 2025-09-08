@@ -175,7 +175,7 @@ export function ProfessionalReviewButton({
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button
-                    variant={'outline' as any}
+                    variant="outline"
                     size='lg'
                     className='bg-white text-blue-600 border-white hover:bg-blue-50'
                     onClick={handleButtonClick}
@@ -414,7 +414,7 @@ export function WillWizardProfessionalReview({
         documentType='Will'
         documentName='Your Will'
         familyContext={familyContext}
-        variant={'card' as any}
+        variant="card"
         showBenefits
         onReviewRequested={onReviewRequested}
         className='border-amber-200 bg-amber-50/50'

@@ -218,7 +218,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
           ) : (
             <Card className='p-8 text-center'>
               <Icon
-                name={'search' as any}
+                name="search"
                 className='w-12 h-12 text-muted-foreground mx-auto mb-4'
               />
               <h4 className='font-semibold mb-2'>No Recommended Templates</h4>
@@ -322,7 +322,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
             <div className='p-4 border rounded-lg bg-yellow-50 border-yellow-200'>
               <div className='flex items-start gap-3'>
                 <Icon
-                  name={'alert-triangle' as any}
+                  name="alert-triangle"
                   className='w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5'
                 />
                 <div>
@@ -452,11 +452,11 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
           onClick={onPreview}
           className='flex-1'
         >
-          <Icon name={'eye' as any} className='w-3 h-3 mr-2' />
+          <Icon name="eye" className='w-3 h-3 mr-2' />
           Preview
         </Button>
         <Button size='sm' onClick={onApply} className='flex-1'>
-          <Icon name={'check' as any} className='w-3 h-3 mr-2' />
+          <Icon name="check" className='w-3 h-3 mr-2' />
           Use Template
         </Button>
       </div>
@@ -591,7 +591,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
               {template.requiredFields.map((field, index) => (
                 <div key={index} className='flex items-center gap-2 text-sm'>
                   <Icon
-                    name={'check-circle' as any}
+                    name="check-circle"
                     className='w-4 h-4 text-green-600'
                   />
                   <span>{field.replace('_', ' ').replace('.', ' → ')}</span>
@@ -606,7 +606,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
               {template.optionalEnhancements.map((enhancement, index) => (
                 <div key={index} className='flex items-center gap-2 text-sm'>
                   <Icon
-                    name={'plus-circle' as any}
+                    name="plus-circle"
                     className='w-4 h-4 text-blue-600'
                   />
                   <span>{enhancement.replace('_', ' ')}</span>
@@ -622,7 +622,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
                 {template.legalNotices.map((notice, index) => (
                   <div key={index} className='flex items-start gap-2 text-sm'>
                     <Icon
-                      name={'info' as any}
+                      name="info"
                       className='w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5'
                     />
                     <span className='text-muted-foreground'>{notice}</span>
@@ -639,7 +639,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
           Close
         </Button>
         <Button onClick={onApply}>
-          <Icon name={'check' as any} className='w-4 h-4 mr-2' />
+          <Icon name="check" className='w-4 h-4 mr-2' />
           Use This Template
         </Button>
       </div>

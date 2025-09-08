@@ -290,7 +290,7 @@ export const DocumentUploader = () => {
       <Card className='p-6 bg-card border-card-border'>
         <div className='flex items-center gap-3 mb-4'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <Icon name={'upload' as any} className='w-5 h-5 text-primary' />
+            <Icon name="upload" className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold text-lg'>Secure Document Upload</h3>
@@ -334,7 +334,7 @@ export const DocumentUploader = () => {
                   transition={{ duration: 0.2 }}
                 >
                   <Icon
-                    name={'upload' as any}
+                    name="upload"
                     className='w-6 h-6 text-primary'
                   />
                 </motion.div>
@@ -366,7 +366,7 @@ export const DocumentUploader = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Icon name={'documents' as any} className='w-4 h-4' />
+                    <Icon name="documents" className='w-4 h-4' />
                     Browse Files
                   </motion.label>
                 </div>
@@ -392,13 +392,13 @@ export const DocumentUploader = () => {
                         ease: 'linear',
                       }}
                     >
-                      <Icon name={'upload' as any} className='w-4 h-4 mr-2' />
+                      <Icon name="upload" className='w-4 h-4 mr-2' />
                     </motion.div>
                     Encrypting...
                   </>
                 ) : (
                   <>
-                    <Icon name={'upload' as any} className='w-4 h-4 mr-2' />
+                    <Icon name="upload" className='w-4 h-4 mr-2' />
                     Upload
                   </>
                 )}
@@ -463,7 +463,7 @@ export const DocumentUploader = () => {
                   }}
                 >
                   <Icon
-                    name={'documents' as any}
+                    name="documents"
                     className='w-4 h-4 text-primary'
                   />
                 </motion.div>
@@ -478,7 +478,7 @@ export const DocumentUploader = () => {
                   whileTap={{ scale: 0.9 }}
                 >
                   <Icon
-                    name={'x' as any}
+                    name="x"
                     className='w-3 h-3 text-muted-foreground hover:text-red-500'
                   />
                 </motion.button>
@@ -490,7 +490,7 @@ export const DocumentUploader = () => {
         <div className='mt-4 p-3 bg-status-warning/10 rounded-lg'>
           <div className='flex gap-2'>
             <Icon
-              name={'info' as any}
+              name="info"
               className='w-4 h-4 text-status-warning flex-shrink-0 mt-0.5'
             />
             <div className='text-xs text-muted-foreground'>

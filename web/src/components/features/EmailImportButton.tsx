@@ -130,7 +130,7 @@ export function EmailImportButton({
                     {t('title')}
                   </h3>
                   <Badge
-                    variant={'secondary' as any}
+                    variant="secondary"
                     className='text-xs bg-yellow-100 text-yellow-800'
                   >
                     <Sparkles className='h-3 w-3 mr-1' />
@@ -189,7 +189,7 @@ function EmailImportDialog({
       <DialogContent className='max-w-5xl max-h-[90vh] overflow-y-auto p-0'>
         <div className='relative'>
           <Button
-            variant={'ghost' as any}
+            variant="ghost"
             size='sm'
             onClick={onClose}
             className='absolute top-4 right-4 z-10 rounded-full'
@@ -233,7 +233,7 @@ function ImportSummaryDialog({
       <DialogContent className='max-w-5xl max-h-[90vh] overflow-y-auto p-0'>
         <div className='relative'>
           <Button
-            variant={'ghost' as any}
+            variant="ghost"
             size='sm'
             onClick={onClose}
             className='absolute top-4 right-4 z-10 rounded-full'

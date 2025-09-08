@@ -129,7 +129,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
       <div className='min-h-screen bg-background flex items-center justify-center'>
         <div className='text-center'>
           <Icon
-            name={'loader' as any}
+            name="loader"
             className='w-8 h-8 text-primary animate-spin mx-auto mb-4'
           />
           <p className='text-muted-foreground'>{t('loading.title')}</p>
@@ -148,7 +148,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
             <FadeIn duration={0.6}>
               <div className='text-center mb-12'>
                 <Icon
-                  name={'globe' as any}
+                  name="globe"
                   className='w-12 h-12 text-primary mx-auto mb-6'
                 />
                 <h1 className='text-3xl font-bold mb-4'>{t('languageSelection.title')}</h1>
@@ -159,10 +159,10 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                   <div className='flex items-center space-x-2 text-sm text-muted-foreground'>
                     <div className='w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold'>1</div>
                     <span className='font-semibold'>Language</span>
-                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <Icon name="arrow-right" className='w-4 h-4' />
                     <div className='w-6 h-6 rounded-full border-2 border-muted text-xs flex items-center justify-center'>2</div>
                     <span>Jurisdiction</span>
-                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <Icon name="arrow-right" className='w-4 h-4' />
                     <div className='w-6 h-6 rounded-full border-2 border-muted text-xs flex items-center justify-center'>3</div>
                     <span>Confirm</span>
                   </div>
@@ -191,7 +191,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                         {language.code === selectedLanguage && (
                           <div className='mt-4'>
                             <Icon
-                              name={'check-circle' as any}
+                              name="check-circle"
                               className='w-5 h-5 text-green-600 mx-auto'
                             />
                           </div>
@@ -215,7 +215,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
             <FadeIn duration={0.6}>
               <div className='text-center mb-12'>
                 <Icon
-                  name={'balance-scale' as any}
+                  name="balance-scale"
                   className='w-12 h-12 text-primary mx-auto mb-6'
                 />
                 <h1 className='text-3xl font-bold mb-4'>{t('jurisdictionSelection.title')}</h1>
@@ -225,13 +225,13 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                 <div className='flex justify-center mt-6'>
                   <div className='flex items-center space-x-2 text-sm text-muted-foreground'>
                     <div className='w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center'>
-                      <Icon name={'check' as any} className='w-3 h-3' />
+                      <Icon name="check" className='w-3 h-3' />
                     </div>
                     <span>Language</span>
-                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <Icon name="arrow-right" className='w-4 h-4' />
                     <div className='w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold'>2</div>
                     <span className='font-semibold'>Jurisdiction</span>
-                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <Icon name="arrow-right" className='w-4 h-4' />
                     <div className='w-6 h-6 rounded-full border-2 border-muted text-xs flex items-center justify-center'>3</div>
                     <span>Confirm</span>
                   </div>
@@ -268,7 +268,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                         {jurisdiction.code === selectedJurisdiction && (
                           <div className='mt-4'>
                             <Icon
-                              name={'check-circle' as any}
+                              name="check-circle"
                               className='w-5 h-5 text-green-600 mx-auto'
                             />
                           </div>
@@ -284,7 +284,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                   onClick={handleBackToLanguage}
                   variant='outline'
                 >
-                  <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
+                  <Icon name="arrow-left" className='w-4 h-4 mr-2' />
                   Back to Language
                 </Button>
               </div>
@@ -306,22 +306,22 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
             <FadeIn duration={0.8}>
               <div className='text-center mb-12'>
                 <Icon
-                  name={'shield-check' as any}
+                  name="shield-check"
                   className='w-16 h-16 text-primary mx-auto mb-6'
                 />
                 <h1 className='text-4xl font-bold mb-6'>{t('confirmation.title')}</h1>
                 <div className='flex justify-center mt-6'>
                   <div className='flex items-center space-x-2 text-sm text-muted-foreground'>
                     <div className='w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center'>
-                      <Icon name={'check' as any} className='w-3 h-3' />
+                      <Icon name="check" className='w-3 h-3' />
                     </div>
                     <span>Language</span>
-                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <Icon name="arrow-right" className='w-4 h-4' />
                     <div className='w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center'>
-                      <Icon name={'check' as any} className='w-3 h-3' />
+                      <Icon name="check" className='w-3 h-3' />
                     </div>
                     <span>Jurisdiction</span>
-                    <Icon name={'arrow-right' as any} className='w-4 h-4' />
+                    <Icon name="arrow-right" className='w-4 h-4' />
                     <div className='w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold'>3</div>
                     <span className='font-semibold'>Confirm</span>
                   </div>
@@ -351,7 +351,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                     className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
                     size='lg'
                   >
-                    <Icon name={'check' as any} className='w-5 h-5 mr-2' />
+                    <Icon name="check" className='w-5 h-5 mr-2' />
                     Start Creating Will
                   </Button>
 
@@ -361,7 +361,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                     size='lg'
                     className='px-8'
                   >
-                    <Icon name={'arrow-left' as any} className='w-5 h-5 mr-2' />
+                    <Icon name="arrow-left" className='w-5 h-5 mr-2' />
                     Back
                   </Button>
                 </div>
@@ -369,7 +369,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                 <div className='mt-8 p-4 bg-muted/30 rounded-lg'>
                   <div className='flex items-start gap-3'>
                     <Icon
-                      name={'info' as any}
+                      name="info"
                       className='w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5'
                     />
                     <div>
@@ -400,7 +400,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
           <FadeIn duration={0.6}>
             <div className='text-center mb-12'>
               <Icon
-                name={'globe' as any}
+                name="globe"
                 className='w-12 h-12 text-primary mx-auto mb-6'
               />
               <h1 className='text-3xl font-bold mb-4'>Select Your Country</h1>
@@ -434,7 +434,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                       {country.code === countryCode && (
                         <div className='mt-4'>
                           <Icon
-                            name={'check-circle' as any}
+                            name="check-circle"
                             className='w-5 h-5 text-green-600 mx-auto'
                           />
                         </div>
@@ -450,7 +450,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                 onClick={() => setShowCountryList(false)}
                 variant='outline'
               >
-                <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
+                <Icon name="arrow-left" className='w-4 h-4 mr-2' />
                 Back
               </Button>
             </div>
@@ -467,7 +467,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
         <FadeIn duration={0.8}>
           <div className='text-center mb-12'>
             <Icon
-              name={'shield-check' as any}
+              name="shield-check"
               className='w-16 h-16 text-primary mx-auto mb-6'
             />
             <h1 className='text-4xl font-bold mb-6'>{t('defaultConfirmation.title')}</h1>
@@ -491,7 +491,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                 className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
                 size='lg'
               >
-                <Icon name={'check' as any} className='w-5 h-5 mr-2' />
+                <Icon name="check" className='w-5 h-5 mr-2' />
                 Yes, that's correct
               </Button>
 
@@ -501,7 +501,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
                 size='lg'
                 className='px-8'
               >
-                <Icon name={'globe' as any} className='w-5 h-5 mr-2' />
+                <Icon name="globe" className='w-5 h-5 mr-2' />
                 Change Country
               </Button>
             </div>
@@ -509,7 +509,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
             <div className='mt-8 p-4 bg-muted/30 rounded-lg'>
               <div className='flex items-start gap-3'>
                 <Icon
-                  name={'info' as any}
+                  name="info"
                   className='w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5'
                 />
                 <div>

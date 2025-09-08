@@ -35,7 +35,7 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
           <div className='flex items-center gap-4'>
             <div className='flex items-center gap-2'>
               <Icon
-                name={'document-text' as any}
+                name="document-text"
                 className='w-5 h-5 text-primary'
               />
               <span className='font-semibold text-lg'>Will Creation</span>
@@ -63,7 +63,7 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
               onClick={exitFocusMode}
               className='text-muted-foreground hover:text-foreground'
             >
-              <Icon name={'minimize-2' as any} className='w-4 h-4 mr-2' />
+              <Icon name="minimize-2" className='w-4 h-4 mr-2' />
               Exit Focus Mode
             </Button>
 
@@ -76,7 +76,7 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
                   onClick={onExitWizard}
                   className='text-muted-foreground hover:text-foreground'
                 >
-                  <Icon name={'x' as any} className='w-4 h-4 mr-2' />
+                  <Icon name="x" className='w-4 h-4 mr-2' />
                   Close Wizard
                 </Button>
               </>

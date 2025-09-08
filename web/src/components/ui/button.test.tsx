@@ -51,13 +51,13 @@ describe('Button Component', () => {
   });
 
   it('applies secondary variant classes', () => {
-    render(<Button variant={'secondary' as any}>Secondary Button</Button>);
+    render(<Button variant="secondary">Secondary Button</Button>);
     const button = screen.getByRole('button');
     expect(button).toHaveClass('bg-secondary');
   });
 
   it('applies destructive variant classes', () => {
-    render(<Button variant={'destructive' as any}>Delete</Button>);
+    render(<Button variant="destructive">Delete</Button>);
     const button = screen.getByRole('button');
     expect(button).toHaveClass('bg-destructive');
   });

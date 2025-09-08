@@ -153,7 +153,7 @@ export function ProfessionalReviewerCard({
               {showContactButton && (
                 <Button
                   size='sm'
-                  variant={'outline' as any}
+                  variant="outline"
                   onClick={() => onContact?.(reviewer)}
                   className='w-full'
                 >

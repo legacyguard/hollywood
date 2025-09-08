@@ -565,7 +565,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
           <div className='space-y-6'>
             <div className='text-center p-6'>
               <Icon
-                name={'building-office' as any}
+                name="building-office"
                 className='w-12 h-12 text-primary mx-auto mb-4'
               />
               <h3 className='text-lg font-semibold mb-2'>
@@ -580,7 +580,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 variant='outline'
                 className='bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary'
               >
-                <Icon name={'vault' as any} className='w-4 h-4 mr-2' />
+                <Icon name="vault" className='w-4 h-4 mr-2' />
                 Import from My Vault
               </Button>
             </div>
@@ -589,7 +589,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4'>
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
-                  <Icon name={'home' as any} className='w-4 h-4' />
+                  <Icon name="home" className='w-4 h-4' />
                   {t('assets.realEstate.title')}
                 </h4>
                 <div className='flex items-center gap-2'>
@@ -599,7 +599,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
-                    <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
+                    <Icon name="vault" className='w-3 h-3 mr-1' />
                     {t('assets.realEstate.fromVaultButton')}
                   </Button>
                   <Button
@@ -619,7 +619,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     variant='outline'
                     size='sm'
                   >
-                    <Icon name={'add' as any} className='w-3 h-3 mr-1' />
+                    <Icon name="add" className='w-3 h-3 mr-1' />
                     {t('assets.realEstate.addButton')}
                   </Button>
                 </div>
@@ -697,7 +697,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4'>
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
-                  <Icon name={'car' as any} className='w-4 h-4' />
+                  <Icon name="car" className='w-4 h-4' />
                   {t('assets.vehicles.title')}
                 </h4>
                 <div className='flex items-center gap-2'>
@@ -707,7 +707,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
-                    <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
+                    <Icon name="vault" className='w-3 h-3 mr-1' />
                     {t('assets.vehicles.fromVaultButton')}
                   </Button>
                   <Button
@@ -730,7 +730,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     variant='outline'
                     size='sm'
                   >
-                    <Icon name={'add' as any} className='w-3 h-3 mr-1' />
+                    <Icon name="add" className='w-3 h-3 mr-1' />
                     {t('assets.vehicles.addButton')}
                   </Button>
                 </div>
@@ -822,7 +822,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4'>
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
-                  <Icon name={'credit-card' as any} className='w-4 h-4' />
+                  <Icon name="credit-card" className='w-4 h-4' />
                   {t('assets.bankAccounts.title')}
                 </h4>
                 <div className='flex items-center gap-2'>
@@ -832,7 +832,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
-                    <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
+                    <Icon name="vault" className='w-3 h-3 mr-1' />
                     {t('assets.bankAccounts.fromVaultButton')}
                   </Button>
                   <Button
@@ -855,7 +855,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     variant='outline'
                     size='sm'
                   >
-                    <Icon name={'add' as any} className='w-3 h-3 mr-1' />
+                    <Icon name="add" className='w-3 h-3 mr-1' />
                     {t('assets.bankAccounts.addButton')}
                   </Button>
                 </div>
@@ -944,7 +944,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4'>
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
-                  <Icon name={'star' as any} className='w-4 h-4' />
+                  <Icon name="star" className='w-4 h-4' />
                   {t('assets.personalProperty.title')}
                 </h4>
                 <div className='flex items-center gap-2'>
@@ -954,7 +954,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
-                    <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
+                    <Icon name="vault" className='w-3 h-3 mr-1' />
                     {t('assets.personalProperty.fromVaultButton')}
                   </Button>
                   <Button
@@ -974,7 +974,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     variant='outline'
                     size='sm'
                   >
-                    <Icon name={'add' as any} className='w-3 h-3 mr-1' />
+                    <Icon name="add" className='w-3 h-3 mr-1' />
                     {t('assets.personalProperty.addButton')}
                   </Button>
                 </div>
@@ -1191,7 +1191,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4 bg-amber-50 dark:bg-amber-900/20'>
               <div className='flex gap-3'>
                 <Icon
-                  name={'info' as any}
+                  name="info"
                   className='w-5 h-5 text-amber-600 flex-shrink-0 mt-1'
                 />
                 <div>
@@ -1289,7 +1289,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
           <div className='space-y-6'>
             <div className='text-center mb-8'>
               <Icon
-                name={'documents' as any}
+                name="documents"
                 className='w-12 h-12 text-primary mx-auto mb-4'
               />
               <h3 className='text-2xl font-semibold mb-2'>{t('review.header.title')}</h3>
@@ -1302,7 +1302,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <div className='grid gap-4'>
               <Card className='p-4'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                  <Icon name={'user' as any} className='w-4 h-4' />
+                  <Icon name="user" className='w-4 h-4' />
                   {t('review.sections.personalInfo.title')}
                 </h4>
                 <p className='text-sm text-muted-foreground'>
@@ -1313,7 +1313,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
               <Card className='p-4'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                  <Icon name={'users' as any} className='w-4 h-4' />
+                  <Icon name="users" className='w-4 h-4' />
                   {t('review.sections.beneficiaries.title')}
                 </h4>
                 <p className='text-sm text-muted-foreground'>
@@ -1323,7 +1323,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
               <Card className='p-4'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                  <Icon name={'shield-check' as any} className='w-4 h-4' />
+                  <Icon name="shield-check" className='w-4 h-4' />
                   {t('review.sections.executor.title')}
                 </h4>
                 <p className='text-sm text-muted-foreground'>
@@ -1336,7 +1336,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4 bg-green-50 dark:bg-green-900/20'>
               <div className='flex gap-3'>
                 <Icon
-                  name={'shield-check' as any}
+                  name="shield-check"
                   className='w-5 h-5 text-green-600 flex-shrink-0 mt-1'
                 />
                 <div>
@@ -1377,7 +1377,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     size='sm'
                     className='flex items-center gap-2'
                   >
-                    <Icon name={'arrow-left' as any} className='w-4 h-4' />
+                    <Icon name="arrow-left" className='w-4 h-4' />
                     {t('header.backButton')}
                   </Button>
                 </div>
@@ -1422,7 +1422,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <div className='max-w-4xl mx-auto px-6 py-3'>
               <div className='flex items-center gap-3 text-sm'>
                 <Icon
-                  name={'sparkles' as any}
+                  name="sparkles"
                   className='w-4 h-4 text-primary'
                 />
                 <span className='text-primary font-medium'>
@@ -1498,7 +1498,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 variant='outline'
                 disabled={currentStep === 0 && !onBack}
               >
-                <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
+                <Icon name="arrow-left" className='w-4 h-4 mr-2' />
                 {currentStep === 0 ? t('navigation.changeWillType') : t('navigation.back')}
               </Button>
 
@@ -1517,7 +1517,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     : t('navigation.continue')}
                   {currentStep !== STEPS.length - 1 && (
                     <Icon
-                      name={'arrow-right' as any}
+                      name="arrow-right"
                       className='w-4 h-4 ml-2'
                     />
                   )}

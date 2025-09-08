@@ -253,7 +253,7 @@ export const DocumentList = () => {
       <FadeIn duration={0.5} delay={0.5}>
         <Card className='p-12 text-center bg-card border-card-border'>
           <Icon
-            name={'upload' as any}
+            name="upload"
             className='w-8 h-8 text-muted-foreground mx-auto mb-4 animate-pulse'
           />
           <p className='text-muted-foreground'>{t('loading.message')}</p>
@@ -267,15 +267,15 @@ export const DocumentList = () => {
       <FadeIn duration={0.5} delay={0.5}>
         <Card className='p-12 text-center bg-card border-card-border border-status-error/20'>
           <Icon
-            name={'info' as any}
+            name="info"
             className='w-8 h-8 text-status-error mx-auto mb-4'
           />
           <h3 className='text-lg font-semibold mb-2 text-status-error'>
             {t('error.title')}
           </h3>
           <p className='text-muted-foreground mb-4'>{error}</p>
-          <Button onClick={fetchDocuments} variant={'outline' as any} size='sm'>
-            <Icon name={'upload' as any} className='w-4 h-4 mr-2' />
+          <Button onClick={fetchDocuments} variant="outline" size='sm'>
+            <Icon name="upload" className='w-4 h-4 mr-2' />
             {t('error.retry')}
           </Button>
         </Card>
@@ -288,7 +288,7 @@ export const DocumentList = () => {
       <FadeIn duration={0.5} delay={0.5}>
         <Card className='p-12 text-center bg-card border-card-border'>
           <Icon
-            name={'documents' as any}
+            name="documents"
             className='w-12 h-12 text-muted-foreground mx-auto mb-4'
           />
           <h3 className='text-lg font-semibold mb-2'>{t('empty.title')}</h3>
@@ -335,7 +335,7 @@ export const DocumentList = () => {
                       </span>
                       <span>•</span>
                       <span className='flex items-center gap-1'>
-                        <Icon name={'locked' as any} className='w-3 h-3' />
+                        <Icon name="locked" className='w-3 h-3' />
                         {t('document.secure')}
                       </span>
                     </div>
@@ -344,7 +344,7 @@ export const DocumentList = () => {
 
                 <div className='flex items-center gap-2'>
                   <Button
-                    variant={'ghost' as any}
+                    variant="ghost"
                     size='sm'
                     className='text-muted-foreground hover:text-primary'
                     onClick={() => handleDownload(doc)}
@@ -353,15 +353,15 @@ export const DocumentList = () => {
                   >
                     {downloadingId === doc.id ? (
                       <Icon
-                        name={'download' as any}
+                        name="download"
                         className='w-4 h-4 animate-pulse'
                       />
                     ) : (
-                      <Icon name={'download' as any} className='w-4 h-4' />
+                      <Icon name="download" className='w-4 h-4' />
                     )}
                   </Button>
                   <Button
-                    variant={'ghost' as any}
+                    variant="ghost"
                     size='sm'
                     className='text-muted-foreground hover:text-status-error'
                     onClick={() => handleDelete(doc)}
@@ -370,11 +370,11 @@ export const DocumentList = () => {
                   >
                     {deletingId === doc.id ? (
                       <Icon
-                        name={'delete' as any}
+                        name="delete"
                         className='w-4 h-4 animate-pulse'
                       />
                     ) : (
-                      <Icon name={'delete' as any} className='w-4 h-4' />
+                      <Icon name="delete" className='w-4 h-4' />
                     )}
                   </Button>
                 </div>

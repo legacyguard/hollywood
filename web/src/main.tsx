@@ -10,6 +10,10 @@ import { pushNotificationService } from './lib/pwa/pushNotifications';
 // Initialize monitoring systems
 import { initSentry } from './lib/monitoring/sentry';
 import { initAnalytics, initWebVitals } from './lib/monitoring/analytics';
+import { rumMonitor, setRUMUserId } from './lib/monitoring/rum';
+import { applySecurityHeaders, setupCSPReporting } from './lib/security/csp';
+import { bundleAnalyzer } from './lib/monitoring/bundle-analyzer';
+import { initializeOfflineFirst } from './lib/pwa/offline-first';
 
 // Initialize monitoring systems
 function initializeMonitoring() {
@@ -48,5 +52,20 @@ initializeMonitoring();
 
 // Initialize PWA services
 initializePWA();
+
+// Apply security headers and CSP
+applySecurityHeaders();
+setupCSPReporting();
+
+// Initialize RUM monitoring
+rumMonitor.setUserId('anonymous'); // Will be updated when user signs in
+
+// Initialize offline-first capabilities
+initializeOfflineFirst();
+
+// Initialize bundle analysis
+if (import.meta.env.PROD) {
+  bundleAnalyzer.getBundleSizeReport(); // Start monitoring
+}
 
 createRoot(document.getElementById('root')!).render(<App />);

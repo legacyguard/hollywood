@@ -117,14 +117,14 @@ export function ProfessionalPartnershipTemplate({
         </p>
         <div className='flex items-center justify-center gap-4 mt-4'>
           <Badge
-            variant={'outline' as any}
+            variant="outline"
             className='bg-blue-50 text-blue-700 border-blue-200'
           >
             Attorney: {reviewerName}
           </Badge>
           {lawFirm && (
             <Badge
-              variant={'outline' as any}
+              variant="outline"
               className='bg-green-50 text-green-700 border-green-200'
             >
               Firm: {lawFirm}
@@ -527,7 +527,7 @@ export function ProfessionalPartnershipTemplate({
                 <div className='flex gap-3'>
                   {onDownload && (
                     <Button
-                      variant={'outline' as any}
+                      variant="outline"
                       onClick={onDownload}
                       className='flex items-center gap-2'
                     >
@@ -540,7 +540,7 @@ export function ProfessionalPartnershipTemplate({
                 <div className='flex gap-3'>
                   {onDecline && (
                     <Button
-                      variant={'outline' as any}
+                      variant="outline"
                       onClick={onDecline}
                       className='text-gray-600 hover:text-red-600'
                     >

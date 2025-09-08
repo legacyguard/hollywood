@@ -180,7 +180,7 @@ export const IntelligentDocumentTester: React.FC = () => {
       <Card className='p-6 bg-card border-card-border max-w-2xl mx-auto'>
         <div className='flex items-center gap-3 mb-4'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <Icon name={'play' as any} className='w-5 h-5 text-primary' />
+            <Icon name="play" className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold text-lg'>
@@ -206,7 +206,7 @@ export const IntelligentDocumentTester: React.FC = () => {
           </div>
 
           <Button onClick={handleStartTest} className='w-full gap-2'>
-            <Icon name={'play' as any} className='w-4 h-4' />
+            <Icon name="play" className='w-4 h-4' />
             Test Document Analysis Interface
           </Button>
         </div>
@@ -214,7 +214,7 @@ export const IntelligentDocumentTester: React.FC = () => {
         <div className='mt-4 p-3 bg-primary/5 rounded-lg'>
           <div className='flex gap-2'>
             <Icon
-              name={'info' as any}
+              name="info"
               className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
             />
             <div className='text-xs text-muted-foreground'>

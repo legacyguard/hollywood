@@ -309,7 +309,7 @@ export function RecordingStep({
             className='flex-1'
             disabled={recordingState !== 'idle'}
           >
-            <Icon name={'video' as any} className='w-4 h-4 mr-2' />
+            <Icon name="video" className='w-4 h-4 mr-2' />
             {t('recordingType.video')}
           </Button>
           <Button
@@ -318,7 +318,7 @@ export function RecordingStep({
             className='flex-1'
             disabled={recordingState !== 'idle'}
           >
-            <Icon name={'mic' as any} className='w-4 h-4 mr-2' />
+            <Icon name="mic" className='w-4 h-4 mr-2' />
             {t('recordingType.audio')}
           </Button>
         </div>
@@ -330,14 +330,14 @@ export function RecordingStep({
           {!isPermissionGranted && recordingState === 'idle' && (
             <div className='text-center py-8'>
               <Icon
-                name={'camera' as any}
+                name="camera"
                 className='w-12 h-12 text-muted-foreground mx-auto mb-4'
               />
               <p className='text-muted-foreground mb-4'>
                 {recordingType === 'video' ? t('permissions.cameraDescription') : t('permissions.microphoneDescription')}
               </p>
               <Button onClick={requestPermissions}>
-                <Icon name={'camera' as any} className='w-4 h-4 mr-2' />
+                <Icon name="camera" className='w-4 h-4 mr-2' />
                 {recordingType === 'video' ? t('permissions.grantCamera') : t('permissions.grantMicrophone')}
               </Button>
             </div>
@@ -355,7 +355,7 @@ export function RecordingStep({
               ) : (
                 <div className='w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
                   <Icon
-                    name={'mic' as any}
+                    name="mic"
                     className='w-12 h-12 text-gray-400'
                   />
                 </div>
@@ -365,7 +365,7 @@ export function RecordingStep({
                 size='lg'
                 className='bg-red-600 hover:bg-red-700'
               >
-                <Icon name={'circle' as any} className='w-4 h-4 mr-2' />
+                <Icon name="circle" className='w-4 h-4 mr-2' />
                 {t('buttons.startRecording')}
               </Button>
             </div>
@@ -409,7 +409,7 @@ export function RecordingStep({
                     onClick={stopRecording}
                     className='bg-red-600 hover:bg-red-700'
                   >
-                    <Icon name={'square' as any} className='w-4 h-4' />
+                    <Icon name="square" className='w-4 h-4' />
                   </Button>
                 </div>
               </div>
@@ -420,7 +420,7 @@ export function RecordingStep({
             <div className='text-center py-4 space-y-4'>
               <div className='w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
                 <Icon
-                  name={'check' as any}
+                  name="check"
                   className='w-8 h-8 text-green-600'
                 />
               </div>
@@ -436,11 +436,11 @@ export function RecordingStep({
 
               <div className='flex justify-center space-x-2'>
                 <Button variant='outline' onClick={deleteRecording}>
-                  <Icon name={'trash-2' as any} className='w-4 h-4 mr-2' />
+                  <Icon name="trash-2" className='w-4 h-4 mr-2' />
                   {t('buttons.recordAgain')}
                 </Button>
                 <Button variant='outline'>
-                  <Icon name={'play' as any} className='w-4 h-4 mr-2' />
+                  <Icon name="play" className='w-4 h-4 mr-2' />
                   {t('buttons.preview')}
                 </Button>
               </div>

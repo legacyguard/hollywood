@@ -218,7 +218,7 @@ export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
         {errors > 0 && (
           <div className='flex items-center gap-1'>
             <Icon
-              name={'alert-circle' as any}
+              name="alert-circle"
               className='w-3 h-3 text-red-600'
             />
             <span>
@@ -229,7 +229,7 @@ export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
         {warnings > 0 && (
           <div className='flex items-center gap-1'>
             <Icon
-              name={'alert-triangle' as any}
+              name="alert-triangle"
               className='w-3 h-3 text-yellow-600'
             />
             <span>
@@ -240,7 +240,7 @@ export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
         {successes > 0 && (
           <div className='flex items-center gap-1'>
             <Icon
-              name={'check-circle' as any}
+              name="check-circle"
               className='w-3 h-3 text-green-600'
             />
             <span>{successes} valid</span>

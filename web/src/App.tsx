@@ -1,7 +1,7 @@
 
 // src/App.tsx - Web Application Entry Point
 
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n/config';
@@ -14,52 +14,66 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { SkipLinks } from '@/components/accessibility/SkipLinks';
 import { ErrorBoundary } from 'react-error-boundary';
 
-// Public Pages
+// Public Pages - Immediate load (critical for first impression)
 import { LandingPage } from '@/pages/LandingPage';
-import Blog from '@/pages/Blog';
-import BlogArticle from '@/pages/BlogArticle';
 import { TermsPage as Terms } from '@/pages/Terms';
 import { PrivacyPage as Privacy } from '@/pages/Privacy';
 import NotFound from '@/pages/NotFound';
 
-// Protected Pages
-import Index from '@/pages/Index';
-import Vault from '@/pages/Vault';
-import Guardians from '@/pages/Guardians';
-import Legacy from '@/pages/Legacy';
-import TimeCapsule from '@/pages/TimeCapsule';
-import TimeCapsuleView from '@/pages/TimeCapsuleView';
-import Settings from '@/pages/Settings';
-import ProtocolSettings from '@/pages/ProtocolSettings';
-import { MyFamilyPage as MyFamily } from '@/pages/MyFamily';
-import Family from '@/pages/Family';
-import FamilyProtection from '@/pages/FamilyProtection';
-import EmergencyAccess from '@/pages/EmergencyAccess';
-import EmergencyVerification from '@/pages/EmergencyVerification';
-import EmergencyConfirmation from '@/pages/EmergencyConfirmation';
-import SurvivorAccess from '@/pages/SurvivorAccess';
-import SurvivorManual from '@/pages/SurvivorManual';
-import SocialCollaborationPage from '@/pages/SocialCollaborationPage';
-import { SecurityDeepDivePage } from '@/pages/SecurityDeepDivePage';
-import MonitoringPage from '@/pages/MonitoringPage';
-import AnalyticsPage from '@/pages/AnalyticsPage';
-import IntelligentOrganizer from '@/pages/IntelligentOrganizer';
-import ComponentShowcase from '@/pages/ComponentShowcase';
-import Performance from '@/pages/Performance';
-import { WillManagement } from '@/pages/WillManagement';
+// Lazy load non-critical public pages
+const Blog = lazy(() => import('@/pages/Blog'));
+const BlogArticle = lazy(() => import('@/pages/BlogArticle'));
+
+// Protected Pages - Lazy load to reduce initial bundle size
+const Index = lazy(() => import('@/pages/Index'));
+const Vault = lazy(() => import('@/pages/Vault'));
+const Guardians = lazy(() => import('@/pages/Guardians'));
+const Legacy = lazy(() => import('@/pages/Legacy'));
+const TimeCapsule = lazy(() => import('@/pages/TimeCapsule'));
+const TimeCapsuleView = lazy(() => import('@/pages/TimeCapsuleView'));
+const Settings = lazy(() => import('@/pages/Settings'));
+const ProtocolSettings = lazy(() => import('@/pages/ProtocolSettings'));
+const MyFamily = lazy(() => import('@/pages/MyFamily').then(m => ({ default: m.MyFamilyPage })));
+const Family = lazy(() => import('@/pages/Family'));
+const FamilyProtection = lazy(() => import('@/pages/FamilyProtection'));
+const EmergencyAccess = lazy(() => import('@/pages/EmergencyAccess'));
+const EmergencyVerification = lazy(() => import('@/pages/EmergencyVerification'));
+const EmergencyConfirmation = lazy(() => import('@/pages/EmergencyConfirmation'));
+const SurvivorAccess = lazy(() => import('@/pages/SurvivorAccess'));
+const SurvivorManual = lazy(() => import('@/pages/SurvivorManual'));
+const SocialCollaborationPage = lazy(() => import('@/pages/SocialCollaborationPage'));
+const SecurityDeepDivePage = lazy(() => import('@/pages/SecurityDeepDivePage'));
+const MonitoringPage = lazy(() => import('@/pages/MonitoringPage'));
+const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage'));
+const IntelligentOrganizer = lazy(() => import('@/pages/IntelligentOrganizer'));
+const ComponentShowcase = lazy(() => import('@/pages/ComponentShowcase'));
+const Performance = lazy(() => import('@/pages/Performance'));
+const WillManagement = lazy(() => import('@/pages/WillManagement').then(m => ({ default: m.WillManagement })));
 
 // Onboarding Pages
-import { OnboardingWrapper } from '@/components/onboarding/OnboardingWrapper';
+const OnboardingWrapper = lazy(() => import('@/components/onboarding/OnboardingWrapper').then(m => ({ default: m.OnboardingWrapper })));
 
 // Test Pages
-import TestNotifications from '@/pages/TestNotifications';
-import WillWizardCombinations from '@/pages/test/WillWizardCombinations';
+const TestNotifications = lazy(() => import('@/pages/TestNotifications'));
+const WillWizardCombinations = lazy(() => import('@/pages/test/WillWizardCombinations'));
 
 function ErrorFallback({ error }: { error: Error }) {
   return (
     <div role='alert'>
       <h2>Something went wrong:</h2>
       <pre>{error.message}</pre>
+    </div>
+  );
+}
+
+// Loading component for lazy-loaded pages
+function PageLoader() {
+  return (
+    <div className='min-h-screen flex items-center justify-center bg-background'>
+      <div className='text-center'>
+        <div className='w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4'></div>
+        <p className='text-muted-foreground'>Loading page...</p>
+      </div>
     </div>
   );
 }
@@ -88,7 +102,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <Index />
+                        <Suspense fallback={<PageLoader />}>
+                          <Index />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -99,7 +115,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <Vault />
+                        <Suspense fallback={<PageLoader />}>
+                          <Vault />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -110,7 +128,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <Guardians />
+                        <Suspense fallback={<PageLoader />}>
+                          <Guardians />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -121,7 +141,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <Legacy />
+                        <Suspense fallback={<PageLoader />}>
+                          <Legacy />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -132,7 +154,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <TimeCapsule />
+                        <Suspense fallback={<PageLoader />}>
+                          <TimeCapsule />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -143,7 +167,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <TimeCapsuleView />
+                        <Suspense fallback={<PageLoader />}>
+                          <TimeCapsuleView />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -154,7 +180,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <Settings />
+                        <Suspense fallback={<PageLoader />}>
+                          <Settings />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -165,7 +193,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <ProtocolSettings />
+                        <Suspense fallback={<PageLoader />}>
+                          <ProtocolSettings />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -176,7 +206,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <MyFamily />
+                        <Suspense fallback={<PageLoader />}>
+                          <MyFamily />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -187,7 +219,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <Family />
+                        <Suspense fallback={<PageLoader />}>
+                          <Family />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -198,7 +232,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <FamilyProtection />
+                        <Suspense fallback={<PageLoader />}>
+                          <FamilyProtection />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -209,7 +245,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <EmergencyAccess />
+                        <Suspense fallback={<PageLoader />}>
+                          <EmergencyAccess />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -220,7 +258,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <EmergencyVerification />
+                        <Suspense fallback={<PageLoader />}>
+                          <EmergencyVerification />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -231,7 +271,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <EmergencyConfirmation />
+                        <Suspense fallback={<PageLoader />}>
+                          <EmergencyConfirmation />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -242,7 +284,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <SurvivorAccess />
+                        <Suspense fallback={<PageLoader />}>
+                          <SurvivorAccess />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -253,7 +297,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <SurvivorManual />
+                        <Suspense fallback={<PageLoader />}>
+                          <SurvivorManual />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -264,7 +310,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <SocialCollaborationPage />
+                        <Suspense fallback={<PageLoader />}>
+                          <SocialCollaborationPage />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -275,7 +323,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <SecurityDeepDivePage />
+                        <Suspense fallback={<PageLoader />}>
+                          <SecurityDeepDivePage />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -286,7 +336,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <MonitoringPage />
+                        <Suspense fallback={<PageLoader />}>
+                          <MonitoringPage />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -297,7 +349,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <AnalyticsPage />
+                        <Suspense fallback={<PageLoader />}>
+                          <AnalyticsPage />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -308,7 +362,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <IntelligentOrganizer />
+                        <Suspense fallback={<PageLoader />}>
+                          <IntelligentOrganizer />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -319,7 +375,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <ComponentShowcase />
+                        <Suspense fallback={<PageLoader />}>
+                          <ComponentShowcase />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -330,7 +388,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <Performance />
+                        <Suspense fallback={<PageLoader />}>
+                          <Performance />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -341,7 +401,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <WillManagement />
+                        <Suspense fallback={<PageLoader />}>
+                          <WillManagement />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -352,7 +414,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <OnboardingWrapper>
-                        <div>Onboarding content</div>
+                        <Suspense fallback={<PageLoader />}>
+                          <div>Onboarding content</div>
+                        </Suspense>
                       </OnboardingWrapper>
                     </ProtectedRoute>
                   }
@@ -364,7 +428,9 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardLayout>
-                        <TestNotifications />
+                        <Suspense fallback={<PageLoader />}>
+                          <TestNotifications />
+                        </Suspense>
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
@@ -374,7 +440,9 @@ export default function App() {
                   path='/test/will-wizard-combinations'
                   element={
                     <LocalizationProvider>
-                      <WillWizardCombinations />
+                      <Suspense fallback={<PageLoader />}>
+                        <WillWizardCombinations />
+                      </Suspense>
                     </LocalizationProvider>
                   }
                 />

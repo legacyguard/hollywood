@@ -36,7 +36,7 @@ const IntelligentOrganizer = () => {
                 onClick={() => setMode('test')}
                 className='gap-2'
               >
-                <Icon name={'play' as any} className='w-4 h-4' />
+                <Icon name="play" className='w-4 h-4' />
                 Demo Mode
               </Button>
               <Button
@@ -45,7 +45,7 @@ const IntelligentOrganizer = () => {
                 onClick={() => setMode('live')}
                 className='gap-2'
               >
-                <Icon name={'upload' as any} className='w-4 h-4' />
+                <Icon name="upload" className='w-4 h-4' />
                 Live Upload
               </Button>
             </div>
@@ -63,7 +63,7 @@ const IntelligentOrganizer = () => {
           <Card className='p-4 bg-card border-card-border'>
             <div className='flex items-start gap-3'>
               <Icon
-                name={'info' as any}
+                name="info"
                 className='w-5 h-5 text-primary flex-shrink-0 mt-0.5'
               />
               <div className='space-y-2'>
@@ -72,21 +72,21 @@ const IntelligentOrganizer = () => {
                   <div className='space-y-2'>
                     <div className='flex items-center gap-2'>
                       <Icon
-                        name={'check' as any}
+                        name="check"
                         className='w-4 h-4 text-green-500'
                       />
                       <span>Document confirmation UI</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <Icon
-                        name={'check' as any}
+                        name="check"
                         className='w-4 h-4 text-green-500'
                       />
                       <span>Supabase Edge Function</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <Icon
-                        name={'check' as any}
+                        name="check"
                         className='w-4 h-4 text-green-500'
                       />
                       <span>Database schema updates</span>
@@ -95,21 +95,21 @@ const IntelligentOrganizer = () => {
                   <div className='space-y-2'>
                     <div className='flex items-center gap-2'>
                       <Icon
-                        name={'alert-triangle' as any}
+                        name="alert-triangle"
                         className='w-4 h-4 text-yellow-500'
                       />
                       <span>API authentication setup needed</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <Icon
-                        name={'alert-triangle' as any}
+                        name="alert-triangle"
                         className='w-4 h-4 text-yellow-500'
                       />
                       <span>Environment variables required</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <Icon
-                        name={'clock' as any}
+                        name="clock"
                         className='w-4 h-4 text-blue-500'
                       />
                       <span>Integration testing in progress</span>

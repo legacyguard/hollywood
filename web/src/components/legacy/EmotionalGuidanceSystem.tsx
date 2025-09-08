@@ -484,7 +484,7 @@ export const EmotionalGuidanceSystem: React.FC<
                       </span>
                     </div>
                     <Button onClick={handleCreateTimeCapsule}>
-                      <Icon name={'package' as any} className='w-4 h-4 mr-2' />
+                      <Icon name="package" className='w-4 h-4 mr-2' />
                       Create Time Capsule
                     </Button>
                   </div>
@@ -505,7 +505,7 @@ export const EmotionalGuidanceSystem: React.FC<
             <div className='space-y-3 text-sm'>
               <div className='flex items-start gap-2'>
                 <Icon
-                  name={'gift' as any}
+                  name="gift"
                   className='w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5'
                 />
                 <div>
@@ -517,7 +517,7 @@ export const EmotionalGuidanceSystem: React.FC<
               </div>
               <div className='flex items-start gap-2'>
                 <Icon
-                  name={'graduation-cap' as any}
+                  name="graduation-cap"
                   className='w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5'
                 />
                 <div>
@@ -529,7 +529,7 @@ export const EmotionalGuidanceSystem: React.FC<
               </div>
               <div className='flex items-start gap-2'>
                 <Icon
-                  name={'baby' as any}
+                  name="baby"
                   className='w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5'
                 />
                 <div>
@@ -592,7 +592,7 @@ const ReflectionPrompt: React.FC<ReflectionPromptProps> = ({
         <div className='flex-shrink-0'>
           {response ? (
             <div className='w-8 h-8 bg-green-500 rounded-full flex items-center justify-center'>
-              <Icon name={'check' as any} className='w-5 h-5 text-white' />
+              <Icon name="check" className='w-5 h-5 text-white' />
             </div>
           ) : isActive ? (
             <div className='w-8 h-8 bg-primary rounded-full flex items-center justify-center'>

@@ -482,7 +482,7 @@ export const IntelligentDocumentUploader = () => {
       <Card className='p-6 bg-card border-card-border max-w-2xl mx-auto'>
         <div className='flex items-center gap-3 mb-4'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <Icon name={'brain' as any} className='w-5 h-5 text-primary' />
+            <Icon name="brain" className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold text-lg'>
@@ -512,14 +512,14 @@ export const IntelligentDocumentUploader = () => {
               {phase === 'analyzing' ? (
                 <>
                   <Icon
-                    name={'brain' as any}
+                    name="brain"
                     className='w-4 h-4 mr-2 animate-pulse'
                   />
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <Icon name={'search' as any} className='w-4 h-4 mr-2' />
+                  <Icon name="search" className='w-4 h-4 mr-2' />
                   Analyze Document
                 </>
               )}
@@ -542,7 +542,7 @@ export const IntelligentDocumentUploader = () => {
               </div>
               <div className='flex items-center gap-2 text-sm text-muted-foreground'>
                 <Icon
-                  name={'search' as any}
+                  name="search"
                   className='w-4 h-4 animate-pulse'
                 />
                 <span>Extracting text and analyzing content...</span>
@@ -553,7 +553,7 @@ export const IntelligentDocumentUploader = () => {
           {file && phase === 'select' && (
             <div className='flex items-center gap-2 p-3 bg-primary/5 rounded-lg'>
               <Icon
-                name={'documents' as any}
+                name="documents"
                 className='w-4 h-4 text-primary'
               />
               <span className='text-sm font-medium'>{file.name}</span>
@@ -567,7 +567,7 @@ export const IntelligentDocumentUploader = () => {
         <div className='mt-4 p-3 bg-primary/5 rounded-lg'>
           <div className='flex gap-2'>
             <Icon
-              name={'sparkles' as any}
+              name="sparkles"
               className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
             />
             <div className='text-xs text-muted-foreground'>

@@ -104,7 +104,7 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
                 exit={{ rotate: 90, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <Icon name={'close' as any} className='w-6 h-6' />
+                <Icon name="close" className='w-6 h-6' />
               </motion.div>
             ) : (
               <motion.div
@@ -115,7 +115,7 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
                 transition={{ duration: 0.2 }}
                 className='relative'
               >
-                <Icon name={'bot' as any} className='w-6 h-6' />
+                <Icon name="bot" className='w-6 h-6' />
 
                 {/* Notification indicator */}
                 <AnimatePresence>
@@ -152,7 +152,7 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
           >
             <div className='flex items-start gap-2'>
               <Icon
-                name={'sparkles' as any}
+                name="sparkles"
                 className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
               />
               <div>

@@ -482,7 +482,7 @@ export function LandingPage() {
                     viewport={{ once: true }}
                   >
                     <Icon
-                      name={'gift' as any}
+                      name="gift"
                       className='w-8 h-8 text-yellow-400'
                     />
                   </motion.div>
@@ -552,7 +552,7 @@ export function LandingPage() {
                       <div className='h-2 bg-slate-300 rounded w-5/6'></div>
                     </div>
                     <Icon
-                      name={'file-text' as any}
+                      name="file-text"
                       className='absolute bottom-2 right-2 w-6 h-6 text-blue-400'
                     />
                   </motion.div>
@@ -570,7 +570,7 @@ export function LandingPage() {
                       <div className='h-2 bg-slate-300 rounded w-1/2'></div>
                     </div>
                     <Icon
-                      name={'shield' as any}
+                      name="shield"
                       className='absolute bottom-2 right-2 w-6 h-6 text-purple-400'
                     />
                   </motion.div>
@@ -586,7 +586,7 @@ export function LandingPage() {
                     <div className='w-24 h-20 bg-yellow-400 rounded-t-lg transform perspective-100'></div>
                     <div className='w-24 h-16 bg-yellow-500 rounded-b-lg shadow-2xl'>
                       <Icon
-                        name={'folder' as any}
+                        name="folder"
                         className='w-8 h-8 text-white mx-auto mt-4'
                       />
                     </div>
@@ -599,7 +599,7 @@ export function LandingPage() {
                       viewport={{ once: true }}
                     >
                       <Icon
-                        name={'check' as any}
+                        name="check"
                         className='w-5 h-5 text-white'
                       />
                     </motion.div>
@@ -650,7 +650,7 @@ export function LandingPage() {
                   >
                     <div className='w-20 h-20 bg-white/90 rounded-full shadow-xl flex items-center justify-center'>
                       <Icon
-                        name={'users' as any}
+                        name="users"
                         className='w-10 h-10 text-emerald-600'
                       />
                     </div>
@@ -685,7 +685,7 @@ export function LandingPage() {
                       viewport={{ once: true }}
                     >
                       <Icon
-                        name={'user' as any}
+                        name="user"
                         className='w-5 h-5 text-white'
                       />
                     </motion.div>
@@ -844,7 +844,7 @@ export function LandingPage() {
                     transition={{ duration: 0.3 }}
                   >
                     <Icon
-                      name={'vault' as any}
+                      name="vault"
                       className='w-10 h-10 text-yellow-400'
                     />
                   </motion.div>
@@ -873,7 +873,7 @@ export function LandingPage() {
                     transition={{ duration: 0.3 }}
                   >
                     <Icon
-                      name={'shield' as any}
+                      name="shield"
                       className='w-10 h-10 text-yellow-400'
                     />
                   </motion.div>
@@ -902,7 +902,7 @@ export function LandingPage() {
                     transition={{ duration: 0.3 }}
                   >
                     <Icon
-                      name={'legacy' as any}
+                      name="legacy"
                       className='w-10 h-10 text-yellow-400'
                     />
                   </motion.div>
@@ -954,7 +954,7 @@ export function LandingPage() {
                     transition={{ duration: 0.3 }}
                   >
                     <Icon
-                      name={'heart' as any}
+                      name="heart"
                       className='w-12 h-12 text-yellow-400 absolute top-2 left-2'
                     />
                     <motion.div
@@ -992,7 +992,7 @@ export function LandingPage() {
                       }}
                     />
                     <Icon
-                      name={'key' as any}
+                      name="key"
                       className='w-6 h-6 text-yellow-400 absolute top-5 left-5'
                     />
                   </motion.div>
@@ -1010,7 +1010,7 @@ export function LandingPage() {
                     transition={{ duration: 0.3 }}
                   >
                     <Icon
-                      name={'sparkles' as any}
+                      name="sparkles"
                       className='w-12 h-12 text-yellow-400 absolute top-2 left-2'
                     />
                     {[...Array(3)].map((_, i) => (
@@ -1045,7 +1045,7 @@ export function LandingPage() {
                     transition={{ duration: 0.3 }}
                   >
                     <Icon
-                      name={'book-open' as any}
+                      name="book-open"
                       className='w-12 h-12 text-yellow-400 absolute top-2 left-2'
                     />
                     <motion.div
@@ -1167,21 +1167,21 @@ export function LandingPage() {
           >
             <div className='flex items-center gap-2'>
               <Icon
-                name={'shield-check' as any}
+                name="shield-check"
                 className='w-4 h-4 text-green-400'
               />
               <span>{t('trust.indicators.endToEndEncryption')}</span>
             </div>
             <div className='flex items-center gap-2'>
-              <Icon name={'check' as any} className='w-4 h-4 text-green-400' />
+              <Icon name="check" className='w-4 h-4 text-green-400' />
               <span>{t('trust.indicators.zeroKnowledge')}</span>
             </div>
             <div className='flex items-center gap-2'>
-              <Icon name={'key' as any} className='w-4 h-4 text-green-400' />
+              <Icon name="key" className='w-4 h-4 text-green-400' />
               <span>{t('trust.indicators.bankLevelSecurity')}</span>
             </div>
             <div className='flex items-center gap-2'>
-              <Icon name={'users' as any} className='w-4 h-4 text-green-400' />
+              <Icon name="users" className='w-4 h-4 text-green-400' />
               <span>{t('trust.indicators.legalExpertConsultation')}</span>
             </div>
           </motion.div>

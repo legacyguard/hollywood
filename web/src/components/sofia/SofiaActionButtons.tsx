@@ -149,7 +149,7 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
           className='flex items-center gap-2 mt-2 px-3'
         >
           <Icon
-            name={'info' as any}
+            name="info"
             className='w-3 h-3 text-muted-foreground'
           />
           <span className='text-xs text-muted-foreground'>

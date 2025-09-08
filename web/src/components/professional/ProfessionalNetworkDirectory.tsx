@@ -1088,7 +1088,7 @@ export function ProfessionalNetworkDirectory({
                           filters.states.length > 0 ||
                           filters.languages.length > 0) && (
                           <Button
-                            variant={'ghost' as any}
+                            variant="ghost"
                             size='sm'
                             onClick={resetFilters}
                           >
@@ -1105,7 +1105,7 @@ export function ProfessionalNetworkDirectory({
                           >
                             {spec}
                             <Button
-                              variant={'ghost' as any}
+                              variant="ghost"
                               size='sm'
                               className='ml-1 h-auto p-0 text-xs'
                               onClick={() =>

@@ -196,7 +196,7 @@ export function ReviewCompletionNotifier({
 
               {onDismiss && (
                 <Button
-                  variant={'ghost' as any}
+                  variant="ghost"
                   size='sm'
                   onClick={onDismiss}
                   className='text-white/80 hover:text-white hover:bg-white/20 relative z-10'
@@ -363,7 +363,7 @@ export function ReviewCompletionNotifier({
                 <Dialog open={showRating} onOpenChange={setShowRating}>
                   <DialogTrigger asChild>
                     <Button
-                      variant={'outline' as any}
+                      variant="outline"
                       className='flex-1 sm:flex-none'
                     >
                       <Star className='h-4 w-4 mr-2' />
@@ -419,7 +419,7 @@ export function ReviewCompletionNotifier({
                       {/* Submit */}
                       <div className='flex gap-3'>
                         <Button
-                          variant={'outline' as any}
+                          variant="outline"
                           onClick={() => setShowRating(false)}
                           className='flex-1'
                         >

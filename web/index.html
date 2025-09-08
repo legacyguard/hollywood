@@ -38,11 +38,11 @@
       type="image/svg+xml"
       fetchpriority="high"
     />
+    <!-- Remove unused preload - legacyguard_stamp.svg is not used in the app -->
+    <!-- Add preload for critical chunks that will be loaded immediately -->
     <link
-      rel="preload"
-      href="/legacyguard_stamp.svg"
-      as="image"
-      type="image/svg+xml"
+      rel="modulepreload"
+      href="/src/main.tsx"
       fetchpriority="high"
     />
 
@@ -53,11 +53,13 @@
     <link rel="manifest" href="/manifest.json" />
 
     <!-- Google Fonts - Inter with display=swap for better performance -->
+    <!-- Use preconnect first, then preload to avoid blocking -->
     <link
       rel="preload"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
       as="style"
       onload="this.onload=null;this.rel='stylesheet'"
+      fetchpriority="low"
     />
     <noscript
       ><link

@@ -393,7 +393,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 )}
               </h3>
               <Button onClick={addBeneficiary} variant='outline' size='sm'>
-                <Icon name={'add' as any} className='w-4 h-4 mr-2' />
+                <Icon name="add" className='w-4 h-4 mr-2' />
                 {t('beneficiaries.addBeneficiary')}
               </Button>
             </div>
@@ -415,7 +415,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
             {willData.beneficiaries.length === 0 ? (
               <Card className='p-8 text-center'>
                 <Icon
-                  name={'users' as any}
+                  name="users"
                   className='w-12 h-12 text-muted-foreground mx-auto mb-4'
                 />
                 <p className='text-muted-foreground'>
@@ -448,7 +448,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                         size='sm'
                         className='text-red-600 hover:text-red-700'
                       >
-                        <Icon name={'trash' as any} className='w-4 h-4' />
+                        <Icon name="trash" className='w-4 h-4' />
                       </Button>
                     </div>
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
@@ -531,7 +531,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
             <Card className='p-4 bg-blue-50 border-blue-200'>
               <div className='flex items-start gap-3'>
                 <Icon
-                  name={'info' as any}
+                  name="info"
                   className='w-5 h-5 text-blue-600 flex-shrink-0 mt-1'
                 />
                 <div>
@@ -552,7 +552,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
           <div className='space-y-6'>
             <div className='text-center mb-8'>
               <Icon
-                name={'shield-check' as any}
+                name="shield-check"
                 className='w-12 h-12 text-primary mx-auto mb-4'
               />
               <h3 className='text-2xl font-semibold mb-2'>
@@ -602,7 +602,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
             {/* Jurisdiction Guidance */}
             <Card className='p-6'>
               <h4 className='font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={'book' as any} className='w-5 h-5' />
+                <Icon name="book" className='w-5 h-5' />
                 {t('legalValidation.requirements.title', { jurisdiction: willData.legal_data?.jurisdiction })}
               </h4>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
@@ -662,7 +662,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                     size='sm'
                     className='flex items-center gap-2'
                   >
-                    <Icon name={'arrow-left' as any} className='w-4 h-4' />
+                    <Icon name="arrow-left" className='w-4 h-4' />
                     Back to Legacy Planning
                   </Button>
                 </div>
@@ -693,7 +693,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                       )}
                       {isValidating && (
                         <Icon
-                          name={'loader' as any}
+                          name="loader"
                           className='w-4 h-4 animate-spin text-primary'
                         />
                       )}
@@ -733,7 +733,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
             <div className='max-w-4xl mx-auto px-6 py-3'>
               <div className='flex items-center gap-3 text-sm'>
                 <Icon
-                  name={'sparkles' as any}
+                  name="sparkles"
                   className='w-4 h-4 text-primary'
                 />
                 <span className='text-primary font-medium'>
@@ -786,7 +786,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 variant='outline'
                 disabled={currentStep === 0 && !onBack}
               >
-                <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
+                <Icon name="arrow-left" className='w-4 h-4 mr-2' />
                 {currentStep === 0 ? t('navigation.changeWillType') : t('navigation.back')}
               </Button>
 
@@ -809,7 +809,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                     : t('navigation.continue')}
                   {currentStep !== STEPS.length - 1 && (
                     <Icon
-                      name={'arrow-right' as any}
+                      name="arrow-right"
                       className='w-4 h-4 ml-2'
                     />
                   )}

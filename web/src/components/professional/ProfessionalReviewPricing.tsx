@@ -489,7 +489,7 @@ export function ProfessionalReviewPricing({
       {/* Feature Comparison Toggle */}
       <div className='text-center'>
         <Button
-          variant={'outline' as any}
+          variant="outline"
           onClick={() => setShowComparison(!showComparison)}
           className='gap-2'
         >

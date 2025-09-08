@@ -171,7 +171,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
     >
       {message.role === 'assistant' && (
         <div className='w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
-          <Icon name={'bot' as any} className='w-4 h-4 text-primary' />
+          <Icon name="bot" className='w-4 h-4 text-primary' />
         </div>
       )}
 
@@ -227,7 +227,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
       {message.role === 'user' && (
         <div className='w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0'>
           <Icon
-            name={'user' as any}
+            name="user"
             className='w-4 h-4 text-secondary-foreground'
           />
         </div>
@@ -243,7 +243,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
       className='flex gap-3 mb-4'
     >
       <div className='w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
-        <Icon name={'bot' as any} className='w-4 h-4 text-primary' />
+        <Icon name="bot" className='w-4 h-4 text-primary' />
       </div>
       <div className='bg-muted p-3 rounded-lg'>
         <div className='flex gap-1'>
@@ -271,7 +271,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
       <div className='flex items-center justify-between p-4 border-b'>
         <div className='flex items-center gap-3'>
           <div className='w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center'>
-            <Icon name={'bot' as any} className='w-5 h-5 text-primary' />
+            <Icon name="bot" className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold'>Sofia</h3>
@@ -292,7 +292,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
             onClick={onClose}
             className='h-8 w-8 p-0'
           >
-            <Icon name={'x' as any} className='w-4 h-4' />
+            <Icon name="x" className='w-4 h-4' />
           </Button>
         )}
       </div>
@@ -323,9 +323,9 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
             size='sm'
           >
             {isSubmitting ? (
-              <Icon name={'loader-2' as any} className='w-4 h-4 animate-spin' />
+              <Icon name="loader-2" className='w-4 h-4 animate-spin' />
             ) : (
-              <Icon name={'send' as any} className='w-4 h-4' />
+              <Icon name="send" className='w-4 h-4' />
             )}
           </Button>
         </form>

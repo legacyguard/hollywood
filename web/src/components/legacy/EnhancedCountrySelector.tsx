@@ -89,7 +89,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Icon
-            name={'loader' as any}
+            name="loader"
             className="w-8 h-8 text-primary animate-spin mx-auto mb-4"
           />
           <p className="text-muted-foreground">{t('status.loading')}</p>
@@ -104,7 +104,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
         <FadeIn duration={0.8}>
           <div className="text-center mb-12">
             <Icon
-              name={'shield-check' as any}
+              name="shield-check"
               className="w-16 h-16 text-primary mx-auto mb-6"
             />
             <h1 className="text-4xl font-bold mb-6">{t('title')}</h1>
@@ -177,7 +177,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
 
               <div className="text-center">
                 <Button variant="ghost" onClick={handleBack}>
-                  <Icon name={'arrow-left' as any} className="w-4 h-4 mr-2" />
+                  <Icon name="arrow-left" className="w-4 h-4 mr-2" />
                   {t('buttons.back')}
                 </Button>
               </div>
@@ -195,7 +195,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                       <span className="text-2xl">{getLanguageFlag(selectedLanguage)}</span>
                       <span className="font-medium">{getLanguageLabel(selectedLanguage)}</span>
                     </div>
-                    <Icon name={'arrow-right' as any} className="w-4 h-4 text-muted-foreground" />
+                    <Icon name="arrow-right" className="w-4 h-4 text-muted-foreground" />
                     <div className="flex items-center gap-2">
                       <span className="text-2xl">{getJurisdictionFlag(selectedJurisdiction)}</span>
                       <span className="font-medium">{getJurisdictionLabel(selectedJurisdiction)}</span>
@@ -209,7 +209,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                   <div className="flex items-start gap-3">
-                    <Icon name={'info' as any} className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <Icon name="info" className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                     <div className="text-left">
                       <h4 className="font-semibold text-sm mb-1 text-blue-900">
                         {t('confirmation.legalCompliance.title')}
@@ -230,7 +230,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                   className="bg-primary hover:bg-primary-hover text-primary-foreground px-8"
                   size="lg"
                 >
-                  <Icon name={'check' as any} className="w-5 h-5 mr-2" />
+                  <Icon name="check" className="w-5 h-5 mr-2" />
                   {t('buttons.confirm')}
                 </Button>
 
@@ -240,7 +240,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
                   size="lg"
                   className="px-8"
                 >
-                  <Icon name={'arrow-left' as any} className="w-5 h-5 mr-2" />
+                  <Icon name="arrow-left" className="w-5 h-5 mr-2" />
                   {t('buttons.changeSelection')}
                 </Button>
               </div>
@@ -248,7 +248,7 @@ export const EnhancedCountrySelector: React.FC<EnhancedCountrySelectorProps> = (
               <div className="mt-8 p-4 bg-muted/30 rounded-lg">
                 <div className="flex items-start gap-3">
                   <Icon
-                    name={'info' as any}
+                    name="info"
                     className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
                   />
                   <div>

@@ -242,7 +242,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
             </p>
           </div>
           <Button onClick={onClose} variant='ghost' size='sm'>
-            <Icon name={'x' as any} className='w-4 h-4' />
+            <Icon name="x" className='w-4 h-4' />
           </Button>
         </div>
 
@@ -250,7 +250,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
         <div className='p-6 border-b border-border'>
           <div className='relative'>
             <Icon
-              name={'search' as any}
+              name="search"
               className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground'
             />
             <Input
@@ -268,7 +268,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
             <div className='flex items-center justify-center py-12'>
               <div className='text-center'>
                 <Icon
-                  name={'loader' as any}
+                  name="loader"
                   className='w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground'
                 />
                 <p className='text-muted-foreground'>{t('loading.message')}</p>
@@ -277,7 +277,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
           ) : filteredAssets.length === 0 ? (
             <div className='text-center py-12'>
               <Icon
-                name={'folder-open' as any}
+                name="folder-open"
                 className='w-12 h-12 mx-auto mb-4 text-muted-foreground'
               />
               <h3 className='font-semibold mb-2'>{t('empty.title')}</h3>
@@ -333,7 +333,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                     {selectedIds.includes(asset.id) && (
                       <div className='text-primary'>
                         <Icon
-                          name={'check-circle' as any}
+                          name="check-circle"
                           className='w-5 h-5'
                         />
                       </div>
@@ -363,7 +363,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                 disabled={selectedIds.length === 0}
                 className='bg-primary hover:bg-primary-hover text-primary-foreground'
               >
-                <Icon name={'check' as any} className='w-4 h-4 mr-2' />
+                <Icon name="check" className='w-4 h-4 mr-2' />
                 {t('footer.confirmButton')}
               </Button>
             </div>

@@ -42,7 +42,7 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
       >
         <div className='w-4 h-4 bg-primary/10 rounded-full flex items-center justify-center'>
           <Icon
-            name={'shield-check' as any}
+            name="shield-check"
             className='w-2.5 h-2.5 text-primary'
           />
         </div>
@@ -59,7 +59,7 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
         <div className='flex items-start gap-3'>
           <div className='w-8 h-8 border-2 border-primary rounded-full flex items-center justify-center flex-shrink-0'>
             <Icon
-              name={'shield-check' as any}
+              name="shield-check"
               className='w-4 h-4 text-primary'
             />
           </div>
@@ -102,7 +102,7 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
       <div className='flex items-start gap-3'>
         {/* LegacyGuard Shield Logo */}
         <div className='w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0'>
-          <Icon name={'shield-check' as any} className='w-5 h-5 text-primary' />
+          <Icon name="shield-check" className='w-5 h-5 text-primary' />
         </div>
 
         <div className='flex-1'>
@@ -123,25 +123,25 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
 
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-blue-700 dark:text-blue-400'>
             <div className='flex items-center gap-2'>
-              <Icon name={'calendar' as any} className='w-3 h-3' />
+              <Icon name="calendar" className='w-3 h-3' />
               <span>
                 <strong>Generated:</strong> {finalCreatedAt}
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <Icon name={'hash' as any} className='w-3 h-3' />
+              <Icon name="hash" className='w-3 h-3' />
               <span>
                 <strong>Doc ID:</strong> {finalDocumentId.slice(0, 12)}...
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <Icon name={'map-pin' as any} className='w-3 h-3' />
+              <Icon name="map-pin" className='w-3 h-3' />
               <span>
                 <strong>Jurisdiction:</strong> {jurisdiction}
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <Icon name={'award' as any} className='w-3 h-3' />
+              <Icon name="award" className='w-3 h-3' />
               <span>
                 <strong>Template Version:</strong> 2.0
               </span>
@@ -150,7 +150,7 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
 
           <div className='mt-3 pt-3 border-t border-blue-200 dark:border-blue-800'>
             <div className='flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400'>
-              <Icon name={'info' as any} className='w-3 h-3' />
+              <Icon name="info" className='w-3 h-3' />
               <span>
                 <strong>Legal Notice:</strong> While this template complies with
                 current law, we recommend consulting a qualified attorney for

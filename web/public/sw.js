@@ -9,25 +9,30 @@
 const CACHE_NAME = 'legacyguard-v1.0.1';
 const OFFLINE_URL = '/offline.html';
 
-// Resources to cache immediately - removed paths that might not exist
+// Resources to cache immediately - optimized for critical path
 const STATIC_CACHE_URLS = [
   '/',
   '/manifest.json',
   '/shield-icon.svg',
-  '/favicon-16x16.svg',
+  // Remove unused favicon-16x16.svg to reduce initial cache size
+  // Add critical JS/CSS chunks that are loaded immediately
+  '/assets/js/react-vendor-*.js',
+  '/assets/js/index-*.js',
+  '/assets/index-*.css',
 ];
 
-// Resources to cache on first use
+// Resources to cache on first use - prioritize critical routes
 const RUNTIME_CACHE_URLS = [
   '/dashboard',
   '/vault',
-  '/analytics',
-  '/family-protection',
-  '/intelligent-organizer',
   '/settings',
   '/family',
   '/legacy',
-  '/time-capsule',
+  // Defer heavy feature caching until actually used
+  // '/analytics',
+  // '/family-protection',
+  // '/intelligent-organizer',
+  // '/time-capsule',
 ];
 
 // API endpoints that should be cached
@@ -102,6 +107,18 @@ self.addEventListener('activate', event => {
       .then(() => {
         // console.log('Service Worker: Activation complete');
         return self.clients.claim();
+      })
+      .then(() => {
+        // Pre-cache critical routes in background
+        return caches.open(CACHE_NAME).then(cache => {
+          return Promise.allSettled(
+            RUNTIME_CACHE_URLS.map(url =>
+              fetch(url)
+                .then(response => cache.put(url, response))
+                .catch(err => console.warn(`Failed to pre-cache ${url}:`, err))
+            )
+          );
+        });
       })
   );
 });

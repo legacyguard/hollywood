@@ -76,6 +76,9 @@ export default defineConfig(({ mode }) => {
         define: {
           global: 'globalThis',
         },
+        // Optimize chunk loading
+        splitting: true,
+        format: 'esm',
       },
       // Force optimization of these dependencies
       force: true,
@@ -133,6 +136,10 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: true,
       // Assets inline limit (4kb)
       assetsInlineLimit: 4096,
+      // Optimize chunk loading with preloading
+      modulePreload: {
+        polyfill: true,
+      },
       // Rollup options for advanced configuration
       rollupOptions: {
         // Memory optimization settings

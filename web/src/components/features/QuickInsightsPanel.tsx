@@ -172,7 +172,7 @@ export function QuickInsightsPanel({
                       {formatInsightValue(insight)}
                     </span>
                     <Badge
-                      variant={'outline' as any}
+                      variant="outline"
                       className={getInsightColor(insight.impact)}
                     >
                       {insight.impact} impact
@@ -243,7 +243,7 @@ export function QuickInsightsPanel({
                       {insight.action_suggestion && (
                         <Button
                           size='sm'
-                          variant={'ghost' as any}
+                          variant="ghost"
                           onClick={() =>
                             onActionClick?.(insight.action_suggestion!)
                           }

@@ -119,7 +119,7 @@ export function TestNotifications() {
         <Card className='p-6'>
           <div className='flex items-center gap-3 mb-6'>
             <div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center'>
-              <Icon name={'mail' as any} className='w-5 h-5 text-primary' />
+              <Icon name="mail" className='w-5 h-5 text-primary' />
             </div>
             <div>
               <h2 className='text-lg font-semibold'>Test Email Notification</h2>
@@ -174,14 +174,14 @@ export function TestNotifications() {
               {isLoading ? (
                 <>
                   <Icon
-                    name={'loader' as any}
+                    name="loader"
                     className='w-4 h-4 mr-2 animate-spin'
                   />
                   Sending...
                 </>
               ) : (
                 <>
-                  <Icon name={'send' as any} className='w-4 h-4 mr-2' />
+                  <Icon name="send" className='w-4 h-4 mr-2' />
                   Send Test Notification
                 </>
               )}
@@ -193,7 +193,7 @@ export function TestNotifications() {
         <Card className='p-6'>
           <div className='flex items-center gap-3 mb-6'>
             <div className='w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center'>
-              <Icon name={'clock' as any} className='w-5 h-5 text-secondary' />
+              <Icon name="clock" className='w-5 h-5 text-secondary' />
             </div>
             <div>
               <h2 className='text-lg font-semibold'>Test Cron Job Security</h2>
@@ -206,20 +206,20 @@ export function TestNotifications() {
           <Button
             onClick={testCronJob}
             disabled={isLoading}
-            variant={'outline' as any}
+            variant="outline"
             className='w-full'
           >
             {isLoading ? (
               <>
                 <Icon
-                  name={'loader' as any}
+                  name="loader"
                   className='w-4 h-4 mr-2 animate-spin'
                 />
                 Testing...
               </>
             ) : (
               <>
-                <Icon name={'shield' as any} className='w-4 h-4 mr-2' />
+                <Icon name="shield" className='w-4 h-4 mr-2' />
                 Test Cron Security
               </>
             )}
@@ -258,7 +258,7 @@ export function TestNotifications() {
         {/* Configuration Status */}
         <Card className='p-6'>
           <h3 className='font-semibold mb-4 flex items-center gap-2'>
-            <Icon name={'settings' as any} className='w-5 h-5' />
+            <Icon name="settings" className='w-5 h-5' />
             Configuration Status
           </h3>
 

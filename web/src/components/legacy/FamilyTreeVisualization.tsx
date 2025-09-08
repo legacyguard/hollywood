@@ -226,7 +226,7 @@ export const FamilyTreeVisualization: React.FC<
           <Dialog open={showAddRelative} onOpenChange={setShowAddRelative}>
             <DialogTrigger asChild>
               <Button variant='outline' size='sm'>
-                <Icon name={'add' as any} className='w-4 h-4 mr-2' />
+                <Icon name="add" className='w-4 h-4 mr-2' />
                 Add Relative
               </Button>
             </DialogTrigger>
@@ -305,7 +305,7 @@ export const FamilyTreeVisualization: React.FC<
           {conflicts.length > 0 && (
             <Card className='p-4 border-red-200 bg-red-50'>
               <h4 className='font-medium text-red-900 mb-2 flex items-center gap-2'>
-                <Icon name={'alert-triangle' as any} className='w-4 h-4' />
+                <Icon name="alert-triangle" className='w-4 h-4' />
                 Relationship Conflicts ({conflicts.length})
               </h4>
               <div className='space-y-2'>
@@ -326,7 +326,7 @@ export const FamilyTreeVisualization: React.FC<
           {suggestions.length > 0 && (
             <Card className='p-4 border-blue-200 bg-blue-50'>
               <h4 className='font-medium text-blue-900 mb-2 flex items-center gap-2'>
-                <Icon name={'lightbulb' as any} className='w-4 h-4' />
+                <Icon name="lightbulb" className='w-4 h-4' />
                 Suggested Family Members ({suggestions.length})
               </h4>
               <div className='space-y-2'>
@@ -417,7 +417,7 @@ export const FamilyTreeVisualization: React.FC<
             >
               <div className='flex items-center gap-3'>
                 <div className='w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center'>
-                  <Icon name={'user' as any} className='w-5 h-5 text-primary' />
+                  <Icon name="user" className='w-5 h-5 text-primary' />
                 </div>
                 <div>
                   <div className='font-medium'>
@@ -442,7 +442,7 @@ export const FamilyTreeVisualization: React.FC<
           {inheritanceFlow.distributions.length === 0 && (
             <div className='text-center text-muted-foreground py-8'>
               <Icon
-                name={'users' as any}
+                name="users"
                 className='w-12 h-12 mx-auto mb-4 opacity-50'
               />
               <p>No inheritance distributions defined yet</p>
@@ -567,7 +567,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
               setShowInheritanceDialog(true);
             }}
           >
-            <Icon name={'percent' as any} className='w-3 h-3' />
+            <Icon name="percent" className='w-3 h-3' />
           </Button>
         </div>
 
@@ -575,7 +575,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
           <div className='absolute -top-2 -right-2'>
             <div className='w-4 h-4 bg-red-500 rounded-full flex items-center justify-center'>
               <Icon
-                name={'alert-triangle' as any}
+                name="alert-triangle"
                 className='w-2 h-2 text-white'
               />
             </div>

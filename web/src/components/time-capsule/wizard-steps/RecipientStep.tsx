@@ -105,13 +105,13 @@ export function RecipientStep({
                   <span className='font-medium'>{selectedRecipient.name}</span>
                   {selectedRecipient.isGuardian && (
                     <Badge variant='secondary' className='text-xs'>
-                      <Icon name={'shield' as any} className='w-3 h-3 mr-1' />
+                      <Icon name="shield" className='w-3 h-3 mr-1' />
                       Guardian
                     </Badge>
                   )}
                 </div>
                 <div className='text-sm text-muted-foreground flex items-center gap-2'>
-                  <Icon name={'mail' as any} className='w-3 h-3' />
+                  <Icon name="mail" className='w-3 h-3' />
                   {selectedRecipient.email}
                   {selectedRecipient.relationship && (
                     <>
@@ -130,7 +130,7 @@ export function RecipientStep({
                 setShowCustomForm(false);
               }}
             >
-              <Icon name={'x' as any} className='w-4 h-4' />
+              <Icon name="x" className='w-4 h-4' />
             </Button>
           </CardContent>
         </Card>
@@ -141,7 +141,7 @@ export function RecipientStep({
         <Card>
           <CardHeader>
             <CardTitle className='text-lg flex items-center gap-2'>
-              <Icon name={'shield' as any} className='w-5 h-5 text-primary' />
+              <Icon name="shield" className='w-5 h-5 text-primary' />
               Choose from Your Guardians
             </CardTitle>
           </CardHeader>
@@ -165,7 +165,7 @@ export function RecipientStep({
                   <div className='flex-1'>
                     <div className='font-medium'>{guardian.name}</div>
                     <div className='text-sm text-muted-foreground flex items-center gap-2'>
-                      <Icon name={'mail' as any} className='w-3 h-3' />
+                      <Icon name="mail" className='w-3 h-3' />
                       {guardian.email}
                       {guardian.relationship && (
                         <>
@@ -178,7 +178,7 @@ export function RecipientStep({
                     </div>
                   </div>
                   <Icon
-                    name={'chevron-right' as any}
+                    name="chevron-right"
                     className='w-4 h-4 text-muted-foreground'
                   />
                 </button>
@@ -194,7 +194,7 @@ export function RecipientStep({
           <CardHeader>
             <CardTitle className='text-lg flex items-center gap-2'>
               <Icon
-                name={'user-plus' as any}
+                name="user-plus"
                 className='w-5 h-5 text-primary'
               />
               Add Someone New
@@ -210,7 +210,7 @@ export function RecipientStep({
               onClick={() => setShowCustomForm(true)}
               className='w-full'
             >
-              <Icon name={'plus' as any} className='w-4 h-4 mr-2' />
+              <Icon name="plus" className='w-4 h-4 mr-2' />
               Add New Recipient
             </Button>
           </CardContent>
@@ -223,7 +223,7 @@ export function RecipientStep({
           <CardHeader>
             <CardTitle className='text-lg flex items-center gap-2'>
               <Icon
-                name={'user-plus' as any}
+                name="user-plus"
                 className='w-5 h-5 text-primary'
               />
               New Recipient Details
@@ -275,7 +275,7 @@ export function RecipientStep({
                 }
                 className='flex-1'
               >
-                <Icon name={'check' as any} className='w-4 h-4 mr-2' />
+                <Icon name="check" className='w-4 h-4 mr-2' />
                 Save Recipient
               </Button>
               <Button variant='outline' onClick={handleCustomRecipientCancel}>
@@ -289,7 +289,7 @@ export function RecipientStep({
       {/* Help Text */}
       {!selectedRecipient && (
         <div className='text-center text-sm text-muted-foreground bg-blue-50 p-4 rounded-lg'>
-          <Icon name={'info' as any} className='w-4 h-4 inline mr-2' />
+          <Icon name="info" className='w-4 h-4 inline mr-2' />
           Your Time Capsule recipient will receive an email notification when
           it's time for delivery. Make sure their email address is current and
           accessible.

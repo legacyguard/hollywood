@@ -204,7 +204,7 @@ export default function DocumentScanner({
           <FadeIn duration={0.5}>
             <div className='w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center'>
               <Icon
-                name={'documents' as any}
+                name="documents"
                 className='w-8 h-8 text-primary'
               />
             </div>
@@ -227,7 +227,7 @@ export default function DocumentScanner({
               >
                 <input {...getInputProps()} />
                 <Icon
-                  name={'upload' as any}
+                  name="upload"
                   className='w-12 h-12 text-muted-foreground mx-auto mb-4'
                 />
                 <p className='text-lg font-medium mb-2'>
@@ -239,7 +239,7 @@ export default function DocumentScanner({
                   Supports images (PNG, JPG, GIF, WebP) and PDFs up to 10MB
                 </p>
                 <Button onClick={handleManualFileSelect} type='button'>
-                  <Icon name={'documents' as any} className='w-4 h-4 mr-2' />
+                  <Icon name="documents" className='w-4 h-4 mr-2' />
                   Choose File
                 </Button>
                 <input
@@ -259,7 +259,7 @@ export default function DocumentScanner({
                   <div className='flex items-center justify-between mb-4'>
                     <div className='flex items-center gap-3'>
                       <Icon
-                        name={'documents' as any}
+                        name="documents"
                         className='w-5 h-5 text-primary'
                       />
                       <div className='text-left'>
@@ -275,7 +275,7 @@ export default function DocumentScanner({
                       size='sm'
                       onClick={clearSelection}
                     >
-                      <Icon name={'x' as any} className='w-4 h-4' />
+                      <Icon name="x" className='w-4 h-4' />
                     </Button>
                   </div>
 
@@ -301,7 +301,7 @@ export default function DocumentScanner({
                     {isProcessing ? (
                       <>
                         <Icon
-                          name={'loader' as any}
+                          name="loader"
                           className='w-4 h-4 mr-2 animate-spin'
                         />
                         Processing...
@@ -309,7 +309,7 @@ export default function DocumentScanner({
                     ) : (
                       <>
                         <Icon
-                          name={'sparkles' as any}
+                          name="sparkles"
                           className='w-4 h-4 mr-2'
                         />
                         Scan Document
@@ -321,7 +321,7 @@ export default function DocumentScanner({
                     variant='outline'
                     onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
                   >
-                    <Icon name={'settings' as any} className='w-4 h-4 mr-2' />
+                    <Icon name="settings" className='w-4 h-4 mr-2' />
                     Options
                   </Button>
                 </div>

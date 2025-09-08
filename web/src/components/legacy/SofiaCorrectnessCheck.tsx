@@ -226,20 +226,20 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
       case 'success':
         return (
           <Icon
-            name={'check-circle' as any}
+            name="check-circle"
             className='w-5 h-5 text-green-600'
           />
         );
       case 'warning':
         return (
           <Icon
-            name={'alert-circle' as any}
+            name="alert-circle"
             className='w-5 h-5 text-yellow-600'
           />
         );
       case 'error':
         return (
-          <Icon name={'x-circle' as any} className='w-5 h-5 text-red-600' />
+          <Icon name="x-circle" className='w-5 h-5 text-red-600' />
         );
     }
   };
@@ -271,7 +271,7 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
       <Card className='p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200 dark:border-blue-800'>
         <div className='flex items-start gap-4'>
           <div className='w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
-            <Icon name={'sparkles' as any} className='w-6 h-6 text-primary' />
+            <Icon name="sparkles" className='w-6 h-6 text-primary' />
           </div>
           <div>
             <h3 className='text-xl font-semibold text-blue-900 dark:text-blue-200 mb-2'>
@@ -335,7 +335,7 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
               {check.onAction && (
                 <Button
                   onClick={check.onAction}
-                  variant={'outline' as any}
+                  variant="outline"
                   size='sm'
                   className='ml-4 shrink-0'
                 >
@@ -352,7 +352,7 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
         {hasErrors ? (
           <div className='mb-4'>
             <Icon
-              name={'alert-circle' as any}
+              name="alert-circle"
               className='w-12 h-12 text-red-500 mx-auto mb-4'
             />
             <h3 className='text-lg font-semibold text-red-600 mb-2'>
@@ -366,7 +366,7 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
         ) : (
           <div className='mb-4'>
             <Icon
-              name={'check-circle' as any}
+              name="check-circle"
               className='w-12 h-12 text-green-500 mx-auto mb-4'
             />
             <h3 className='text-lg font-semibold text-green-600 mb-2'>
@@ -386,7 +386,7 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
           size='lg'
           className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
         >
-          <Icon name={'arrow-right' as any} className='w-5 h-5 mr-2' />
+          <Icon name="arrow-right" className='w-5 h-5 mr-2' />
           Continue to Final Review
         </Button>
       </Card>

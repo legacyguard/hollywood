@@ -436,7 +436,7 @@ export default function GuardiansEnhanced() {
                       className='bg-primary hover:bg-primary-hover text-primary-foreground shadow-md'
                       size='lg'
                     >
-                      <Icon name={'add' as any} className='w-5 h-5 mr-2' />
+                      <Icon name="add" className='w-5 h-5 mr-2' />
                       {t('actions.addGuardian')}
                     </Button>
                   </DialogTrigger>
@@ -649,7 +649,7 @@ export default function GuardiansEnhanced() {
                       <div className='flex justify-end space-x-2'>
                         <Button
                           type='button'
-                          variant={'outline' as any}
+                          variant="outline"
                           onClick={() => {
                             setIsDialogOpen(false);
                             setEditingGuardian(null);
@@ -686,7 +686,7 @@ export default function GuardiansEnhanced() {
                 <div className='flex items-center justify-center py-12'>
                   <div className='text-center'>
                     <Icon
-                      name={'loader' as any}
+                      name="loader"
                       className='w-8 h-8 animate-spin mx-auto mb-4 text-primary'
                     />
                     <p className='text-muted-foreground'>
@@ -698,7 +698,7 @@ export default function GuardiansEnhanced() {
                 <Card className='p-12'>
                   <div className='text-center'>
                     <Icon
-                      name={'shield' as any}
+                      name="shield"
                       className='w-16 h-16 mx-auto mb-4 text-muted-foreground/50'
                     />
                     <h3 className='text-xl font-semibold mb-2'>
@@ -709,7 +709,7 @@ export default function GuardiansEnhanced() {
                       to important information when needed.
                     </p>
                     <Button size='lg' onClick={() => setIsDialogOpen(true)}>
-                      <Icon name={'add' as any} className='w-5 h-5 mr-2' />
+                      <Icon name="add" className='w-5 h-5 mr-2' />
                       Add Your First Guardian
                     </Button>
                   </div>
@@ -741,7 +741,7 @@ export default function GuardiansEnhanced() {
                 <Card className='p-8 bg-primary/5 border-primary/20'>
                   <div className='flex items-start gap-4'>
                     <Icon
-                      name={'info' as any}
+                      name="info"
                       className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                     />
                     <div>

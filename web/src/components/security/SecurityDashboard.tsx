@@ -238,7 +238,7 @@ export function SecurityDashboard() {
       <Card className='p-8'>
         <div className='flex items-center justify-center'>
           <Icon
-            name={'upload' as any}
+            name="upload"
             className='w-8 h-8 animate-spin text-primary'
           />
         </div>
@@ -276,7 +276,7 @@ export function SecurityDashboard() {
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
                 <Icon
-                  name={'key' as any}
+                  name="key"
                   className='w-5 h-5 text-muted-foreground'
                 />
                 <span className='text-sm'>{t('factors.passwordStrength.label')}</span>
@@ -295,7 +295,7 @@ export function SecurityDashboard() {
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
                 <Icon
-                  name={'shield-check' as any}
+                  name="shield-check"
                   className='w-5 h-5 text-muted-foreground'
                 />
                 <span className='text-sm'>{t('factors.twoFactorAuth.label')}</span>
@@ -316,7 +316,7 @@ export function SecurityDashboard() {
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
                 <Icon
-                  name={'lock' as any}
+                  name="lock"
                   className='w-5 h-5 text-muted-foreground'
                 />
                 <span className='text-sm'>{t('factors.encryption.label')}</span>
@@ -337,7 +337,7 @@ export function SecurityDashboard() {
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
                 <Icon
-                  name={'database' as any}
+                  name="database"
                   className='w-5 h-5 text-muted-foreground'
                 />
                 <span className='text-sm'>{t('factors.recentBackup.label')}</span>
@@ -354,7 +354,7 @@ export function SecurityDashboard() {
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
                 <Icon
-                  name={'refresh' as any}
+                  name="refresh"
                   className='w-5 h-5 text-muted-foreground'
                 />
                 <span className='text-sm'>{t('factors.recoverySetup.label')}</span>
@@ -371,7 +371,7 @@ export function SecurityDashboard() {
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
                 <Icon
-                  name={'rotate' as any}
+                  name="rotate"
                   className='w-5 h-5 text-muted-foreground'
                 />
                 <span className='text-sm'>{t('factors.keyRotation.label')}</span>
@@ -396,7 +396,7 @@ export function SecurityDashboard() {
               >
                 <div className='flex items-center gap-4'>
                   <Icon
-                    name={'device-laptop' as any}
+                    name="device-laptop"
                     className='w-5 h-5 text-muted-foreground'
                   />
                   <div>
@@ -494,14 +494,14 @@ export function SecurityDashboard() {
         <FadeIn duration={0.5} delay={0.4}>
           <Card className='p-6 border-yellow-200 dark:border-yellow-900 bg-yellow-50 dark:bg-yellow-950/20'>
             <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-              <Icon name={'info' as any} className='w-5 h-5 text-yellow-600' />
+              <Icon name="info" className='w-5 h-5 text-yellow-600' />
               {t('recommendations.title')}
             </h3>
             <div className='space-y-3'>
               {keyRotationNeeded && (
                 <div className='flex items-start gap-3'>
                   <Icon
-                    name={'rotate' as any}
+                    name="rotate"
                     className='w-5 h-5 text-yellow-600 mt-0.5'
                   />
                   <div className='flex-1'>
@@ -519,7 +519,7 @@ export function SecurityDashboard() {
               {!securityScore.factors.twoFactorEnabled && (
                 <div className='flex items-start gap-3'>
                   <Icon
-                    name={'shield-check' as any}
+                    name="shield-check"
                     className='w-5 h-5 text-yellow-600 mt-0.5'
                   />
                   <div className='flex-1'>
@@ -539,7 +539,7 @@ export function SecurityDashboard() {
               {!securityScore.factors.backupRecent && (
                 <div className='flex items-start gap-3'>
                   <Icon
-                    name={'database' as any}
+                    name="database"
                     className='w-5 h-5 text-yellow-600 mt-0.5'
                   />
                   <div className='flex-1'>
