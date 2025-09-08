@@ -6,6 +6,9 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
+    // Memory optimization settings
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -35,7 +38,12 @@
     "**/*.stories.ts",
     "src/components/ui/carousel.tsx",
     "src/components/ui/command.tsx",
-    "src/components/ui/drawer.tsx"
+    "src/components/ui/drawer.tsx",
+    "node_modules",
+    "dist",
+    ".tsbuildinfo",
+    "lint-results.json",
+    "hardcoded-strings-report.json"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

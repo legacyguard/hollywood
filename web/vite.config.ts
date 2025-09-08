@@ -70,6 +70,10 @@ export default defineConfig(({ mode }) => {
       assetsInlineLimit: 4096,
       // Rollup options for advanced configuration
       rollupOptions: {
+        // Memory optimization settings
+        maxParallelFileOps: 2,
+        // Reduce memory usage by limiting concurrent processing
+        experimentalCacheExpiry: 10,
         output: {
           // Manual chunking for better caching and performance
           manualChunks: id => {

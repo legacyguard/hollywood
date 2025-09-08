@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface SkipLink {
   href: string;
@@ -12,10 +13,10 @@ interface SkipLink {
   label: string;
 }
 
-const defaultLinks: SkipLink[] = [
-  { id: 'main-content', label: 'Skip to main content', href: '#main-content' },
-  { id: 'navigation', label: 'Skip to navigation', href: '#navigation' },
-  { id: 'search', label: 'Skip to search', href: '#search' },
+const getDefaultLinks = (t: (key: string) => string): SkipLink[] => [
+  { id: 'main-content', label: t('accessibility.skipLinks.mainContent'), href: '#main-content' },
+  { id: 'navigation', label: t('accessibility.skipLinks.navigation'), href: '#navigation' },
+  { id: 'search', label: t('accessibility.skipLinks.search'), href: '#search' },
 ];
 
 interface SkipLinksProps {
@@ -24,12 +25,15 @@ interface SkipLinksProps {
 }
 
 export const SkipLinks: React.FC<SkipLinksProps> = ({
-  links = defaultLinks,
+  links,
   className,
 }) => {
+  const { t } = useTranslation();
+  const defaultLinks = getDefaultLinks(t);
+  const skipLinks = links || defaultLinks;
   return (
     <nav
-      aria-label='Skip links'
+      aria-label={t('accessibility.skipLinks.skipLinksNavLabel')}
       className={cn(
         'skip-links',
         'fixed top-0 left-0 z-[100] bg-background',
@@ -37,7 +41,7 @@ export const SkipLinks: React.FC<SkipLinksProps> = ({
       )}
     >
       <ul className='list-none p-0 m-0'>
-        {links.map(link => (
+        {skipLinks.map(link => (
           <li key={link.id}>
             <a
               href={link.href}

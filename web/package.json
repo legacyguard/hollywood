@@ -4,14 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
-    "lint:ci": "eslint . --report-unused-disable-directives",
+    "dev": "cross-env NODE_OPTIONS='--max-old-space-size=4096 --max_semi_space_size=64' vite",
+    "build": "cross-env NODE_OPTIONS='--max-old-space-size=4096 --max_semi_space_size=64' vite build",
+    "build:memory-safe": "cross-env NODE_OPTIONS='--max-old-space-size=6144 --max_semi_space_size=128 --optimize-for-size' vite build",
+    "preview": "cross-env NODE_OPTIONS='--max-old-space-size=3072' vite preview",
+    "type-check": "cross-env NODE_OPTIONS='--max-old-space-size=4096' tsc --noEmit",
+    "lint": "cross-env NODE_OPTIONS='--max-old-space-size=4096' eslint . --report-unused-disable-directives --max-warnings 0",
+    "lint:ci": "cross-env NODE_OPTIONS='--max-old-space-size=4096' eslint . --report-unused-disable-directives",
+    "lint:memory-safe": "cross-env NODE_OPTIONS='--max-old-space-size=4096 --max_semi_space_size=64' eslint . --report-unused-disable-directives --max-warnings 0 --cache --cache-location .eslintcache",
     "test": "echo 'No unit tests configured yet' && exit 0",
-    "test:e2e": "cypress run"
+    "test:e2e": "cross-env NODE_OPTIONS='--max-old-space-size=4096' cypress run",
+    "analyze": "cross-env NODE_OPTIONS='--max-old-space-size=4096' vite build --mode analyze"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.46.0",
@@ -74,16 +77,18 @@
     "tweetnacl-util": "^0.15.1"
   },
   "devDependencies": {
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.9",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@vitejs/plugin-react": "^5.0.2",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.1",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-bundle-analyzer": "^0.12.1"
   }
 }

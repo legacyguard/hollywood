@@ -25,8 +25,10 @@ import {
 } from './MagicalDocumentUpload';
 import { usePersonalityManager } from '@/components/sofia/usePersonalityManager';
 import type { PersonalityMode } from '@/lib/sofia-types';
+import { useTranslation } from '@/i18n/useTranslation';
 
 export const DocumentUploader = () => {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -69,7 +71,7 @@ export const DocumentUploader = () => {
 
       // Validate file size (max 10MB for MVP)
       if (selectedFile.size > 10 * 1024 * 1024) {
-        toast.error('File size must be less than 10MB');
+        toast.error(t('documents.uploader.fileSizeLimit'));
         return;
       }
 
@@ -79,14 +81,14 @@ export const DocumentUploader = () => {
 
   const handleUpload = async () => {
     if (!file || !userId) {
-      toast.error('Please select a file to upload.');
+      toast.error(t('documents.uploader.selectFilePrompt'));
       return;
     }
 
     // Check if encryption is ready
     if (!isReady) {
       setShowPasswordPrompt(true);
-      toast.info('Please unlock encryption to upload documents');
+      toast.info(t('documents.uploader.unlockEncryption'));
       return;
     }
 
@@ -109,7 +111,7 @@ export const DocumentUploader = () => {
       const encryptionResult = await encryptFile(file);
 
       if (!encryptionResult) {
-        throw new Error('Failed to encrypt file');
+        throw new Error(t('documents.uploader.encryptionFailed'));
       }
 
       const { encryptedFile, metadata } = encryptionResult;
@@ -139,9 +141,7 @@ export const DocumentUploader = () => {
       if (error) {
         // If bucket doesn't exist, show helpful message
         if (error.message.includes('bucket')) {
-          throw new Error(
-            'Storage bucket not configured. Please set up Supabase Storage.'
-          );
+          throw new Error(t('documents.uploader.bucketNotConfigured'));
         }
         throw error;
       }
@@ -175,7 +175,7 @@ export const DocumentUploader = () => {
         // // console.error('Database error:', dbError);
         // Try to delete the uploaded file if database insert fails
         await supabase.storage.from('user_documents').remove([filePath]);
-        throw new Error('Failed to save document metadata');
+        throw new Error(t('documents.uploader.metadataError'));
       }
 
       // No longer storing in localStorage - all handled server-side
