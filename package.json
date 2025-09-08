@@ -7,7 +7,8 @@
   "workspaces": [
     "web",
     "mobile",
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev:web\" \"npm run dev:packages\"",
@@ -16,6 +17,7 @@
     "build:packages": "turbo run build --filter='./packages/*'",
     "build:web": "turbo run build --filter=legacyguard-web",
     "build:mobile": "turbo run build --filter=mobile",
+    "build:demo": "turbo run build --filter=@hollywood/demo",
     "build:clean": "npm run clean:cache && npm run clean:dist",
     "clean:cache": "rm -rf .turbo mobile/.expo /tmp/metro-*",
     "clean:dist": "rm -rf web/dist mobile/dist packages/*/dist",
@@ -27,6 +29,7 @@
     "type-check": "tsc --noEmit || echo 'Type check completed with warnings'",
     "web:dev": "cd web && npm run dev",
     "mobile:dev": "cd mobile && npm run start",
+    "demo:dev": "cd apps/demo && npm run dev",
     "web:build": "npm run build:packages && cd web && npm run build",
     "mobile:build": "cd mobile && npx expo export --platform all",
     "test:web": "cd web && npm run test",
