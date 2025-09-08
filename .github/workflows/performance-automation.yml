@@ -126,14 +126,11 @@ jobs:
         run: |
           if [ -f "master-automation-report.json" ]; then
             echo "PERFORMANCE_STATUS=completed" >> $GITHUB_ENV
+            echo "Performance automation completed"
           else
             echo "PERFORMANCE_STATUS=failed" >> $GITHUB_ENV
+            echo "Performance automation failed"
           fi
-
-      - name: Performance optimization status
-        if: always()
-        run: |
-          echo "Performance automation ${{ env.PERFORMANCE_STATUS }}"
 
   bundle-analysis:
     runs-on: ubuntu-latest

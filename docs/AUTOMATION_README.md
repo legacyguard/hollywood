@@ -1,34 +1,40 @@
 # 🚀 LegacyGuard Performance Automation System
 
 ## Overview
+
 This system provides **fully automated performance optimization** for your LegacyGuard application. No more manual scripts or repetitive tasks - everything runs automatically!
 
 ## 🎯 What Gets Automated
 
 ### 1. **Image Optimization** (`scripts/image-optimizer.js`)
+
 - ✅ Automatically converts images to WebP/AVIF formats
 - ✅ Optimizes original images for size reduction
 - ✅ Resizes oversized images to optimal dimensions
 - ✅ Updates image references in source code
 
 ### 2. **Performance Automation** (`scripts/performance-automation.js`)
+
 - ✅ Monitors Core Web Vitals (LCP, FID, CLS, FCP, TTFB)
 - ✅ Generates performance insights and recommendations
 - ✅ Sets up automated monitoring systems
 - ✅ Creates GitHub Actions workflows
 
 ### 3. **Performance Testing** (`scripts/performance-tester.js`)
+
 - ✅ Runs automated Lighthouse tests
 - ✅ Validates performance metrics against thresholds
 - ✅ Generates detailed HTML reports
 - ✅ Provides actionable recommendations
 
 ### 4. **Bundle Analysis** (`scripts/analyze-bundle.js`)
+
 - ✅ Analyzes bundle sizes and identifies issues
 - ✅ Suggests code splitting strategies
 - ✅ Monitors for performance regressions
 
 ### 5. **Master Automation** (`scripts/auto-optimize.js`)
+
 - ✅ Runs ALL optimizations in sequence
 - ✅ Generates comprehensive reports
 - ✅ Updates package.json with automation scripts
@@ -37,12 +43,14 @@ This system provides **fully automated performance optimization** for your Legac
 ## 🚀 Quick Start
 
 ### Run Everything Automatically
+
 ```bash
 # This runs ALL performance optimizations
 npm run auto:optimize
 ```
 
 ### Run Individual Optimizations
+
 ```bash
 # Image optimization only
 npm run auto:images
@@ -70,12 +78,14 @@ After running automation, you'll get:
 ## 🔧 Continuous Integration
 
 ### GitHub Actions Workflow
+
 - **Automatic on every push/PR** to main/develop
 - **Weekly scheduled runs** every Monday at 2 AM
 - **Performance regression detection**
 - **Automated PR comments** with insights
 
 ### Pre-commit Hooks
+
 - **Automatic performance checks** before each commit
 - **Bundle size validation**
 - **Performance regression prevention**
@@ -93,7 +103,9 @@ After running automation, you'll get:
 ## 🎨 Customization
 
 ### Thresholds
+
 Edit `scripts/performance-tester.js` to adjust performance thresholds:
+
 ```javascript
 thresholds: {
   performance: 90,
@@ -109,7 +121,9 @@ thresholds: {
 ```
 
 ### Image Quality
+
 Edit `scripts/image-optimizer.js` to adjust image quality:
+
 ```javascript
 quality: {
   webp: 80,
@@ -122,18 +136,21 @@ quality: {
 ### Common Issues
 
 1. **Dependency Conflicts**
+
    ```bash
    # Use legacy peer deps for compatibility
    npm install --legacy-peer-deps
    ```
 
 2. **Sharp Installation Issues**
+
    ```bash
    # Install Sharp manually
    npm install --save-dev sharp --legacy-peer-deps
    ```
 
 3. **Build Failures**
+
    ```bash
    # Check TypeScript compilation
    npm run build
@@ -143,6 +160,7 @@ quality: {
    ```
 
 ### Debug Mode
+
 ```bash
 # Run with verbose logging
 DEBUG=* npm run auto:optimize
@@ -171,24 +189,29 @@ graph TD
 ## 🎯 Best Practices
 
 ### 1. **Run Automation Regularly**
-   - Before major releases
-   - After adding new dependencies
-   - When performance issues are reported
+
+- Before major releases
+- After adding new dependencies
+- When performance issues are reported
 
 ### 2. **Monitor Reports**
-   - Check generated reports after each run
-   - Address failed optimizations promptly
-   - Track performance trends over time
+
+- Check generated reports after each run
+- Address failed optimizations promptly
+- Track performance trends over time
 
 ### 3. **Set Up Alerts**
-   - Configure GitHub Actions notifications
-   - Set up performance regression alerts
-   - Monitor Core Web Vitals in production
+
+- Configure GitHub Actions notifications
+- Set up performance regression alerts
+- Monitor Core Web Vitals in production
 
 ## 🚀 Advanced Features
 
 ### Custom Automation Scripts
+
 Create your own automation scripts in the `scripts/` directory:
+
 ```javascript
 // scripts/custom-optimizer.js
 export default class CustomOptimizer {
@@ -199,7 +222,9 @@ export default class CustomOptimizer {
 ```
 
 ### Performance Budgets
+
 Set performance budgets to prevent regressions:
+
 ```javascript
 // In your CI/CD pipeline
 const budget = {
@@ -211,6 +236,7 @@ const budget = {
 ```
 
 ### Integration with Other Tools
+
 - **Lighthouse CI** for continuous monitoring
 - **WebPageTest** for real-world performance
 - **Sentry** for performance error tracking
@@ -218,11 +244,13 @@ const budget = {
 ## 📞 Support
 
 ### Getting Help
+
 1. Check the generated reports for specific issues
 2. Review the console output for error messages
 3. Check the GitHub Actions logs for CI/CD issues
 
 ### Contributing
+
 1. Fork the repository
 2. Create a feature branch
 3. Add your automation improvements
@@ -231,6 +259,7 @@ const budget = {
 ## 🎉 Success Metrics
 
 Your automation is working when you see:
+
 - ✅ **Success Rate: 100%** in master automation reports
 - ✅ **All performance metrics** within target thresholds
 - ✅ **Bundle sizes** optimized and stable
