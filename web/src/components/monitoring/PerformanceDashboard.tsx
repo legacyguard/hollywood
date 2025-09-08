@@ -9,19 +9,16 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Activity, 
-  TrendingUp, 
-  TrendingDown, 
-  AlertTriangle, 
-  CheckCircle,
+import {
+  Activity,
+  TrendingUp,
+  TrendingDown,
+  AlertTriangle,
   Clock,
-  Zap,
-  Shield,
-  BarChart3
+  Zap
 } from 'lucide-react';
 import { rumMonitor } from '@/lib/monitoring/rum';
-import { bundleAnalyzer, getBundleReport } from '@/lib/monitoring/bundle-analyzer';
+import { getBundleReport } from '@/lib/monitoring/bundle-analyzer';
 import { monitoringAPI } from '@/lib/monitoring/api-client';
 import { useUser } from '@clerk/clerk-react';
 
@@ -89,6 +86,7 @@ export function PerformanceDashboard() {
       const interval = setInterval(loadMetrics, 30000); // Refresh every 30 seconds
       return () => clearInterval(interval);
     }
+    return undefined;
   }, [selectedTimeRange, autoRefresh, user]);
 
   const loadMetrics = async () => {

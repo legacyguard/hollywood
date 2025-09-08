@@ -144,23 +144,6 @@ export default defineConfig(({ mode }) => {
       manifest: true,
       // Fix for MIME type issues in production
       rollupOptions: {
-        output: {
-          // Ensure proper file extensions and MIME types
-          entryFileNames: 'assets/js/[name]-[hash].js',
-          chunkFileNames: 'assets/js/[name]-[hash].js',
-          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
-          // Fix for React 19 module issues
-          format: 'es',
-          // Ensure proper module loading
-          generatedCode: {
-            preset: 'es2015',
-            arrowFunctions: true,
-            constBindings: true,
-          },
-        },
-      },
-      // Rollup options for advanced configuration
-      rollupOptions: {
         // Memory optimization settings
         maxParallelFileOps: 2,
         // Reduce memory usage by limiting concurrent processing
@@ -171,7 +154,7 @@ export default defineConfig(({ mode }) => {
           // Ensure proper sourcemap generation
           sourcemapExcludeSources: false,
           // Generate accurate sourcemaps
-          sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
+          sourcemapPathTransform: (relativeSourcePath: string, sourcemapPath: string) => {
             // Fix relative paths in sourcemaps
             return relativeSourcePath.replace(/^..\//, './');
           },
@@ -441,13 +424,13 @@ export default defineConfig(({ mode }) => {
           },
         },
         // Add bundle analyzer plugin in production
-        ...(mode === 'production' && {
+        ...(mode === 'production' ? {
           plugins: [
             {
               name: 'bundle-analyzer',
-              generateBundle(options, bundle) {
+              generateBundle(options: any, bundle: any) {
                 // Log bundle sizes
-                const sizes = Object.entries(bundle).map(([name, asset]) => ({
+                const sizes = Object.entries(bundle).map(([name, asset]: [string, any]) => ({
                   name,
                   size:
                     asset.type === 'chunk'
@@ -458,8 +441,8 @@ export default defineConfig(({ mode }) => {
               },
             },
           ],
-        }),
-      },
+        } : {}),
+      }
     },
 
     // CSS Configuration
@@ -480,20 +463,20 @@ export default defineConfig(({ mode }) => {
         // scss: {
         //   additionalData: `@import "@/styles/variables.scss";`
         // }
-      },
+      }
     },
 
     // Environment Variables
     define: {
       // Define global constants
-      __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
-      __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
-      __DEV__: mode === 'development',
+      '__APP_VERSION__': JSON.stringify(process.env.npm_package_version),
+      '__BUILD_DATE__': JSON.stringify(new Date().toISOString()),
+      '__DEV__': mode === 'development',
       // Define process.env for browser compatibility
       'process.env.NODE_ENV': JSON.stringify(mode),
       // Fix for React 19 global issues
-      global: 'globalThis',
-    },
+      'global': 'globalThis'
+    } as any,
 
     // Performance options
     esbuild: {
@@ -510,14 +493,14 @@ export default defineConfig(({ mode }) => {
       // Minify syntax
       minifySyntax: mode === 'production',
       // Minify whitespace
-      minifyWhitespace: mode === 'production',
+      minifyWhitespace: mode === 'production'
     },
 
     // Preview server configuration (for production preview)
     preview: {
       host: '::',
       port: 4173,
-      strictPort: false,
+      strictPort: false
     },
 
     // Worker configuration
@@ -525,9 +508,9 @@ export default defineConfig(({ mode }) => {
       format: 'es',
       rollupOptions: {
         output: {
-          entryFileNames: 'assets/worker/[name]-[hash].js',
-        },
-      },
-    },
+          entryFileNames: 'assets/worker/[name]-[hash].js'
+        }
+      }
+    }
   };
 });
