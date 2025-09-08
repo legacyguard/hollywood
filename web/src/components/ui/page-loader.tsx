@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 export function PageLoader() {
   const { t } = useTranslation('ui/page-loader');
-  
+
   return (
     <div className='flex h-screen w-full items-center justify-center'>
       <div className='flex flex-col items-center space-y-4'>

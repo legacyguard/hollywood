@@ -18,9 +18,9 @@ class SecurityMetricsService {
    */
   generateMetrics(range: string = '24h') {
     const trendData: Array<{
-      time: string;
-      requests: number;
       blocked: number;
+      requests: number;
+      time: string;
     }> = [];
 
     // Generate sample trend data

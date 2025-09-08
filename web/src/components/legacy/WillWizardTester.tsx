@@ -133,9 +133,9 @@ export const WillWizardTester: React.FC = () => {
                 className="w-full"
                 onClick={() => runTest(config as TestConfiguration)}
               >
-                {t('buttons.testCombination', { 
-                  language: config.language, 
-                  jurisdiction: config.jurisdiction 
+                {t('buttons.testCombination', {
+                  language: config.language,
+                  jurisdiction: config.jurisdiction
                 })}
               </Button>
 

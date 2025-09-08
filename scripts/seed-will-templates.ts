@@ -42,7 +42,7 @@ async function seedTemplates() {
 
     // Test validation
     console.log('🔍 Testing template validation...');
-    
+
     // Sample user data for testing
     const testUserData = {
       personal: {
@@ -162,7 +162,7 @@ async function seedTemplates() {
     console.log('📚 Getting all available templates...');
     const allTemplates = await templateLibrary.getAllTemplates();
     console.log(`    ✅ Total templates loaded: ${allTemplates.length}`);
-    
+
     allTemplates.forEach((template: WillTemplate) => {
       console.log(`       - ${template.id}: ${template.metadata.name}`);
     });

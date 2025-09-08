@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 // In-memory store for rate limiting (consider Redis for production)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -18,12 +18,12 @@ setInterval(
 );
 
 export interface RateLimitConfig {
-  windowMs?: number; // Time window in milliseconds
+  keyGenerator?: (req: NextRequest) => string; // Function to generate rate limit key
   maxRequests?: number; // Max requests per window
   message?: string; // Error message
-  keyGenerator?: (req: NextRequest) => string; // Function to generate rate limit key
-  skipSuccessfulRequests?: boolean; // Don't count successful requests
   skipFailedRequests?: boolean; // Don't count failed requests
+  skipSuccessfulRequests?: boolean; // Don't count successful requests
+  windowMs?: number; // Time window in milliseconds
 }
 
 const defaultConfig: Required<RateLimitConfig> = {

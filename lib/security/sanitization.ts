@@ -60,7 +60,7 @@ export function sanitizeFilename(filename: string): string {
 /**
  * Sanitize and validate email address
  */
-export function sanitizeEmail(email: string): string | null {
+export function sanitizeEmail(email: string): null | string {
   if (typeof email !== 'string') return null;
 
   const cleaned = email.toLowerCase().trim();
@@ -82,7 +82,7 @@ export function sanitizePhone(phone: string): string {
 /**
  * Sanitize URL to prevent javascript: and data: protocols
  */
-export function sanitizeUrl(url: string): string | null {
+export function sanitizeUrl(url: string): null | string {
   if (typeof url !== 'string') return null;
 
   const cleaned = url.trim();
@@ -117,7 +117,7 @@ export function sanitizeUrl(url: string): string | null {
 /**
  * Sanitize JSON string to prevent injection
  */
-export function sanitizeJson(jsonString: string): object | null {
+export function sanitizeJson(jsonString: string): null | object {
   if (typeof jsonString !== 'string') return null;
 
   try {
@@ -151,11 +151,11 @@ export function sanitizeSqlInput(input: string): string {
 export function sanitizeNumber(
   input: unknown,
   options: {
-    min?: number;
-    max?: number;
     allowFloat?: boolean;
+    max?: number;
+    min?: number;
   } = {}
-): number | null {
+): null | number {
   const num = options.allowFloat ? parseFloat(input) : parseInt(input, 10);
 
   if (isNaN(num)) return null;
@@ -216,11 +216,11 @@ export function generateCSPNonce(): string {
 export function validateFile(
   file: File,
   options: {
-    maxSize?: number; // in bytes
-    allowedTypes?: string[];
     allowedExtensions?: string[];
+    allowedTypes?: string[];
+    maxSize?: number; // in bytes
   } = {}
-): { valid: boolean; error?: string } {
+): { error?: string; valid: boolean; } {
   const {
     maxSize = 10 * 1024 * 1024, // 10MB default
     allowedTypes = [],

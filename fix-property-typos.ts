@@ -4,10 +4,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 interface Fix {
+  correctName: string;
   file: string;
   line: number;
   propertyName: string;
-  correctName: string;
 }
 
 const fixes: Fix[] = [
@@ -27,24 +27,24 @@ const fixes: Fix[] = [
 function fixPropertyTypos() {
   for (const fix of fixes) {
     const filePath = path.resolve(fix.file);
-    
+
     if (!fs.existsSync(filePath)) {
       console.log(`File not found: ${filePath}`);
       continue;
     }
-    
-    let content = fs.readFileSync(filePath, 'utf-8');
+
+    const content = fs.readFileSync(filePath, 'utf-8');
     const lines = content.split('\n');
-    
+
     // Fix the specific line
     if (lines[fix.line - 1]) {
       const originalLine = lines[fix.line - 1];
       const fixedLine = originalLine.replace(fix.propertyName, fix.correctName);
-      
+
       if (originalLine !== fixedLine) {
         lines[fix.line - 1] = fixedLine;
         console.log(`Fixed ${fix.file}:${fix.line} - ${fix.propertyName} → ${fix.correctName}`);
-        
+
         // Write back the fixed content
         fs.writeFileSync(filePath, lines.join('\n'));
       } else {

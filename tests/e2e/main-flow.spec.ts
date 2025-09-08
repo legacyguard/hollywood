@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Main User Flow', () => {
   test.beforeEach(async ({ page }) => {

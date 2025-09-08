@@ -18,9 +18,9 @@ export class AuthHelper {
   }
 
   async signUp(userData: {
+    email: string;
     firstName: string;
     lastName: string;
-    email: string;
     password: string;
   }) {
     await this.page.goto('/sign-up');

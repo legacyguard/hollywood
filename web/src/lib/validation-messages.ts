@@ -46,21 +46,21 @@ export const ValidationMessages = {
 
   // Generic validation
   generic: {
-    required: (field?: string) => ({ 
-      key: field ? 'forms.validation.fieldRequired' : 'forms.validation.required', 
-      params: field ? { field } : undefined 
+    required: (field?: string) => ({
+      key: field ? 'forms.validation.fieldRequired' : 'forms.validation.required',
+      params: field ? { field } : undefined
     }),
-    minLength: (min: number, field?: string) => ({ 
-      key: field ? 'forms.validation.fieldTooShort' : 'forms.validation.minLength', 
-      params: field ? { field, min } : { min } 
+    minLength: (min: number, field?: string) => ({
+      key: field ? 'forms.validation.fieldTooShort' : 'forms.validation.minLength',
+      params: field ? { field, min } : { min }
     }),
-    maxLength: (max: number, field?: string) => ({ 
-      key: field ? 'forms.validation.fieldTooLong' : 'forms.validation.maxLength', 
-      params: field ? { field, max } : { max } 
+    maxLength: (max: number, field?: string) => ({
+      key: field ? 'forms.validation.fieldTooLong' : 'forms.validation.maxLength',
+      params: field ? { field, max } : { max }
     }),
-    invalid: (field?: string) => ({ 
-      key: field ? 'forms.validation.fieldInvalid' : 'forms.validation.pattern', 
-      params: field ? { field } : undefined 
+    invalid: (field?: string) => ({
+      key: field ? 'forms.validation.fieldInvalid' : 'forms.validation.pattern',
+      params: field ? { field } : undefined
     }),
   },
 };

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 // Smoke test configuration
 test.describe('Smoke Test - Landing Page', () => {

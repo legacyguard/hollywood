@@ -41,8 +41,8 @@ async function encryptData(
   password: string
 ): Promise<{
   encrypted: ArrayBuffer;
-  salt: Uint8Array;
   iv: Uint8Array;
+  salt: Uint8Array;
 }> {
   const encoder = new TextEncoder();
   const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -128,7 +128,7 @@ export class SecureStorage {
   /**
    * Get data from memory
    */
-  public getMemory<T = unknown>(key: string): T | null {
+  public getMemory<T = unknown>(key: string): null | T {
     const item = this.memoryStore.get(key);
     return item ? (item as any).value : null;
   }
@@ -166,7 +166,7 @@ export class SecureStorage {
   /**
    * Get encrypted data from sessionStorage
    */
-  public async getSecureSession<T = unknown>(key: string): Promise<T | null> {
+  public async getSecureSession<T = unknown>(key: string): Promise<null | T> {
     if (typeof window === 'undefined') return null;
 
     try {
@@ -235,7 +235,7 @@ export class SecureStorage {
   /**
    * Get encrypted data from IndexedDB
    */
-  public async getSecureLocal<T = unknown>(key: string): Promise<T | null> {
+  public async getSecureLocal<T = unknown>(key: string): Promise<null | T> {
     if (typeof window === 'undefined') return null;
 
     try {
@@ -244,11 +244,11 @@ export class SecureStorage {
       const store = tx.objectStore('secure_store');
 
       const request = store.get(key);
-      const data = await new Promise<{
+      const data = await new Promise<null | {
         encrypted: number[];
-        salt: number[];
         iv: number[];
-      } | null>(resolve => {
+        salt: number[];
+      }>(resolve => {
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => resolve(null);
       });
@@ -409,7 +409,7 @@ export async function storeAuthToken(token: string): Promise<void> {
 /**
  * Retrieve authentication token
  */
-export async function getAuthToken(): Promise<string | null> {
+export async function getAuthToken(): Promise<null | string> {
   return secureStorage.getSecureSession<string>('auth_token');
 }
 
@@ -425,10 +425,10 @@ export async function storeUserSession(
 /**
  * Get user session data
  */
-export async function getUserSession(): Promise<Record<
+export async function getUserSession(): Promise<null | Record<
   string,
   unknown
-> | null> {
+>> {
   return secureStorage.getSecureSession('user_session');
 }
 

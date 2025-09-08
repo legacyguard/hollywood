@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Complete User Journey', () => {
   test('should complete full user journey from signup to project completion', async ({

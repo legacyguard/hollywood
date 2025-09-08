@@ -13,7 +13,7 @@ interface Scene1PromiseProps {
 
 export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
   const { t } = useTranslation('ui/scene1-promise');
-  
+
   const subtitle = useMemo(
     () => t('subtitle'),
     [t]

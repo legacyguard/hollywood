@@ -17,14 +17,14 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import {
-  Shield,
-  Lock,
-  Key,
   AlertCircle,
   CheckCircle,
   Eye,
   EyeOff,
   Info,
+  Key,
+  Lock,
+  Shield,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -32,8 +32,8 @@ import { cn } from '@/lib/utils';
  * Password strength analysis result
  */
 interface PasswordStrength {
-  score: number;
   feedback: string[];
+  score: number;
   warning?: string;
 }
 

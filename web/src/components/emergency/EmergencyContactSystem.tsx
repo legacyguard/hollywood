@@ -144,7 +144,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
   const detectedMode = personalityManager?.getCurrentStyle() || 'adaptive';
   const effectiveMode: PersonalityMode =
     personalityMode ||
-    (detectedMode === 'balanced' || detectedMode === 'pragmatic' ? 'pragmatic' : 
+    (detectedMode === 'balanced' || detectedMode === 'pragmatic' ? 'pragmatic' :
      detectedMode === 'empathetic' ? 'empathetic' : 'adaptive');
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();

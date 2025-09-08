@@ -2,44 +2,44 @@
 'use client';
 
 import {
-  useState,
-  useEffect,
-  useCallback,
   createContext,
   type ReactNode,
+  useCallback,
+  useEffect,
+  useState,
 } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { encryptionService } from '@/lib/encryption-v2';
 import { toast } from 'sonner';
 
 interface EncryptionContextType {
-  isUnlocked: boolean;
+  checkKeyStatus: () => Promise<void>;
+  decryptFile: (
+    encryptedData: Uint8Array,
+    nonce: Uint8Array
+  ) => Promise<null | Uint8Array>;
+  encryptFile: (
+    file: File
+  ) => Promise<null | {
+    encryptedData: Uint8Array;
+    metadata: Record<string, any>;
+    nonce: Uint8Array;
+  }>;
+  hidePasswordPrompt: () => void;
+  initializeKeys: (password: string) => Promise<boolean>;
   isInitialized: boolean;
   isLoading: boolean;
-  needsMigration: boolean;
-  initializeKeys: (password: string) => Promise<boolean>;
-  unlockKeys: (password: string) => Promise<boolean>;
+  isUnlocked: boolean;
   lockKeys: () => Promise<void>;
-  checkKeyStatus: () => Promise<void>;
   migrateKeys: (password: string) => Promise<boolean>;
+  needsMigration: boolean;
+  passwordPromptVisible: boolean;
   rotateKeys: (
     currentPassword: string,
     newPassword?: string
   ) => Promise<boolean>;
-  encryptFile: (
-    file: File
-  ) => Promise<{
-    encryptedData: Uint8Array;
-    nonce: Uint8Array;
-    metadata: Record<string, any>;
-  } | null>;
-  decryptFile: (
-    encryptedData: Uint8Array,
-    nonce: Uint8Array
-  ) => Promise<Uint8Array | null>;
   showPasswordPrompt: () => void;
-  hidePasswordPrompt: () => void;
-  passwordPromptVisible: boolean;
+  unlockKeys: (password: string) => Promise<boolean>;
 }
 
 const EncryptionContext = createContext<EncryptionContextType | undefined>(

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect, type Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { generateTestUser, waitForClerk } from './helpers/auth';
 import * as path from 'path';
 import * as fs from 'fs';

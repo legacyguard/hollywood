@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { AuthHelper } from './helpers/auth-helper';
 
 test.describe('Projects Management', () => {

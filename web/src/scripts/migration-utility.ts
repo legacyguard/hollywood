@@ -1,10 +1,10 @@
 #!/usr/bin/env tsx
 /**
  * Translation Migration Utility
- * 
+ *
  * This script helps identify hardcoded strings in React components and provides
  * suggestions for replacing them with translation keys.
- * 
+ *
  * Usage:
  *   npm run migrate-strings
  *   or
@@ -19,16 +19,16 @@ import { glob } from 'glob';
 const SEARCH_PATTERNS = [
   // String literals in JSX content
   />\s*['"`]([A-Z][a-zA-Z\s,\.!?]{5,})['"`]\s*</g,
-  
+
   // String literals in JSX attributes
   /(?:title|placeholder|aria-label|alt)\s*=\s*['"`]([A-Z][a-zA-Z\s,\.!?]{3,})['"`]/g,
-  
+
   // String assignments with English text
   /const\s+\w+\s*=\s*['"`]([A-Z][a-zA-Z\s,\.!?]{5,})['"`]/g,
-  
+
   // Object properties with English text
   /['"`]?(\w+)['"`]?\s*:\s*['"`]([A-Z][a-zA-Z\s,\.!?]{5,})['"`]/g,
-  
+
   // Function calls with string literals
   /(?:alert|confirm|console\.(?:log|error|warn))\s*\(\s*['"`]([A-Z][a-zA-Z\s,\.!?]{5,})['"`]/g,
 ];
@@ -38,31 +38,31 @@ const EXCLUDE_PATTERNS = [
   /\bt\s*\(/,
   /useTranslation/,
   /i18n/,
-  
+
   // CSS classes and IDs
   /className|class|id/,
-  
+
   // URLs and paths
   /https?:\/\/|\/\w+/,
-  
+
   // Technical terms (less likely to need translation)
   /API|URL|HTTP|JSON|XML|HTML|CSS|JS|TS|React|Next/,
 ];
 
 interface HardcodedString {
+  column: number;
+  context: string;
   file: string;
   line: number;
-  column: number;
   match: string;
   suggestion: string;
-  context: string;
 }
 
 interface MigrationResult {
-  totalFiles: number;
   filesWithHardcodedStrings: number;
   hardcodedStrings: HardcodedString[];
   suggestions: string[];
+  totalFiles: number;
 }
 
 /**
@@ -75,14 +75,14 @@ function generateTranslationKey(text: string, context?: string): string {
     .replace(/[^a-zA-Z0-9\s]/g, '')
     .trim()
     .split(/\s+/)
-    .map((word, index) => 
+    .map((word, index) =>
       index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)
     )
     .join('');
 
   // Suggest category based on context or content
   let category = 'common';
-  
+
   if (context?.includes('button') || text.match(/^(Save|Delete|Cancel|Submit|Continue|Back|Next|Close|Add|Edit|Create|Update)/i)) {
     category = 'common.buttons';
   } else if (context?.includes('error') || text.match(/error|fail|wrong|invalid/i)) {
@@ -118,7 +118,7 @@ function shouldExcludeFile(filePath: string): boolean {
     'public/locales', // Skip existing translation files
     'src/i18n', // Skip i18n setup files
   ];
-  
+
   return excludePaths.some(excludePath => filePath.includes(excludePath));
 }
 
@@ -145,12 +145,12 @@ function analyzeFile(filePath: string): HardcodedString[] {
     SEARCH_PATTERNS.forEach(pattern => {
       let match;
       const regex = new RegExp(pattern.source, pattern.flags);
-      
+
       while ((match = regex.exec(line)) !== null) {
         const matchedText = match[1] || match[2]; // Get the captured group
         if (matchedText && matchedText.length >= 3) {
           const suggestion = generateTranslationKey(matchedText, line);
-          
+
           results.push({
             file: filePath,
             line: lineIndex + 1,
@@ -178,11 +178,11 @@ function generateTranslationSuggestions(hardcodedStrings: HardcodedString[]): st
   hardcodedStrings.forEach(item => {
     const [category, ...keyParts] = item.suggestion.split('.');
     const key = keyParts.join('.');
-    
+
     if (!keyGroups[category]) {
       keyGroups[category] = {};
     }
-    
+
     keyGroups[category][key] = item.match;
   });
 
@@ -190,11 +190,11 @@ function generateTranslationSuggestions(hardcodedStrings: HardcodedString[]): st
   Object.entries(keyGroups).forEach(([category, keys]) => {
     suggestions.push(`\n// Add to ${category} section in en.json:`);
     suggestions.push(`"${category}": {`);
-    
+
     Object.entries(keys).forEach(([key, value]) => {
       suggestions.push(`  "${key}": "${value}",`);
     });
-    
+
     suggestions.push('},');
   });
 
@@ -221,7 +221,7 @@ async function analyzeMigration(): Promise<MigrationResult> {
 
   // Filter out excluded files
   const validFiles = files.filter(file => !shouldExcludeFile(file));
-  
+
   console.log(`📁 Found ${validFiles.length} files to analyze`);
 
   const hardcodedStrings: HardcodedString[] = [];
@@ -251,7 +251,7 @@ async function analyzeMigration(): Promise<MigrationResult> {
  */
 function generateReport(result: MigrationResult): void {
   const reportPath = path.join(process.cwd(), 'translation-migration-report.md');
-  
+
   let report = `# Translation Migration Report\n\n`;
   report += `**Generated:** ${new Date().toISOString()}\n\n`;
   report += `## Summary\n\n`;
@@ -261,7 +261,7 @@ function generateReport(result: MigrationResult): void {
 
   if (result.hardcodedStrings.length > 0) {
     report += `## Hardcoded Strings by File\n\n`;
-    
+
     // Group by file
     const fileGroups: { [file: string]: HardcodedString[] } = {};
     result.hardcodedStrings.forEach(item => {
@@ -306,9 +306,9 @@ function generateReport(result: MigrationResult): void {
 async function main() {
   try {
     console.log('🌐 Translation Migration Utility\n');
-    
+
     const result = await analyzeMigration();
-    
+
     console.log('\n📊 Results:');
     console.log(`   📁 Files analyzed: ${result.totalFiles}`);
     console.log(`   🔍 Files with hardcoded strings: ${result.filesWithHardcodedStrings}`);
@@ -316,13 +316,13 @@ async function main() {
 
     if (result.hardcodedStrings.length > 0) {
       console.log('📋 Top 10 files with most hardcoded strings:');
-      
+
       // Count strings per file
       const fileCount: { [file: string]: number } = {};
       result.hardcodedStrings.forEach(item => {
         fileCount[item.file] = (fileCount[item.file] || 0) + 1;
       });
-      
+
       // Sort and display top 10
       Object.entries(fileCount)
         .sort(([, a], [, b]) => b - a)
@@ -333,13 +333,13 @@ async function main() {
 
       console.log('\n🔧 Generating detailed report...');
       generateReport(result);
-      
+
       console.log('\n✅ Migration analysis complete!');
       console.log('📖 Check the generated report for detailed migration instructions.');
     } else {
       console.log('🎉 No hardcoded strings found! Your codebase is well internationalized.');
     }
-    
+
   } catch (error) {
     console.error('❌ Error during migration analysis:', error);
     process.exit(1);

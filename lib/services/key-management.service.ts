@@ -6,31 +6,31 @@
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import * as nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 import { pbkdf2, randomBytes } from 'crypto';
 import { promisify } from 'util';
 
 const pbkdf2Async = promisify(pbkdf2);
 
 export interface KeyPair {
-  publicKey: string;
   privateKey: string;
+  publicKey: string;
 }
 
 export interface EncryptedKeyData {
   encryptedPrivateKey: string;
+  iterations: number;
+  nonce: string;
   publicKey: string;
   salt: string;
-  nonce: string;
-  iterations: number;
 }
 
 export interface KeyMetadata {
-  keyVersion: number;
   algorithm: string;
   createdAt: string;
-  lastRotatedAt: string;
   isActive: boolean;
+  keyVersion: number;
+  lastRotatedAt: string;
 }
 
 export class KeyManagementService {
@@ -112,7 +112,7 @@ export class KeyManagementService {
     encryptedPrivateKey: string,
     derivedKey: Buffer,
     nonce: string
-  ): string | null {
+  ): null | string {
     const encryptedBytes = decodeBase64(encryptedPrivateKey);
     const nonceBytes = decodeBase64(nonce);
 
@@ -135,7 +135,7 @@ export class KeyManagementService {
   public async createUserKeys(
     userId: string,
     password: string
-  ): Promise<{ success: boolean; publicKey?: string; error?: string }> {
+  ): Promise<{ error?: string; publicKey?: string; success: boolean; }> {
     try {
       // Check if user already has keys
       const { data: existing } = await this.supabase
@@ -214,10 +214,10 @@ export class KeyManagementService {
     userId: string,
     password: string
   ): Promise<{
-    success: boolean;
+    error?: string;
     privateKey?: string;
     publicKey?: string;
-    error?: string;
+    success: boolean;
   }> {
     try {
       // Get encrypted key data
@@ -297,10 +297,10 @@ export class KeyManagementService {
   public async getUserPublicKey(
     userId: string
   ): Promise<{
-    success: boolean;
-    publicKey?: string;
-    metadata?: KeyMetadata;
     error?: string;
+    metadata?: KeyMetadata;
+    publicKey?: string;
+    success: boolean;
   }> {
     try {
       const { data, error } = await this.supabase
@@ -344,7 +344,7 @@ export class KeyManagementService {
     userId: string,
     currentPassword: string,
     newPassword?: string
-  ): Promise<{ success: boolean; newPublicKey?: string; error?: string }> {
+  ): Promise<{ error?: string; newPublicKey?: string; success: boolean; }> {
     try {
       // First, verify current password and get current keys
       const currentKeys = await this.getUserPrivateKey(userId, currentPassword);
@@ -421,9 +421,9 @@ export class KeyManagementService {
    */
   public async setupRecovery(
     userId: string,
-    method: 'guardian' | 'security_questions' | 'backup_phrase',
+    method: 'backup_phrase' | 'guardian' | 'security_questions',
     recoveryData: Record<string, any>
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean; }> {
     try {
       // Update recovery settings
       const { error: updateError } = await this.supabase
@@ -468,7 +468,7 @@ export class KeyManagementService {
   public async markKeysCompromised(
     userId: string,
     reason: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean; }> {
     try {
       const { error } = await this.supabase
         .from('user_encryption_keys')
@@ -540,8 +540,8 @@ export class KeyManagementService {
    * Validate password strength
    */
   public validatePasswordStrength(password: string): {
-    isValid: boolean;
     errors: string[];
+    isValid: boolean;
   } {
     const errors: string[] = [];
 

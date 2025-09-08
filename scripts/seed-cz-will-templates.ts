@@ -2,27 +2,27 @@
 
 /**
  * Czech Will Template Seeding Script
- * 
+ *
  * This script validates that Czech will templates (will-cz) can be loaded and processed
  * correctly by the template library system. It tests all three will types supported
  * under Czech law (Civil Code §1540-1542).
- * 
+ *
  * Run: npx tsx scripts/seed-cz-will-templates.ts
  */
 
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { CZ_SK_JURISDICTIONS } from '../web/src/types/will-templates';
-import type { WillTemplate, WillJurisdictionConfig, WillUserData } from '../web/src/types/will-templates';
+import type { WillJurisdictionConfig, WillTemplate, WillUserData } from '../web/src/types/will-templates';
 
-async function loadTemplateFromFile(jurisdiction: string, type: string): Promise<WillTemplate | null> {
+async function loadTemplateFromFile(jurisdiction: string, type: string): Promise<null | WillTemplate> {
   try {
     const configPath = join(process.cwd(), 'web', 'public', 'content', 'templates', jurisdiction, type, 'config.json');
     const configContent = await readFile(configPath, 'utf8');
     const config = JSON.parse(configContent);
-    
+
     const templateId = `${jurisdiction}-${type}-cs`;
-    
+
     const template: WillTemplate = {
       id: templateId,
       jurisdiction: jurisdiction.toUpperCase() as any,
@@ -62,10 +62,10 @@ async function loadTemplateFromFile(jurisdiction: string, type: string): Promise
 
 async function seedCzechWillTemplates() {
   console.log('🚀 Starting Czech will template seeding...\n');
-  
+
   // Load Czech Republic jurisdiction config from types
   const czConfig = CZ_SK_JURISDICTIONS.CZ;
-  
+
   const results = {
     loaded: [] as WillTemplate[],
     errors: [] as string[],
@@ -177,7 +177,7 @@ async function seedCzechWillTemplates() {
     const holographic = await loadTemplateFromFile('cz', 'holographic');
     if (holographic) {
       results.loaded.push(holographic);
-      
+
       console.log(`   ✅ Template loaded: ${holographic.metadata.name}`);
       console.log(`   📄 ID: ${holographic.id}`);
       console.log(`   📅 Version: ${holographic.version}`);
@@ -193,7 +193,7 @@ async function seedCzechWillTemplates() {
     const witnessed = await loadTemplateFromFile('cz', 'witnessed');
     if (witnessed) {
       results.loaded.push(witnessed);
-      
+
       console.log(`   ✅ Template loaded: ${witnessed.metadata.name}`);
       console.log(`   📄 ID: ${witnessed.id}`);
       console.log(`   📅 Version: ${witnessed.version}`);
@@ -209,7 +209,7 @@ async function seedCzechWillTemplates() {
     const notarial = await loadTemplateFromFile('cz', 'notarial');
     if (notarial) {
       results.loaded.push(notarial);
-      
+
       console.log(`   ✅ Template loaded: ${notarial.metadata.name}`);
       console.log(`   📄 ID: ${notarial.id}`);
       console.log(`   📅 Version: ${notarial.version}`);
@@ -224,7 +224,7 @@ async function seedCzechWillTemplates() {
     console.log('\n📚 Template library summary...');
     console.log(`   ✅ Total Czech templates loaded: ${results.loaded.length}`);
     console.log(`   🇨🇿 Czech templates found:`);
-    
+
     results.loaded.forEach(template => {
       console.log(`      - ${template.metadata.name} (${template.type}, ${template.language})`);
     });
@@ -233,14 +233,14 @@ async function seedCzechWillTemplates() {
     console.log('\n' + '='.repeat(60));
     console.log('🎯 CZECH WILL TEMPLATE SEEDING RESULTS');
     console.log('='.repeat(60));
-    
+
     if (results.loaded.length > 0) {
       console.log('\n✅ SUCCESSFULLY LOADED TEMPLATES:');
       results.loaded.forEach(template => {
         console.log(`   • ${template.metadata.name} (${template.type})`);
         console.log(`     ID: ${template.id} | Version: ${template.version}`);
         console.log(`     Legal: ${template.metadata.legalBasis}`);
-        
+
         // Czech-specific validations
         if (template.type === 'holographic') {
           console.log(`     🚨 Czech specific: Dating MANDATORY`);
@@ -288,7 +288,7 @@ async function seedCzechWillTemplates() {
     console.log('   • Language: Slovak (sk)');
 
     console.log('\n' + '='.repeat(60));
-    
+
     if (results.errors.length === 0) {
       console.log('🎉 SUCCESS: All Czech will templates loaded and validated successfully!');
       console.log('🚀 Czech will template system is ready for production use.');
@@ -296,7 +296,7 @@ async function seedCzechWillTemplates() {
       console.log(`⚠️  COMPLETED WITH ERRORS: ${results.errors.length} errors encountered.`);
       console.log('🔧 Please review and fix the errors above.');
     }
-    
+
     console.log('='.repeat(60));
 
   } catch (error) {

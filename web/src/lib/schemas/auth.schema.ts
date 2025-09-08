@@ -1,6 +1,6 @@
 
 import { z } from 'zod';
-import { ValidationMessages, createValidationMessage } from '../validation-messages';
+import { createValidationMessage, ValidationMessages } from '../validation-messages';
 
 // Password validation rules
 const passwordSchema = z

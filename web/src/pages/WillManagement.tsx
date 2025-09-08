@@ -399,7 +399,7 @@ export const WillManagement: React.FC = () => {
                         <Alert>
                           <AlertCircle className='h-4 w-4' />
                           <AlertDescription>
-                            {t('ui.validationIssues', { 
+                            {t('ui.validationIssues', {
                               count: will.validation_errors.length,
                               plural: will.validation_errors.length !== 1 ? 's' : ''
                             })}

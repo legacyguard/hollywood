@@ -82,7 +82,7 @@ export function useZodForm<TSchema extends ZodSchema<any, ZodTypeDef, any>>({
   ...formOptions
 }: UseZodFormOptions<TSchema>): EnhancedFormReturn<TSchema> {
   const { t } = useTranslation();
-  
+
   const form = useForm<any>({
     ...formOptions,
     resolver: zodResolver(schema),

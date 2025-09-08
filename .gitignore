@@ -44,3 +44,6 @@ storybook-static
 
 # Performance reports
 performance-report.json
+
+# ESLint cache
+.eslintcache

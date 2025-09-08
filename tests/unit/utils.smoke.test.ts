@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { cn } from '@/lib/utils';
 import {
-  encryptData,
   decryptData,
+  encryptData,
+  generateSecureToken,
   hashPassword,
   verifyPassword,
-  generateSecureToken,
 } from '@/lib/secure-storage';
 
 describe('Smoke Tests - Core Utilities', () => {

@@ -5,27 +5,27 @@
  */
 
 import * as nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 import { secureStorage } from './security/secure-storage';
 
 export interface EncryptionKeys {
-  publicKey: string;
   privateKey: string;
+  publicKey: string;
 }
 
 export interface EncryptedData {
   encrypted: string;
-  nonce: string;
   metadata?: {
-    encryptedAt: string;
     algorithm: string;
+    encryptedAt: string;
     keyVersion?: number;
   };
+  nonce: string;
 }
 
 class SecureEncryptionService {
   private static instance: SecureEncryptionService;
-  private keyCache: Map<string, { keys: EncryptionKeys; expiry: number }> =
+  private keyCache: Map<string, { expiry: number; keys: EncryptionKeys; }> =
     new Map();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
@@ -43,7 +43,7 @@ class SecureEncryptionService {
    */
   public async initializeKeys(
     password: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean; }> {
     try {
       // Check if keys exist
       const publicKeyResponse = await fetch('/api/keys/retrieve', {
@@ -152,7 +152,7 @@ class SecureEncryptionService {
   /**
    * Get current user ID from Clerk
    */
-  private async getCurrentUserId(): Promise<string | null> {
+  private async getCurrentUserId(): Promise<null | string> {
     // This would typically come from Clerk's useAuth hook
     // For server-side, we'd need to pass it differently
     if (typeof window !== 'undefined') {
@@ -170,11 +170,11 @@ class SecureEncryptionService {
   public async encryptFile(
     file: File,
     recipientPublicKey?: string
-  ): Promise<{
+  ): Promise<null | {
     encryptedData: Uint8Array;
-    nonce: Uint8Array;
     metadata: Record<string, any>;
-  } | null> {
+    nonce: Uint8Array;
+  }> {
     try {
       const keys = await this.getKeys();
       if (!keys) {
@@ -229,7 +229,7 @@ class SecureEncryptionService {
     encryptedData: Uint8Array,
     nonce: Uint8Array,
     senderPublicKey?: string
-  ): Promise<Uint8Array | null> {
+  ): Promise<null | Uint8Array> {
     try {
       const keys = await this.getKeys();
       if (!keys) {
@@ -300,7 +300,7 @@ class SecureEncryptionService {
    */
   public async decryptText(
     encryptedData: EncryptedData
-  ): Promise<string | null> {
+  ): Promise<null | string> {
     try {
       const keys = await this.getKeys();
       if (!keys) {
@@ -328,7 +328,7 @@ class SecureEncryptionService {
   /**
    * Request password from user (UI component should handle this)
    */
-  public async requestPassword(): Promise<string | null> {
+  public async requestPassword(): Promise<null | string> {
     // This should trigger a UI modal/dialog
     // For now, we'll use a simple prompt (replace with proper UI)
     if (typeof window !== 'undefined') {
@@ -343,7 +343,7 @@ class SecureEncryptionService {
    */
   public async unlockKeys(
     password: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean; }> {
     try {
       const response = await fetch('/api/keys/retrieve', {
         method: 'POST',
@@ -398,7 +398,7 @@ class SecureEncryptionService {
   public async rotateKeys(
     currentPassword: string,
     newPassword?: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean; }> {
     try {
       const response = await fetch('/api/keys/rotate', {
         method: 'POST',
@@ -457,7 +457,7 @@ class SecureEncryptionService {
    */
   public async migrateFromLocalStorage(
     password: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean; }> {
     try {
       // Check if old keys exist in localStorage
       const userId = await this.getCurrentUserId();
@@ -497,11 +497,11 @@ export const encryptionService = SecureEncryptionService.getInstance();
 export async function encryptFile(
   file: File,
   recipientPublicKey?: string
-): Promise<{
+): Promise<null | {
   encryptedData: Uint8Array;
-  nonce: Uint8Array;
   metadata: Record<string, any>;
-} | null> {
+  nonce: Uint8Array;
+}> {
   return encryptionService.encryptFile(file, recipientPublicKey);
 }
 
@@ -509,19 +509,19 @@ export async function decryptFile(
   encryptedData: Uint8Array,
   nonce: Uint8Array,
   senderPublicKey?: string
-): Promise<Uint8Array | null> {
+): Promise<null | Uint8Array> {
   return encryptionService.decryptFile(encryptedData, nonce, senderPublicKey);
 }
 
 export async function initializeEncryption(
   password: string
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ error?: string; success: boolean; }> {
   return encryptionService.initializeKeys(password);
 }
 
 export async function unlockEncryption(
   password: string
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ error?: string; success: boolean; }> {
   return encryptionService.unlockKeys(password);
 }
 

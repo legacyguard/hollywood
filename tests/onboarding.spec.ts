@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Onboarding Flow', () => {
   test('should display Clerk sign-in form on homepage', async ({ page }) => {

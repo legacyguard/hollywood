@@ -8,9 +8,9 @@ import { setupClerkTestingToken } from '@clerk/testing/playwright';
 
 export interface TestUser {
   email: string;
-  password: string;
   firstName?: string;
   lastName?: string;
+  password: string;
 }
 
 /**

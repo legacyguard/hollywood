@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Onboarding and Complete User Journey', () => {
   test('should complete full onboarding flow with Guardian of Memories narrative', async ({

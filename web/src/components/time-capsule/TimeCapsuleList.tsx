@@ -443,7 +443,7 @@ function TimeCapsuleCard({
               className='w-4 h-4 inline mr-2 text-green-600'
             />
             <span className='text-green-800'>
-              {t('card.deliveryStatus.deliveredOn', { 
+              {t('card.deliveryStatus.deliveredOn', {
                 date: format(new Date(capsule.delivered_at), "MMMM d, yyyy 'at' h:mm a")
               })}
             </span>

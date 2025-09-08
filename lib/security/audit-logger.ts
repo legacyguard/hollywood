@@ -49,27 +49,27 @@ export enum AuditSeverity {
 }
 
 export interface AuditEvent {
-  id?: string;
-  timestamp: string;
-  userId: string | null;
-  eventType: AuditEventType;
-  severity: AuditSeverity;
   description: string;
-  metadata?: Record<string, any>;
+  errorMessage?: string;
+  eventType: AuditEventType;
+  id?: string;
   ipAddress?: string;
-  userAgent?: string;
-  sessionId?: string;
+  metadata?: Record<string, any>;
   resourceId?: string;
   resourceType?: string;
+  sessionId?: string;
+  severity: AuditSeverity;
   success: boolean;
-  errorMessage?: string;
+  timestamp: string;
+  userAgent?: string;
+  userId: null | string;
 }
 
 class AuditLogger {
   private static instance: AuditLogger;
   private queue: AuditEvent[] = [];
   private flushInterval: NodeJS.Timeout | null = null;
-  private supabase: SupabaseClient | null = null;
+  private supabase: null | SupabaseClient = null;
   private isInitialized = false;
 
   private constructor() {
@@ -130,7 +130,7 @@ class AuditLogger {
    */
   public async logSecurity(
     eventType: AuditEventType,
-    userId: string | null,
+    userId: null | string,
     description: string,
     metadata?: Record<string, any>,
     severity: AuditSeverity = AuditSeverity.WARNING
@@ -169,7 +169,7 @@ class AuditLogger {
    */
   public async logFailure(
     eventType: AuditEventType,
-    userId: string | null,
+    userId: null | string,
     description: string,
     error: Error | string,
     metadata?: Record<string, any>
@@ -191,7 +191,7 @@ class AuditLogger {
   public async logDocumentAccess(
     userId: string,
     documentId: string,
-    action: 'upload' | 'download' | 'delete' | 'share',
+    action: 'delete' | 'download' | 'share' | 'upload',
     success: boolean,
     metadata?: Record<string, any>
   ): Promise<void> {
@@ -218,7 +218,7 @@ class AuditLogger {
    * Log authentication event
    */
   public async logAuth(
-    userId: string | null,
+    userId: null | string,
     action: 'login' | 'logout' | 'reset',
     success: boolean,
     metadata?: Record<string, any>
@@ -245,12 +245,12 @@ class AuditLogger {
    * Query audit logs
    */
   public async query(filters: {
-    userId?: string;
+    endDate?: Date;
     eventType?: AuditEventType;
+    limit?: number;
     severity?: AuditSeverity;
     startDate?: Date;
-    endDate?: Date;
-    limit?: number;
+    userId?: string;
   }): Promise<AuditEvent[]> {
     if (!this.supabase) {
       console.warn('Audit logger not initialized with Supabase');
@@ -438,7 +438,7 @@ export function logSecurityEvent(
 }
 
 export function logRateLimitExceeded(
-  userId: string | null,
+  userId: null | string,
   endpoint: string
 ): void {
   auditLogger.logSecurity(
@@ -450,7 +450,7 @@ export function logRateLimitExceeded(
 }
 
 export function logInvalidAccess(
-  userId: string | null,
+  userId: null | string,
   resource: string,
   reason: string
 ): void {

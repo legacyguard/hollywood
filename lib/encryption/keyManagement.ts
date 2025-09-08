@@ -5,17 +5,17 @@
  */
 
 import * as nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 // TODO: Refactor to use proper Clerk-based Supabase client
 // import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 // Password strength validation
 interface PasswordStrength {
-  score: number; // 0-4
   feedback: {
-    warning?: string;
     suggestions: string[];
+    warning?: string;
   };
+  score: number; // 0-4
 }
 
 export class KeyManagementService {
@@ -96,7 +96,7 @@ export class KeyManagementService {
     password: string,
     salt: string,
     nonce: string
-  ): Promise<string | null> {
+  ): Promise<null | string> {
     try {
       const saltBytes = decodeBase64(salt);
       const derivedKey = await this.deriveKeyFromPassword(password, saltBytes);
@@ -153,12 +153,12 @@ export class KeyManagementService {
   /**
    * Retrieve user keys from the database
    */
-  async retrieveUserKeys(userId: string): Promise<{
-    publicKey: string;
+  async retrieveUserKeys(userId: string): Promise<null | {
     encryptedPrivateKey: string;
-    salt: string;
     nonce: string;
-  } | null> {
+    publicKey: string;
+    salt: string;
+  }> {
     try {
       const { data, error } = await this.supabase
         .from('user_encryption_keys')

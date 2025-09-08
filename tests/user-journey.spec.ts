@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { generateTestUser, waitForClerk } from './helpers/auth';
 
 test.describe('Complete User Journey - Registration to Dashboard', () => {
