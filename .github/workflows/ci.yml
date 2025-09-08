@@ -60,7 +60,7 @@ jobs:
           npm ci --legacy-peer-deps
 
       - name: Run web tests
-        run: npm run test
+        run: ./ci/test.sh
         continue-on-error: true
         env:
           CI: true
