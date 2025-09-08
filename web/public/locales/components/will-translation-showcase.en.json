@@ -28,11 +28,23 @@
     },
     "enSK": {
       "name": "English in Slovakia",
-      "description": "English speaker creating will under Slovak law"
+      "description": "English speaker (expat/international) in Slovakia"
     },
     "deSK": {
       "name": "German in Slovakia", 
-      "description": "German speaker creating will under Slovak law"
+      "description": "German speaker (expat/business) in Slovakia"
+    },
+    "deCZ": {
+      "name": "German in Czech Republic",
+      "description": "German speaker (expat/business) in Czech Republic"
+    },
+    "csSK": {
+      "name": "Czech in Slovakia",
+      "description": "Czech speaker living in Slovakia"
+    },
+    "enCZ": {
+      "name": "English in Czech Republic",
+      "description": "English speaker (expat/international) in Czech Republic"
     }
   },
   "ui": {
@@ -43,6 +55,14 @@
     "loading": "Loading translation...",
     "error": "Error loading translation",
     "viewSample": "View Sample",
-    "downloadPDF": "Download PDF"
+    "downloadPDF": "Download PDF",
+    "availableConfigurations": "Available Configurations",
+    "activeConfiguration": "Active Configuration",
+    "language": "Language",
+    "currency": "Currency",
+    "legalCode": "Legal Code",
+    "systemCapabilities": "System Capabilities",
+    "supportedCombinations": "Supported Combinations",
+    "keyFeatures": "Key Features"
   }
 }

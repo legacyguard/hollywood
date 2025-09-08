@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 // import { useSofia } from '../sofia/SofiaContextProvider'; // Not available
 import { Icon } from '../ui/icon-library';
@@ -60,6 +61,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
   color,
   duration,
 }) => {
+  const { t } = useTranslation('components/loading-animations');
   // const { personality } = useSofia();
   const personality = {
     mode: 'pragmatic' as 'adaptive' | 'empathetic' | 'pragmatic',
@@ -186,7 +188,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
       case 'typewriter':
         return (
           <div className={cn('flex items-center space-x-1', className)}>
-            <span style={{ color: animationColor }}>{text || 'Loading'}</span>
+            <span style={{ color: animationColor }}>{text || t('loadingStates.loading')}</span>
             <motion.span
               style={{ color: animationColor }}
               animate={{ opacity: [0, 1, 0] }}
@@ -337,7 +339,9 @@ export const PageLoader: React.FC<{
   className?: string;
   overlay?: boolean;
   text?: string;
-}> = ({ text = 'Loading...', overlay = false, className = '' }) => {
+}> = ({ text, overlay = false, className = '' }) => {
+  const { t } = useTranslation('components/loading-animations');
+  const loadingText = text || t('loadingStates.loading');
   const content = (
     <div
       className={cn(
@@ -349,7 +353,7 @@ export const PageLoader: React.FC<{
       <LoadingAnimation
         type='firefly'
         size='lg'
-        text={text}
+        text={loadingText}
         personalityAdapt={true}
       />
     </div>
@@ -463,6 +467,7 @@ export const ProgressLoader: React.FC<{
   progress: number;
   text?: string;
 }> = ({ progress, text, className = '' }) => {
+  const { t } = useTranslation('components/loading-animations');
   // const { personality } = useSofia();
   const personality = {
     mode: 'pragmatic' as 'adaptive' | 'empathetic' | 'pragmatic',
@@ -472,7 +477,7 @@ export const ProgressLoader: React.FC<{
   return (
     <div className={cn('space-y-2', className)}>
       <div className='flex justify-between text-sm'>
-        <span>{text || 'Loading...'}</span>
+        <span>{text || t('loadingStates.loading')}</span>
         <span>{Math.round(progress)}%</span>
       </div>
       <div className='w-full bg-gray-200 rounded-full h-2'>

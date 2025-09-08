@@ -35,7 +35,17 @@
     "nextGoal": "Next Goal",
     "suggestions": "Suggestions",
     "growthTip": "Growth Tip",
-    "shareWithFamily": "Share with Family"
+    "shareWithFamily": "Share with Family",
+    "familyCircleProgress": "Family Circle Progress",
+    "buildNetwork": "Build your family protection network and unlock rewards",
+    "viewAll": "View All",
+    "shareProgress": "Share Progress",
+    "allMilestonesComplete": "All Milestones Complete!",
+    "ultimateCircle": "You've built the ultimate family protection circle",
+    "milestonesUnlocked": "Family Milestones Unlocked!",
+    "familyCircleMilestones": "Family Circle Milestones",
+    "considerAdding": "Consider adding:",
+    "maybeLater": "Maybe Later"
   },
   "achievements": {
     "firstInvite": "First family member invited!",

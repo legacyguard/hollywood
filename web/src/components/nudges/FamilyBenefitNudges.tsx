@@ -141,7 +141,7 @@ export function FamilyBenefitNudges({
   const generateFamilyNudges = (
     conditions: MilestoneTriggerConditions,
     achieved: string[],
-    lastAction?: string,
+    lastAction: string | undefined,
     t: any
   ): FamilyNudge[] => {
     const nudges: FamilyNudge[] = [];

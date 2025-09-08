@@ -252,6 +252,7 @@ function TimeCapsuleCard({
   isDelivered,
   isFailed,
 }: TimeCapsuleCardProps) {
+  const { t } = useTranslation('ui/time-capsule-list');
   const capsuleId = capsule.id.slice(-8).toUpperCase();
 
   return (

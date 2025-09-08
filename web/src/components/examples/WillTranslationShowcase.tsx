@@ -47,7 +47,7 @@ const WillTranslationShowcase: React.FC = () => {
       name: t('testScenarios.enCZ.name'),
       language: 'en',
       jurisdiction: 'CZ',
-      description: 'English speaker (expat/international) in Czech Republic',
+      description: t('testScenarios.enCZ.description'),
       expectedFile: 'en_CZ.json'
     },
     {
@@ -55,7 +55,7 @@ const WillTranslationShowcase: React.FC = () => {
       name: t('testScenarios.deCZ.name'),
       language: 'de',
       jurisdiction: 'CZ',
-      description: 'German speaker (expat/business) in Czech Republic',
+      description: t('testScenarios.deCZ.description'),
       expectedFile: 'de_CZ.json'
     },
     // Slovakia scenarios
@@ -72,23 +72,23 @@ const WillTranslationShowcase: React.FC = () => {
       name: t('testScenarios.csSK.name'),
       language: 'cs',
       jurisdiction: 'SK',
-      description: 'Czech speaker living in Slovakia',
+      description: t('testScenarios.csSK.description'),
       expectedFile: 'cs_SK.json'
     },
     {
       id: 'sk-en',
-      name: 'English in Slovakia',
+      name: t('testScenarios.enSK.name'),
       language: 'en',
       jurisdiction: 'SK',
-      description: 'English speaker (expat/international) in Slovakia',
+      description: t('testScenarios.enSK.description'),
       expectedFile: 'en_SK.json'
     },
     {
       id: 'sk-de',
-      name: 'German in Slovakia',
+      name: t('testScenarios.deSK.name'),
       language: 'de',
       jurisdiction: 'SK',
-      description: 'German speaker (expat/business) in Slovakia',
+      description: t('testScenarios.deSK.description'),
       expectedFile: 'de_SK.json'
     }
   ];
@@ -135,12 +135,12 @@ const WillTranslationShowcase: React.FC = () => {
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">
-        Will Translation System Showcase
+{t('title')}
       </h1>
 
       {/* Configuration Matrix */}
       <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Available Configurations</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('ui.availableConfigurations', { defaultValue: 'Available Configurations' })}</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {testScenarios.map((scenario) => (
             <button
@@ -164,10 +164,10 @@ const WillTranslationShowcase: React.FC = () => {
       {/* Selected Configuration Details */}
       {selectedScenario && (
         <div className="bg-blue-50 rounded-lg p-6 mb-6">
-          <h3 className="font-semibold mb-3">Active Configuration</h3>
+          <h3 className="font-semibold mb-3">{t('ui.activeConfiguration', { defaultValue: 'Active Configuration' })}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-gray-600">Language:</span>
+              <span className="text-gray-600">{t('ui.language', { defaultValue: 'Language:' })}</span>
               <span className="ml-2 font-semibold">
                 {selectedScenario.language === 'en' ? 'English' :
                  selectedScenario.language === 'cs' ? 'Czech' :
@@ -175,13 +175,13 @@ const WillTranslationShowcase: React.FC = () => {
               </span>
             </div>
             <div>
-              <span className="text-gray-600">Jurisdiction:</span>
+              <span className="text-gray-600">{t('ui.jurisdiction')}:</span>
               <span className="ml-2 font-semibold">
                 {selectedScenario.jurisdiction === 'CZ' ? 'Czech Republic' : 'Slovakia'}
               </span>
             </div>
             <div>
-              <span className="text-gray-600">Currency:</span>
+              <span className="text-gray-600">{t('ui.currency', { defaultValue: 'Currency:' })}</span>
               <span className="ml-2 font-semibold">
                 {willTranslationService.formatCurrency(
                   sampleData.amount,
@@ -191,7 +191,7 @@ const WillTranslationShowcase: React.FC = () => {
               </span>
             </div>
             <div>
-              <span className="text-gray-600">Legal Code:</span>
+              <span className="text-gray-600">{t('ui.legalCode', { defaultValue: 'Legal Code:' })}</span>
               <span className="ml-2 font-semibold">
                 {selectedScenario.jurisdiction === 'CZ' ? '89/2012' : '40/1964'}
               </span>
@@ -319,10 +319,10 @@ const WillTranslationShowcase: React.FC = () => {
 
       {/* Testing Summary */}
       <div className="mt-6 bg-gray-100 rounded-lg p-6">
-        <h3 className="font-semibold mb-3">System Capabilities</h3>
+        <h3 className="font-semibold mb-3">{t('ui.systemCapabilities', { defaultValue: 'System Capabilities' })}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <h4 className="font-medium mb-2">Supported Combinations:</h4>
+            <h4 className="font-medium mb-2">{t('ui.supportedCombinations', { defaultValue: 'Supported Combinations:' })}</h4>
             <ul className="list-check ml-4 space-y-1">
               <li>✅ Czech law in Czech language</li>
               <li>✅ Czech law in Slovak language</li>
@@ -335,7 +335,7 @@ const WillTranslationShowcase: React.FC = () => {
             </ul>
           </div>
           <div>
-            <h4 className="font-medium mb-2">Key Features:</h4>
+            <h4 className="font-medium mb-2">{t('ui.keyFeatures', { defaultValue: 'Key Features:' })}</h4>
             <ul className="list-check ml-4 space-y-1">
               <li>✅ Jurisdiction-specific legal terms</li>
               <li>✅ Proper currency formatting</li>

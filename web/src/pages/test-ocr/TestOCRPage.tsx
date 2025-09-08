@@ -94,7 +94,7 @@ const TestOCRPage: React.FC = () => {
   };
 
   const getDocumentTypeLabel = (type: DocumentType): string => {
-    return t(`documentTypes.${type}`, { defaultValue: type });
+    const labels: Record<string, string> = {
       will: 'Will',
       contract: 'Contract',
       receipt: 'Receipt',

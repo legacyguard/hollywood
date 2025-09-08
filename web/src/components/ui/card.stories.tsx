@@ -1,5 +1,6 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -85,59 +86,62 @@ type Story = StoryObj<typeof meta>;
 
 // Basic Card
 export const Default: Story = {
-  render: () => (
-    <Card className='w-[350px]'>
-      <CardHeader>
-        <CardTitle>Create New Document</CardTitle>
-        <CardDescription>Start building your legacy today</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>
-          Choose from our selection of document templates to get started
-          quickly.
-        </p>
-      </CardContent>
-      <CardFooter>
-        <Button className='w-full'>Get Started</Button>
-      </CardFooter>
-    </Card>
-  ),
+  render: () => {
+    const { t } = useTranslation('stories/card');
+    return (
+      <Card className='w-[350px]'>
+        <CardHeader>
+          <CardTitle>{t('examples.default.title')}</CardTitle>
+          <CardDescription>{t('examples.default.description')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>{t('examples.default.content')}</p>
+        </CardContent>
+        <CardFooter>
+          <Button className='w-full'>{t('examples.default.action')}</Button>
+        </CardFooter>
+      </Card>
+    );
+  },
 };
 
 // Document Card
 export const DocumentCard: Story = {
-  render: () => (
-    <Card className='w-[350px]'>
-      <CardHeader>
-        <div className='flex items-center justify-between'>
-          <FileText className='h-5 w-5 text-muted-foreground' />
-          <Badge variant='secondary'>Draft</Badge>
-        </div>
-        <CardTitle>Last Will & Testament</CardTitle>
-        <CardDescription>Updated 2 days ago</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className='space-y-2 text-sm text-muted-foreground'>
-          <div className='flex items-center gap-2'>
-            <Calendar className='h-4 w-4' />
-            <span>Created: March 15, 2024</span>
+  render: () => {
+    const { t } = useTranslation('stories/card');
+    return (
+      <Card className='w-[350px]'>
+        <CardHeader>
+          <div className='flex items-center justify-between'>
+            <FileText className='h-5 w-5 text-muted-foreground' />
+            <Badge variant='secondary'>{t('examples.document.status')}</Badge>
           </div>
-          <div className='flex items-center gap-2'>
-            <Clock className='h-4 w-4' />
-            <span>Last modified: March 20, 2024</span>
+          <CardTitle>{t('examples.document.title')}</CardTitle>
+          <CardDescription>{t('examples.document.description')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className='space-y-2 text-sm text-muted-foreground'>
+            <div className='flex items-center gap-2'>
+              <Calendar className='h-4 w-4' />
+              <span>{t('examples.document.created')}</span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <Clock className='h-4 w-4' />
+              <span>{t('examples.document.modified')}</span>
+            </div>
           </div>
-        </div>
-      </CardContent>
-      <CardFooter className='flex gap-2'>
-        <Button variant='outline' size='sm' className='flex-1'>
-          View
-        </Button>
-        <Button size='sm' className='flex-1'>
-          Edit
-        </Button>
-      </CardFooter>
-    </Card>
-  ),
+        </CardContent>
+        <CardFooter className='flex gap-2'>
+          <Button variant='outline' size='sm' className='flex-1'>
+            {t('examples.document.actions.view')}
+          </Button>
+          <Button size='sm' className='flex-1'>
+            {t('examples.document.actions.edit')}
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  },
 };
 
 // Family Member Card

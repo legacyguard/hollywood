@@ -106,7 +106,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
   // _onContactUpdated, // Not used
   // _onNotificationSent, // Not used
 }) => {
-  const { t } = useTranslation('ui/emergency-contact-system');
+  const { t } = useTranslation('components/emergency-contact-system');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   const personalityManager = usePersonalityManager();
@@ -142,9 +142,10 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
 
   // Get effective personality mode
   const detectedMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const effectiveMode =
+  const effectiveMode: PersonalityMode =
     personalityMode ||
-    (detectedMode === 'balanced' ? 'adaptive' : detectedMode);
+    (detectedMode === 'balanced' || detectedMode === 'pragmatic' ? 'pragmatic' : 
+     detectedMode === 'empathetic' ? 'empathetic' : 'adaptive');
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   const animConfig = AnimationSystem.getConfig(effectiveMode);
@@ -627,7 +628,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                       }
                     />
                     <Label htmlFor='can-trigger' className='text-sm'>
-                      {t(`personalityModes.${effectiveMode === 'balanced' ? 'adaptive' : effectiveMode}.canActivateEmergency`)}
+                      {t(`personalityModes.${effectiveMode}.canActivateEmergency`)}
                     </Label>
                   </div>
 
@@ -714,7 +715,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
               {contactCategories.primary.length > 0 && (
                 <div>
                   <h4 className='text-sm font-medium text-gray-700 mb-3'>
-                    {t(`personalityModes.${effectiveMode === 'balanced' ? 'adaptive' : effectiveMode}.primaryContactsTitle`)}
+                    {t(`personalityModes.${effectiveMode}.primaryContactsTitle`)}
                   </h4>
                   <div className='space-y-2'>
                     {contactCategories.primary.map((contact, index) => (
@@ -825,7 +826,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
               {contactCategories.secondary.length > 0 && (
                 <div>
                   <h4 className='text-sm font-medium text-gray-700 mb-3'>
-                    {t(`personalityModes.${effectiveMode === 'balanced' ? 'adaptive' : effectiveMode}.secondaryContactsTitle`)}
+                    {t(`personalityModes.${effectiveMode}.secondaryContactsTitle`)}
                   </h4>
                   <div className='grid gap-2'>
                     {contactCategories.secondary.map((contact, index) => (

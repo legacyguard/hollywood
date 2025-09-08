@@ -12,9 +12,9 @@ import { EnhancedWillWizard } from './EnhancedWillWizard';
 import { useTranslation } from 'react-i18next';
 
 interface TestConfiguration {
-  jurisdiction: JurisdictionCode;
+  jurisdiction: string;  // Changed from JurisdictionCode to string
   label: string;
-  language: LanguageCode;
+  language: string;  // Changed from LanguageCode to string
 }
 
 export const WillWizardTester: React.FC = () => {
@@ -24,8 +24,8 @@ export const WillWizardTester: React.FC = () => {
   const [currentTest, setCurrentTest] = useState<null | TestConfiguration>(null);
 
   const runTest = (config: TestConfiguration) => {
-    setLanguageCode(config.language);
-    setJurisdictionCode(config.jurisdiction);
+    setLanguageCode(config.language as LanguageCode);
+    setJurisdictionCode(config.jurisdiction as JurisdictionCode);
     setCurrentTest(config);
     setShowWizard(true);
   };
@@ -126,12 +126,12 @@ export const WillWizardTester: React.FC = () => {
                 <p className="text-sm text-muted-foreground mb-3">
                   {config.label}
                 </p>
-                {getStatusBadge(config)}
+                {getStatusBadge(config as TestConfiguration)}
               </div>
 
               <Button
                 className="w-full"
-                onClick={() => runTest(config)}
+                onClick={() => runTest(config as TestConfiguration)}
               >
                 {t('buttons.testCombination', { 
                   language: config.language, 
@@ -175,7 +175,7 @@ export const WillWizardTester: React.FC = () => {
         <Card className="p-6 mt-4">
           <h2 className="text-xl font-semibold mb-4">{t('sections.testInstructions')}</h2>
           <ol className="list-decimal list-inside space-y-2 text-sm">
-            {t('instructions', { returnObjects: true }).map((instruction: string, index: number) => (
+            {(t('instructions', { returnObjects: true }) as string[]).map((instruction: string, index: number) => (
               <li key={index}>{instruction}</li>
             ))}
           </ol>

@@ -100,16 +100,16 @@ const viralMilestones: ViralMilestone[] = [
   },
 ];
 
-const invitationPrompts: Record<string, InvitationPrompt> = {
+const getInvitationPrompts = (t: any): Record<string, InvitationPrompt> => ({
   first_document: {
     trigger: 'first_document',
     title: 'Great start! Now protect your family too 💝',
     message:
       "You've just secured your first important document. Why not share this peace of mind with your loved ones?",
     suggestions: [
-      'Your spouse could help organize family documents together',
-      'Add your adult children so they know where to find everything',
-      'Include trusted family members for emergency situations',
+      t('suggestions.0'),
+      t('suggestions.1'),
+      t('suggestions.2'),
     ],
     urgency: 'medium',
   },
@@ -149,7 +149,7 @@ const invitationPrompts: Record<string, InvitationPrompt> = {
     ],
     urgency: 'low',
   },
-};
+});
 
 export function FamilyViralGrowth({
   userId: _userId,
@@ -163,12 +163,13 @@ export function FamilyViralGrowth({
   const [currentPrompt, setCurrentPrompt] = useState<InvitationPrompt | null>(
     null
   );
-  const [milestones, setMilestones] = useState(viralMilestones);
+  const [milestones, setMilestones] = useState(() => viralMilestones);
+  const invitationPrompts = getInvitationPrompts(t);
   const [showMilestones, setShowMilestones] = useState(false);
 
   const updateMilestoneProgress = useCallback(() => {
     const memberCount = currentMembers.length;
-    const updatedMilestones = milestones.map(milestone => ({
+    const updatedMilestones = milestones.map((milestone: ViralMilestone) => ({
       ...milestone,
       progress: Math.min((memberCount / milestone.targetCount) * 100, 100),
       completed: memberCount >= milestone.targetCount,
@@ -229,11 +230,11 @@ export function FamilyViralGrowth({
   };
 
   const getNextMilestone = () => {
-    return milestones.find(m => !m.completed);
+    return milestones.find((m: ViralMilestone) => !m.completed);
   };
 
   const getCompletedMilestones = () => {
-    return milestones.filter(m => m.completed);
+    return milestones.filter((m: ViralMilestone) => m.completed);
   };
 
   const getMilestoneRewards = () => {
@@ -247,10 +248,10 @@ export function FamilyViralGrowth({
             <Trophy className='h-6 w-6 text-yellow-600' />
             <div>
               <div className='font-semibold text-yellow-800'>
-                Family Milestones Unlocked!
+{t('ui.milestonesUnlocked', { defaultValue: 'Family Milestones Unlocked!' })}
               </div>
               <div className='text-sm text-yellow-700'>
-                {completed.map(m => m.reward).join(' • ')}
+                {completed.map((m: ViralMilestone) => m.reward).join(' • ')}
               </div>
             </div>
           </div>
@@ -272,7 +273,7 @@ export function FamilyViralGrowth({
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
               <Target className='h-5 w-5 text-blue-600' />
-              <CardTitle className='text-lg'>Family Circle Progress</CardTitle>
+              <CardTitle className='text-lg'>{t('ui.familyCircleProgress', { defaultValue: 'Family Circle Progress' })}</CardTitle>
             </div>
             <Button
               variant='outline'
@@ -281,11 +282,11 @@ export function FamilyViralGrowth({
               className='gap-2'
             >
               <Trophy className='h-4 w-4' />
-              View All
+{t('ui.viewAll', { defaultValue: 'View All' })}
             </Button>
           </div>
           <CardDescription>
-            Build your family protection network and unlock rewards
+{t('ui.buildNetwork', { defaultValue: 'Build your family protection network and unlock rewards' })}
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
@@ -319,10 +320,10 @@ export function FamilyViralGrowth({
             <div className='text-center py-6'>
               <Crown className='h-12 w-12 text-yellow-500 mx-auto mb-3' />
               <div className='text-lg font-semibold mb-2'>
-                All Milestones Complete!
+{t('ui.allMilestonesComplete', { defaultValue: 'All Milestones Complete!' })}
               </div>
               <div className='text-muted-foreground'>
-                You've built the ultimate family protection circle
+{t('ui.ultimateCircle', { defaultValue: "You've built the ultimate family protection circle" })}
               </div>
             </div>
           )}
@@ -334,12 +335,12 @@ export function FamilyViralGrowth({
           <div className='flex gap-2'>
             <Button onClick={onInviteFamily} className='flex-1 gap-2'>
               <UserPlus className='h-4 w-4' />
-              Invite Family Member
+{t('ui.inviteFamily')}
             </Button>
             {currentMembers.length > 0 && (
               <Button variant='outline' className='gap-2'>
                 <Share2 className='h-4 w-4' />
-                Share Progress
+{t('ui.shareProgress', { defaultValue: 'Share Progress' })}
               </Button>
             )}
           </div>
@@ -374,7 +375,7 @@ export function FamilyViralGrowth({
                   <Card className='bg-blue-50 border-blue-200'>
                     <CardContent className='p-4'>
                       <div className='text-sm font-medium mb-2'>
-                        Consider adding:
+{t('ui.considerAdding', { defaultValue: 'Consider adding:' })}
                       </div>
                       <ul className='space-y-1 text-sm text-muted-foreground'>
                         {currentPrompt.suggestions.map((suggestion, index) => (
@@ -393,14 +394,14 @@ export function FamilyViralGrowth({
                       onClick={() => setShowInvitePrompt(false)}
                       className='flex-1'
                     >
-                      Maybe Later
+{t('ui.maybeLater', { defaultValue: 'Maybe Later' })}
                     </Button>
                     <Button
                       onClick={handleInviteClick}
                       className='flex-1 gap-2'
                     >
                       <UserPlus className='h-4 w-4' />
-                      Invite Family
+{t('ui.inviteFamily')}
                     </Button>
                   </div>
                 </div>
@@ -416,12 +417,12 @@ export function FamilyViralGrowth({
           <DialogHeader>
             <DialogTitle className='flex items-center gap-2'>
               <Trophy className='h-6 w-6 text-yellow-600' />
-              Family Circle Milestones
+{t('ui.familyCircleMilestones', { defaultValue: 'Family Circle Milestones' })}
             </DialogTitle>
           </DialogHeader>
 
           <div className='space-y-4'>
-            {milestones.map((milestone, _index) => (
+            {milestones.map((milestone: ViralMilestone, _index: number) => (
               <Card
                 key={milestone.id}
                 className={

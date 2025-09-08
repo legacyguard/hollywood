@@ -415,7 +415,7 @@ export function BackupRestore() {
                   {t('info.title')}
                 </p>
                 <ul className='space-y-1 text-blue-800 dark:text-blue-200'>
-                  {t('info.points', { returnObjects: true }).map((point: string, index: number) => (
+                  {(t('info.points', { returnObjects: true }) as string[]).map((point: string, index: number) => (
                     <li key={index} className='flex items-start gap-2'>
                       <span className='text-blue-600 mt-1'>•</span>
                       <span>{point}</span>
@@ -472,7 +472,7 @@ export function BackupRestore() {
                   {t('dialog.confirmDescription')}
                 </p>
                 <ul className='list-disc list-inside space-y-1 text-sm'>
-                  {t('dialog.confirmItems', { returnObjects: true }).map((item: string, index: number) => (
+                  {(t('dialog.confirmItems', { returnObjects: true }) as string[]).map((item: string, index: number) => (
                     <li key={index}>{item}</li>
                   ))}
                 </ul>
