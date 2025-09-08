@@ -109,8 +109,8 @@ export class DocumentService {
       }
 
       const queryParams = new URLSearchParams();
-      if (params.limit) queryParams.append('limit', params.limit.toString());
-      if (params.offset) queryParams.append('offset', params.offset.toString());
+      if (params.limit !== undefined) queryParams.append('limit', params.limit.toString());
+      if (params.offset !== undefined) queryParams.append('offset', params.offset.toString());
       if (params.documentType)
         queryParams.append('document_type', params.documentType);
       if (params.category) queryParams.append('category', params.category);

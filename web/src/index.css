@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 /* LegacyGuard Design System - Apple-inspired, calming & trustworthy
 All colors MUST be HSL.

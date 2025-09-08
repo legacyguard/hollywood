@@ -46,9 +46,8 @@ module.exports = {
     },
     {
       displayName: 'web',
-      preset: 'ts-jest',
       testEnvironment: 'jsdom',
-      testMatch: ['<rootDir>/web/**/*.test.{ts,tsx}'],
+      testMatch: ['<rootDir>/web/**/*.test.{ts,tsx,js,jsx}'],
       moduleNameMapper: {
         '^@hollywood/(.*)$': '<rootDir>/packages/$1/src',
         '^@legacyguard/(.*)$': '<rootDir>/packages/$1/src',
@@ -58,12 +57,11 @@ module.exports = {
       },
       setupFilesAfterEnv: ['<rootDir>/web/jest.setup.js'],
       transform: {
-        '^.+\\.(ts|tsx)$': ['ts-jest', {
-          tsconfig: {
-            jsx: 'react',
-          },
-        }],
+        '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
       },
+      transformIgnorePatterns: [
+        'node_modules/(?!(react-markdown|remark|unified|bail|is-plain-obj|trough|vfile|vfile-message|mdast-util-from-markdown|mdast-util-to-string|micromark|decode-named-character-reference|character-entities|property-information|hast-util-whitespace|hast-util-to-jsx-runtime|html-url-attributes|comma-separated-tokens|space-separated-tokens|style-to-object|unist-util-visit|unist-util-visit-parents|unist-util-is|@radix-ui|@floating-ui)/)',
+      ],
     },
     {
       displayName: 'mobile',
